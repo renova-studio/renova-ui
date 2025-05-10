@@ -1,22 +1,13 @@
 import React from 'react';
-import { ReactComponent as LogoSVG } from '../assets/logo.svg';
+import logo from '../assets/logo.svg';
 
 interface LogoProps {
-  className?: string;
-  onClick?: (e: React.MouseEvent<SVGElement>) => void;
+  className?: string; // Make className optional
 }
 
-const Logo: React.FC<LogoProps> = ({ className = '', onClick }) => {
+const Logo: React.FC<LogoProps> = ({ className = '' }) => {
   return (
-    <LogoSVG 
-      className={className}
-      onClick={onClick}
-      style={{ 
-        cursor: 'pointer', 
-        height: 'auto',
-        width: '80px'
-      }}
-    />
+    <img src={logo} alt="Renova Logo" className={className} />
   );
 };
 
