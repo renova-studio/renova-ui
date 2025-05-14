@@ -202,6 +202,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
   
   return (
     <div className="minimal-container">
+      {/* Parallax Background */}
+      <div className="parallax-container">
+        <div className="parallax-background" ref={parallaxRef}></div>
+      </div>
       
       {/* Fixed Side Navigation */}
       <nav className="side-nav">
@@ -243,10 +247,15 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
             <Logo className="header-logo" />
             <div className="header-company-name">renova</div>
           </div>
+          <div className="current-time">{currentTime}</div>
+          <div className="current-date">{currentDate}</div>
         </div>
       </header>
       
-      <section className="home-section" ref={infoSectionRef}>
+      {/* Main Content - Scrollable */}
+      <main className="minimal-main">
+        {/* Info Section */}
+        <section className="home-section" ref={infoSectionRef}>
           <div className="home-text">
             <p className="section-main-text">
               We craft virtual experiences that align with <br />
@@ -272,52 +281,57 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
               </div>
             ))}
           </div>
-      </section>
-        
-       
-      {projects.map((project, index) => (
-        <section 
-          key={project.id}
-          id={`preview-${project.id}`}
-          className="project-preview-section"
-        >
-          {/* Background image with blur effect */}
-          <img 
-            src={project.image} 
-            alt="" 
-            className="section-background-image"
-          />
-          <div className="project-preview">
-            {/* Empty div for spacing where the image would be */}
-            <div className="preview-image-placeholder"></div>
-            
-            <div className="preview-content">
-              <div className="preview-header">
-                <div className="preview-number">[{project.number}]</div>
-                <h2 className="preview-title">{project.title}</h2>
-              </div>
-              <p className="preview-description">{project.description}</p>
-              <Link to={`/projects/${project.id}`} className="view-project-link">
-                <button className="view-project-button">View Project Details</button>
-              </Link>
-            </div>
-          </div>
         </section>
-      ))}
+      
         
-        {/* Fixed Image Container - positioned after all projects */}
-        <div className="fixed-image-container" ref={fixedImageContainerRef}>
-          <div className="fixed-image-wrapper">
+        {/* Project Preview Sections */}
+        <div className="projects-container">
+          <div 
+              className="fixed-image-container"
+              ref={fixedImageContainerRef}
+            >
+              <div className="fixed-image-wrapper">
+                {projects.map((project, index) => (
+                  <img 
+                    key={project.id}
+                    src={project.image} 
+                    alt={project.title} 
+                    className={`fixed-preview-image ${index === currentProjectIndex ? 'active' : ''}`}
+                  />
+                ))}
+              </div>
+            </div>
             {projects.map((project, index) => (
-              <img 
-                key={project.id}
-                src={project.image} 
-                alt={project.title} 
-                className={`fixed-preview-image ${index === currentProjectIndex ? 'active' : ''}`}
-              />
-            ))}
-          </div>
+          <section 
+            key={project.id}
+            id={`preview-${project.id}`}
+            className="project-preview-section"
+          >
+            {/* Background image with blur effect */}
+            <img 
+              src={project.image} 
+              alt="" 
+              className="section-background-image"
+            />
+            <div className="project-preview">
+              {/* Empty div for spacing where the image would be */}
+              <div className="preview-image-placeholder"></div>
+              
+              <div className="preview-content">
+                <div className="preview-header">
+                  <div className="preview-number">[{project.number}]</div>
+                  <h2 className="preview-title">{project.title}</h2>
+                </div>
+                <p className="preview-description">{project.description}</p>
+                <Link to={`/projects/${project.id}`} className="view-project-link">
+                  <button className="view-project-button">View Project Details</button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        ))}
         </div>
+        
         
         {/* Contact Section */}
         <section className="contact-section" ref={contactSectionRef}>
@@ -336,6 +350,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
             </div>
           </div>
         </section>
+      </main>
     </div>
   );
 };
