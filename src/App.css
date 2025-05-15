@@ -20,6 +20,15 @@ html {
   --text-dark: #1a1a1a;
   --bg-color: #f2f0e6; /* Light cream background */
   --text-color: #1a1a1a; /* Dark text */
+  --parallax-scale: 0.1;
+  --parallax-min-height: 44rem;
+  --container-offset-adjustment: 5rem;
+}
+
+@media (prefers-reduced-motion) {
+  :root {
+    --parallax-scale: 0;
+  }
 }
 
 body {
@@ -27,9 +36,9 @@ body {
   color: var(--text-dark);
   background: var(--bg-color);
   -webkit-font-smoothing: antialiased;
+  height: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
-  height: auto;
+  overscroll-behavior-y: none;
 }
 
 .App {

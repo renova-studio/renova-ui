@@ -8,7 +8,7 @@ import luceroA1 from '../assets/lucero-a (1).png';
 import brunsonA1 from '../assets/brunson-a (1).png';
 import mcknightA1 from '../assets/mcknight-a (1).png';
 
-// Remove the custom type and use a more direct approach
+// Project interface
 interface Project {
   id: string;
   number: string;
@@ -26,6 +26,7 @@ interface PortfolioProps {
 }
 
 const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
+  // State variables
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [expandedMenu, setExpandedMenu] = useState<string | null>('portfolio');
@@ -33,20 +34,17 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
   const [activeSection, setActiveSection] = useState('home');
   const [previewedProject, setPreviewedProject] = useState<string | null>(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  // Add scroll position state
+  const [scrollY, setScrollY] = useState(0);
+  // Add mobile detection state
+  const [isMobile, setIsMobile] = useState(false);
   
-  // Define refs
-  const parallaxRef = useRef<HTMLDivElement>(null);
+  // Define refs for sections
   const infoSectionRef = useRef<HTMLDivElement>(null);
   const portfolioSectionRef = useRef<HTMLDivElement>(null);
   const contactSectionRef = useRef<HTMLDivElement>(null);
   const previewSectionRef = useRef<HTMLDivElement>(null);
-  const fixedImageContainerRef = useRef<HTMLDivElement>(null);
-  
-  // Add a state to track if we're in the portfolio section
-  const [isInPortfolioSection, setIsInPortfolioSection] = useState(false);
-  
-  // Add a state to track if we're in the project sections
-  const [isInProjectSection, setIsInProjectSection] = useState(false);
   
   useEffect(() => {
     // Update time and date
@@ -72,75 +70,17 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
     updateDateTime();
     const interval = setInterval(updateDateTime, 60000);
     
-    // Update the current project based on scroll position
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      
-      // Get all project preview sections
-      const projectSections = document.querySelectorAll('.project-preview-section');
-      
-      // Check if any project section is in view
-      let isAnyProjectVisible = false;
-      let activeIndex = 0;
-      
-      projectSections.forEach((section, index) => {
-        const rect = section.getBoundingClientRect();
-        // If the section is in the viewport (or close to it)
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          isAnyProjectVisible = true;
-          
-          // If the section is centered in the viewport, make it the active one
-          if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
-            activeIndex = index;
-          }
-        }
-      });
-      
-      // Update visibility state based on whether any project is visible
-      setIsInPortfolioSection(isAnyProjectVisible);
-      
-      // Update the current project index if it changed
-      if (activeIndex !== currentProjectIndex) {
-        setCurrentProjectIndex(activeIndex);
-      }
-      
-      // Apply parallax effect to background images
-      const backgroundImages = document.querySelectorAll('.section-background-image');
-      backgroundImages.forEach((img) => {
-        const section = img.closest('section');
-        if (section) {
-          const sectionTop = section.offsetTop;
-          const distanceFromTop = scrollPosition - sectionTop;
-          const parallaxOffset = distanceFromTop * 0.4;
-          (img as HTMLElement).style.transform = `translateY(${parallaxOffset}px) translateZ(-1px) scale(2)`;
-        }
-      });
-      
-      // Apply parallax to other elements
-      if (parallaxRef.current) {
-        parallaxRef.current.style.transform = `translateY(${scrollPosition * 0.4}px)`;
-      }
-      
-      // Add this to the handleScroll function
-      console.log('Current project index:', activeIndex);
-      console.log('Is any project visible:', isAnyProjectVisible);
-      console.log('Project sections count:', projectSections.length);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    
-    // Set up intersection observers to detect which section is in view
+    // Set up intersection observer for active section
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.5, // When 50% of the section is visible
+      threshold: 0.5,
     };
     
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const sectionId = entry.target.id;
-          setActiveSection(sectionId);
+          setActiveSection(entry.target.id);
         }
       });
     }, observerOptions);
@@ -165,41 +105,54 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       previewSectionRef.current.id = 'preview';
       sectionObserver.observe(previewSectionRef.current);
     }
+
+    // Add scroll event listener for parallax effect
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    // Add resize event listener to detect mobile devices
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initialize mobile detection
+    handleResize();
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
     
     return () => {
       clearInterval(interval);
-      window.removeEventListener('scroll', handleScroll);
       sectionObserver.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
     };
-  }, [selectedProject, currentProjectIndex]);
+  }, [selectedProject]);
+  
+  useEffect(() => {
+    if (projects.length > 0) {
+      setCurrentImage(projects[0].image);
+    }
+  }, [projects]);
   
   const toggleMenu = () => {
     setExpandedMenu(expandedMenu === 'portfolio' ? null : 'portfolio');
   };
   
-  // Update the scrollToSection function to accept any ref with a current property
-  const scrollToSection = (sectionRef: { current: HTMLDivElement | null }) => {
-    if (sectionRef.current) {
-      sectionRef.current.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+  // Create a utility function to generate parallax style
+  const getParallaxStyle = (speed: number, isBackground: boolean = false) => {
+    // Return empty transform if mobile
+    if (isMobile) {
+      return {};
     }
-  };
-  
-  const handleThumbnailClick = (project: Project) => {
-    setSelectedProject(project);
-    setPreviewedProject(project.id);
     
-    // Scroll to the preview section
-    if (previewSectionRef.current) {
-      previewSectionRef.current.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
+    return {
+      transform: isBackground ? `translateY(${scrollY * speed}px) scale(1.03)` : `translateY(${scrollY * speed}px)`,
+      transition: 'transform scroll() cubic-bezier(0.1, 0, 0.9, 1)'
+    };
   };
-  
+
   return (
     <div className="minimal-container">
       
@@ -208,7 +161,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
         <div className="nav-section">
           <div 
             className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
-            onClick={() => scrollToSection(infoSectionRef)}
+            onClick={() => {}}
           >
             <span className="nav-text">HOME</span>
           </div>
@@ -218,7 +171,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
           <div 
             className={`nav-item ${activeSection === 'portfolio' ? 'active' : ''}`}
             onClick={() => {
-              scrollToSection(portfolioSectionRef);
               toggleMenu();
             }}
           >
@@ -229,7 +181,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
         <div className="nav-section">
           <div 
             className={`nav-item ${activeSection === 'contact' ? 'active' : ''}`}
-            onClick={() => scrollToSection(contactSectionRef)}
+            onClick={() => {}}
           >
             <span className="nav-text">CONTACT</span>
           </div>
@@ -247,80 +199,84 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       </header>
       
       <section className="home-section" ref={infoSectionRef}>
-          <div className="home-text">
-            <p className="section-main-text">
-              We craft virtual experiences that align with <br />
-              your vision - turning your imagination<br />
-              into immersive realities.
-            </p>
-            <p>
+        <div className="home-text" style={getParallaxStyle(-0.2)}>
+          <p className="section-main-text">
+            We craft virtual experiences that align with <br />
+            your vision - turning your imagination<br />
+            into immersive realities.
+          </p>
+          <p>
             [SCROLL TO EXPLORE]
-            </p>
-          </div>
-          
-          <div className="project-thumbnails">
-            {projects.map((project) => (
-              <div 
-                key={project.id} 
-                className="project-thumbnail"
-                onClick={() => handleThumbnailClick(project)}
-              >
-                <div className="thumbnail-number">[{project.number}]</div>
-                <div className="thumbnail-image-container">
-                  <img src={project.image} alt={project.title} className="thumbnail-image" />
-                </div>
-              </div>
-            ))}
-          </div>
-      </section>
-        
-       
-      {projects.map((project, index) => (
-        <section 
-          key={project.id}
-          id={`preview-${project.id}`}
-          className="project-preview-section"
-        >
-          {/* Background image with blur effect */}
-          <img 
-            src={project.image} 
-            alt="" 
-            className="section-background-image"
-          />
-          <div className="project-preview">
-            {/* Empty div for spacing where the image would be */}
-            <div className="preview-image-placeholder"></div>
-            
-            <div className="preview-content">
-              <div className="preview-header">
-                <div className="preview-number">[{project.number}]</div>
-                <h2 className="preview-title">{project.title}</h2>
-              </div>
-              <p className="preview-description">{project.description}</p>
-              <Link to={`/projects/${project.id}`} className="view-project-link">
-                <button className="view-project-button">View Project Details</button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      ))}
-        
-        {/* Fixed Image Container - positioned after all projects */}
-        <div className="fixed-image-container" ref={fixedImageContainerRef}>
-          <div className="fixed-image-wrapper">
-            {projects.map((project, index) => (
-              <img 
-                key={project.id}
-                src={project.image} 
-                alt={project.title} 
-                className={`fixed-preview-image ${index === currentProjectIndex ? 'active' : ''}`}
-              />
-            ))}
-          </div>
+          </p>
         </div>
         
-        {/* Contact Section */}
-        <section className="contact-section" ref={contactSectionRef}>
+        <div className="project-thumbnails" style={getParallaxStyle(0.05)}>
+          {projects.map((project) => (
+            <div 
+              key={project.id} 
+              className="project-thumbnail"
+              onClick={() => {}}
+            >
+              <div className="thumbnail-number">[{project.number}]</div>
+              <div className="thumbnail-image-container">
+                <img src={project.image} alt={project.title} className="thumbnail-image" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+      
+      {/* Wrap your project sections in a projects-container */}
+      <div className="projects-container">
+        {projects.map((project, index) => (
+          <section 
+            key={project.id}
+            id={`project-hero-${project.id}`}
+            className="project-hero-section"
+          >
+            {/* Background image with parallax effect */}
+            <div className="parallax-background-container">
+              <img 
+                src={project.image} 
+                alt="" 
+                className="section-background-image parallax-element"
+                style={getParallaxStyle(-0.1, true)}
+              />
+               <img 
+                src={projects[(index + 1)%projects.length].image} 
+                alt="" 
+                className="section-background-image2 parallax-element"
+                style={getParallaxStyle(-0.1, true)}
+              />
+            </div>
+            <div className="project-hero">
+              <div className="project-hero-image-container" style={getParallaxStyle(0.05)}>
+                <div className="project-hero-image-wrapper">
+                    <img
+                        src={project.image} 
+                        alt="Current project" 
+                        className="project-hero-image"
+                      />
+                </div>
+              </div>
+              <div className="project-hero-content" style={getParallaxStyle(0.05)}>
+                <div className="project-hero-header">
+                  <div className="project-hero-number">[{project.number}]</div>
+                  <h2 className="project-hero-title">{project.title}</h2>
+                </div>
+                <p className="project-hero-description">{project.description}</p>
+                <Link to={`/projects/${project.id}`} className="view-project-link">
+                  <button className="view-project-button">View Project Details</button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        ))}
+      </div>
+      
+      {/* Contact Section */}
+      <section className="contact-section" ref={contactSectionRef}>
+        <div className="contact-content" style={getParallaxStyle(-0.1)}>
           <h1 className="section-heading">Get in touch</h1>
           <p className="section-paragraph">
             Ready to visualize your remodeling project? Contact us to discuss how we can help bring your vision to life.
@@ -335,7 +291,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
               <a href="tel:+15551234567" className="contact-value">+1 (555) 123-4567</a>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
     </div>
   );
 };

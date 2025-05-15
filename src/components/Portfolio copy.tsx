@@ -121,10 +121,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
         parallaxRef.current.style.transform = `translateY(${scrollPosition * 0.4}px)`;
       }
       
-      // Add this to the handleScroll function
-      console.log('Current project index:', activeIndex);
-      console.log('Is any project visible:', isAnyProjectVisible);
-      console.log('Project sections count:', projectSections.length);
     };
     
     window.addEventListener('scroll', handleScroll);

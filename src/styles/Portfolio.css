@@ -50,11 +50,6 @@
   width: auto;
 }
 
-.current-time, .current-date {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
 /* Side Navigation */
 .side-nav {
   display: flex;
@@ -71,108 +66,22 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   z-index: 100;
 }
-
-.nav-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  color: var(--text-dark);
-  padding: 5px 0;
-  position: relative;
-}
-
-.nav-item:hover {
-  opacity: 1;
-}
-
-.nav-item.active {
-  opacity: 1;
-  font-weight: 600;
-}
-
-.nav-item.active::after {
-  content: '';
-  position: absolute;
-  left: -15px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: var(--text-dark);
-}
-
-.nav-number {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.nav-text {
-  font-weight: 500;
-}
-
-.nav-submenu {
-  display: flex;
-  flex-direction: column;
-  margin-left: 22px;
-  margin-top: 10px;
-  gap: 8px;
-}
-
-.nav-subitem {
-  font-size: 13px;
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-  text-decoration: none;
-  color: var(--text-dark);
-  padding: 3px 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.nav-subitem:hover {
-  opacity: 1;
-}
-
-.nav-subitem .nav-number {
-  font-size: 11px;
-  opacity: 0.8;
-}
-
-.nav-subitem-text {
-  position: relative;
-}
-
-/* Common Section Styles */
 section {
   width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  scroll-margin-top: 0;
   position: relative;
   padding: 0 60px;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-y: visible;
   transform-style: preserve-3d;
 }
-
 /* Typography */
 .section-heading {
   font-family: 'Times New Roman', serif;
-  font-size: 48px;
+  font-size: 4.5vw;
   font-weight: 400;
   margin-bottom: 30px;
   line-height: 1.2;
@@ -204,31 +113,43 @@ section {
   font-size: 14px;
 }
 
-.scroll-button {
-  background: transparent;
-  border: 1px solid var(--text-dark);
-  color: var(--text-dark);
-}
-
-.scroll-button:hover {
-  background: var(--text-dark);
-  color: var(--bg-color);
-}
-
 .view-project-button {
   background-color: transparent;
   border: 1px solid #fff;
   color: #fff;
   padding: 12px 24px;
   align-self: flex-start;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .view-project-button:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
 }
 
+.view-project-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: white;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+}
 
+.view-project-button:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Home Section */
 .home-text {
   padding-top: 40vh;
   max-width: 800px;
@@ -247,20 +168,11 @@ section {
 .project-thumbnail {
   flex: 0 0 200px;
   cursor: pointer;
-}
-
-/* Portfolio Section */
-.portfolio-section {
-  padding-top: 15vh;
-  padding-bottom: 15vh;
-  overflow-y: auto;
-}
-
-.portfolio-thumbnails {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 40px;
-  padding-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: transform 0.3s ease;
 }
 
 /* Thumbnails */
@@ -298,116 +210,75 @@ section {
   margin-bottom: 15px;
 }
 
-.project-thumbnail {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: var(--text-dark);
-  transition: transform 0.3s ease;
-  cursor: pointer;
-}
-
-.project-thumbnail:hover {
-  transform: translateY(-5px);
-}
-
-.project-thumbnail:hover .thumbnail-image {
-  transform: scale(1.05);
-}
-
 .thumbnail-info {
   padding: 15px 0;
 }
 
-/* Project Preview Section */
-.project-preview-section {
+/* Project Hero Section */
+.project-hero-section {
   position: relative;
-  color: #fff;
-  overflow: hidden;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #000; /* Fallback color */
-  min-height: 100vh;
-  padding: 60px 0;
-}
-
-.section-background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: blur(10px) brightness(40%);
-  z-index: 0;
-  transform: translateZ(-1px) scale(2);
-  transition: transform 0.5s ease-out;
-}
-
-.project-preview {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 60px;
-  transform: translateZ(0);
-  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-}
-
-.preview-image-container {
-  position: relative;
   overflow: hidden;
-  border-radius: 4px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
-
-.preview-image {
-  width: 100%;
+.project-hero-image {
+  width: 20%;
   height: auto;
-  display: block;
-  transition: transform 0.3s ease;
+  border-radius: 8px;
 }
 
-.preview-content {
+.project-hero-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding-left: 20px;
 }
 
-.preview-header {
+.project-hero-header {
   margin-bottom: 30px;
 }
 
-.preview-number {
+.project-hero-number {
   font-size: 16px;
   margin-bottom: 10px;
 }
 
-.preview-title {
+.project-hero-title {
   font-family: 'Times New Roman', serif;
-  font-size: 42px;
+  font-size: 4.5vw;
   font-weight: 400;
   margin: 0;
 }
 
-.preview-description {
-  font-size: 18px;
+.project-hero-description {
+  font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 40px;
 }
 
-/* Contact Section */
-.contact-section {
-  padding-top: 15vh;
-  padding-bottom: 15vh;
-}
 
+.section-background-image {
+  position: absolute;
+  top: 10vh;
+  left: 0;
+  width: 100vw;
+  height: 120vh;
+  object-fit: cover;
+  filter: brightness(40%) blur(15px);
+  z-index: 0;
+}
+.section-background-image2 {
+  position: absolute;
+  top: 110vh;
+  left: 0;
+  width: 100vw;
+  height: 120vh;
+  object-fit: cover;
+  filter: brightness(40%) blur(15px);
+  z-index: 0;
+}
 .contact-details {
   display: flex;
   flex-direction: column;
@@ -430,152 +301,83 @@ section {
   transition: opacity 0.3s ease;
 }
 
-.contact-value:hover {
-  opacity: 0.7;
+/* Reset section styles */
+.home-section, 
+.project-hero-section, 
+.contact-section {
+  position: relative;
+  z-index: 1;
 }
 
-.section-background {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* Fixed Image Container */
+.project-hero-image-container {
+  z-index: 10;
+  aspect-ratio: 1/1;
+  width: 30vw;
+  height: 30vw;
+  pointer-events: auto;
+}
+
+.project-hero-image-wrapper {
   width: 100%;
   height: 100%;
-  filter: blur(20px);
-  opacity: 0.5;
-  z-index: 0;
 }
 
-/* Add a transition effect to the project preview content */
-.project-preview {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  max-width: 1200px;
+.project-hero-image {
   width: 100%;
-  margin: 0 auto;
-  padding: 0 60px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-/* Add a subtle animation to the background */
-@keyframes slowZoom {
-  from { transform: translateZ(-1px) scale(2); }
-  to { transform: translateZ(-1px) scale(2.05); }
+/* Project Preview Layout */
+.project-hero {
+  display: flex;
+  width: 100%;
+  gap: 5vw;
+  padding: 10vh 10vw 30vh 10vw;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.7));
 }
-
-
-.section-background-image {
-  animation: slowZoom 20s infinite alternate ease-in-out;
-}
-
 
 /* Projects Container */
 .projects-container {
   width: 100%;
-  min-height: 300vh; /* Make it tall enough to scroll through */
-  overflow: visible;
+  box-sizing: border-box;
+  background-color: transparent;
 }
 
-/* Fixed Image Container */
-.fixed-image-container {
-  position: fixed;
-  top: 50%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  width: 25vw;
-  height: 25vw;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
-}
-
-/* Make the container visible when a project section is in view */
-.project-preview-section:target ~ .fixed-image-container,
-.project-preview-section:first-of-type:target ~ .fixed-image-container {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Image wrapper */
-.fixed-image-wrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-/* Project image transitions */
-.fixed-preview-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.5s ease, transform 0.8s ease;
+/* Preview Content */
+.project-hero-content {
+  padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.fixed-preview-image.active {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Add scroll-driven animation support for modern browsers */
-@supports (animation-timeline: scroll()) {
-  .fixed-image-container {
-    animation: fadeInOut linear forwards;
-    animation-timeline: scroll();
-    animation-range: entry 15% exit 88%;
-  }
-
-  @keyframes fadeInOut {
-    0%, 100% {
-      opacity: 0.25;
-      visibility: hidden;
-    }
-    15%, 85% {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
-}
-
-/* Adjust project preview layout to accommodate fixed image */
-.project-preview {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 4rem 2rem;
-  min-height: 100vh;
-  align-items: center;
-}
-
-.preview-image-placeholder {
+  z-index: 5;
   width: 100%;
-  height: 0;
-  padding-bottom: 100%; /* Creates a square aspect ratio */
+  max-width: 100%;
+  justify-self: start;
+  color: white
+}
+.contact-section{
+  padding-top: 15vh;
+
+
+}
+/* Media Queries */
+@media (prefers-reduced-motion) {
+  :root {
+    --parallax-scale: 0;
+  }
 }
 
-/* Make sure project sections have enough height */
-.project-preview-section {
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  align-items: center;
+@media (max-width: 768px) {
+  :root {
+    --parallax-scale: 0;
+  }
 }
 
-/* Ensure the preview content is visible and doesn't overlap with the fixed image */
-/* Add a transition effect when changing sections */
-.section-background-image {
-  transition: opacity 0.8s ease, transform 0.5s ease-out;
-} 
+/* Move up the last project section (alternative approach) */
+.projects-container > section:last-child > .project-hero {
+  margin-bottom: 15vh;
+}
