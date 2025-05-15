@@ -123,6 +123,7 @@ section {
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .view-project-button:hover {
@@ -380,4 +381,62 @@ section {
 /* Move up the last project section (alternative approach) */
 .projects-container > section:last-child > .project-hero {
   margin-bottom: 15vh;
+}
+
+/* Fullscreen transition animation */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+}
+
+.transition-rectangle {
+  flex: 1;
+  height: 100%;
+  transform: scaleY(0);
+  transform-origin: top;
+  background-color: white;
+  animation: growRectangle 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+.transition-rectangle:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.transition-rectangle:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.transition-rectangle:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.transition-rectangle:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+.transition-rectangle:nth-child(5) {
+  animation-delay: 0.6s;
+}
+
+.transition-rectangle:nth-child(6) {
+  animation-delay: 0.75s;
+}
+
+.transition-rectangle:nth-child(7) {
+  animation-delay: 0.9s;
+}
+
+@keyframes growRectangle {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
 }

@@ -4,6 +4,7 @@ import './App.css';
 import Logo from './components/Logo';
 import ProjectDetail from './components/ProjectDetail';
 import Portfolio from './components/Portfolio';
+import { TransitionProvider, useTransition } from './context/TransitionContext';
 
 // Import project 360° images
 import lucero360 from './assets/lucero-360.jpeg';
@@ -103,32 +104,6 @@ const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<string>('');
   const [currentDate, setCurrentDate] = useState<string>('');
   
-  // Update time and date
-  useEffect(() => {
-    const updateDateTime = () => {
-      const now = new Date();
-      
-      // Format time as HH:MM AM/PM
-      const hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const formattedHours = hours % 12 || 12;
-      setCurrentTime(`${formattedHours}:${minutes} ${ampm} [PST]`);
-      
-      // Format date as Month DD, YYYY
-      const options: Intl.DateTimeFormatOptions = { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric' 
-      };
-      setCurrentDate(now.toLocaleDateString('en-US', options).toUpperCase());
-    };
-    
-    updateDateTime();
-    const interval = setInterval(updateDateTime, 60000); // Update every minute
-    
-    return () => clearInterval(interval);
-  }, []);
 
   // Handle project image click to show details
   const handleProjectClick = (projectId: string) => {
@@ -143,15 +118,18 @@ const App: React.FC = () => {
   };
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Portfolio projects={projects} />} />
-          <Route path="/projects/:projectId" element={<ProjectDetailWrapper projects={projects} />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </Router>
+    <TransitionProvider>
+      <Router>
+        <div className="app-container">
+          <TransitionOverlay />
+          <Routes>
+            <Route path="/" element={<Portfolio projects={projects} />} />
+            <Route path="/projects/:projectId" element={<ProjectDetailWrapper projects={projects} />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </Router>
+    </TransitionProvider>
   );
 };
 
@@ -169,11 +147,46 @@ const ProjectDetailWrapper: React.FC<ProjectDetailWrapperProps> = ({ projects })
     return <div>Project not found</div>;
   }
   
-  const handleBack = () => {
-    navigate('/');
-  };
+  return <ProjectDetail project={project} />;
+};
+
+// Transition Overlay Component
+const TransitionOverlay = () => {
+  const { isTransitioning } = useTransition();
+  const [phase, setPhase] = useState<'growing' | 'shrinking'>('growing');
   
-  return <ProjectDetail project={project} onBack={handleBack} />;
+  // Add debugging log
+  console.log("Current animation phase:", phase);
+  
+  useEffect(() => {
+    if (isTransitioning) {
+      console.log("Starting transition with growing phase");
+      // Start with growing phase
+      setPhase('growing');
+      
+      // Switch to shrinking phase after all rectangles grow
+      const timer = setTimeout(() => {
+        console.log("Switching to shrinking phase");
+        setPhase('shrinking');
+      }, 2500); // Adjust this time to allow for all rectangles to grow
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isTransitioning]);
+  
+  if (!isTransitioning) return null;
+  
+  return (
+    <div className="fullscreen-overlay">
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+    </div>
+  );
 };
 
 export default App;

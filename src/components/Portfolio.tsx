@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import '../styles/Portfolio.css';
+import { useTransition } from '../context/TransitionContext';
 
 // Import images directly
 import luceroA1 from '../assets/lucero-a (1).png';
@@ -39,6 +40,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
   const [scrollY, setScrollY] = useState(0);
   // Add mobile detection state
   const [isMobile, setIsMobile] = useState(false);
+  // Add animation state
+  const [animatingToProject, setAnimatingToProject] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { startTransition } = useTransition();
   
   // Define refs for sections
   const infoSectionRef = useRef<HTMLDivElement>(null);
@@ -153,9 +158,18 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
     };
   };
 
+  // Handle project view click with animation
+  const handleViewProject = (projectId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    
+    // Use the context to start the transition
+    startTransition('in', () => {
+      navigate(`/projects/${projectId}`);
+    });
+  };
+
   return (
     <div className="minimal-container">
-      
       {/* Fixed Side Navigation */}
       <nav className="side-nav">
         <div className="nav-section">
@@ -265,9 +279,12 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                   <h2 className="project-hero-title">{project.title}</h2>
                 </div>
                 <p className="project-hero-description">{project.description}</p>
-                <Link to={`/projects/${project.id}`} className="view-project-link">
-                  <button className="view-project-button">View Project Details</button>
-                </Link>
+                <button 
+                  className="view-project-button"
+                  onClick={(e) => handleViewProject(project.id, e)}
+                >
+                  View Project Details
+                </button>
               </div>
             </div>
           </section>

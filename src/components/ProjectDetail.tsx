@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import Logo from "./Logo";
 import '../styles/ProjectDetail.css';
+import { useTransition } from '../context/TransitionContext';
 
 // Define view labels for thumbnails
 const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
@@ -20,10 +21,12 @@ interface ProjectDetailProps {
     image360: string;
     description: string;
   };
-  onBack: () => void;
 }
 
-const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
+const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
+  const { projectId } = useParams<{ projectId: string }>();
+  const navigate = useNavigate();
+  const { startTransition } = useTransition();
   const [selectedVariant, setSelectedVariant] = useState<VariantKey>("A");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [viewMode, setViewMode] = useState<"gallery" | "360">("gallery");
@@ -132,13 +135,22 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project, onBack }) => {
     return variants[selectedVariant][selectedImageIndex];
   };
 
+  const handleGoBack = (event: React.MouseEvent) => {
+    event.preventDefault();
+    
+    // Start the exit transition
+    startTransition('out', () => {
+      navigate('/');
+    });
+  };
+
   return (
     <div className="minimal-detail-view">
       {/* Project header - Logo on right side */}
       <header className="detail-header">
         {/* Back navigation */}
         <div className="detail-nav">
-          <Link to="/" className="back-link">
+          <Link to="/" className="back-link" onClick={handleGoBack}>
             ← BACK TO HOME
           </Link>
         </div>
