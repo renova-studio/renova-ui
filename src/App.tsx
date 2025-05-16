@@ -12,7 +12,7 @@ import mcknight360 from './assets/mcknight-360.jpeg';
 import brunson360 from './assets/brunson-360.jpeg';
 
 // Import project main images (variant A, first image)
-import luceroImage from './assets/lucero-a (1).png';
+import luceroImage from './assets/lucero-a (2).png';
 import mcknightImage from './assets/mcknight-a (1).png';
 import brunsonImage from './assets/brunson-a (1).png';
 
@@ -37,21 +37,7 @@ const projects: Project[] = [
     title: 'LUCERO',
     image: luceroImage,
     image360: lucero360,
-    description: 'Modern kitchen remodel with open concept design and custom cabinetry.',
-    variants: {
-      A: [
-        '/images/lucero-a-daylight.jpg',
-        '/images/lucero-a-golden.jpg',
-        '/images/lucero-a-night.jpg',
-        '/images/lucero-a-twilight.jpg'
-      ],
-      B: [
-        '/images/lucero-b-daylight.jpg',
-        '/images/lucero-b-golden.jpg',
-        '/images/lucero-b-night.jpg',
-        '/images/lucero-b-twilight.jpg'
-      ]
-    }
+    description: 'Modern kitchen remodel with open concept design and custom cabinetry.'
   },
   {
     id: 'mcknight',
@@ -60,20 +46,7 @@ const projects: Project[] = [
     image: mcknightImage,
     image360: mcknight360,
     description: 'Elegant bathroom renovation with freestanding tub and walk-in shower.',
-    variants: {
-      A: [
-        '/images/mcknight-a-daylight.jpg',
-        '/images/mcknight-a-golden.jpg',
-        '/images/mcknight-a-night.jpg',
-        '/images/mcknight-a-twilight.jpg'
-      ],
-      B: [
-        '/images/mcknight-b-daylight.jpg',
-        '/images/mcknight-b-golden.jpg',
-        '/images/mcknight-b-night.jpg',
-        '/images/mcknight-b-twilight.jpg'
-      ]
-    }
+
   },
   {
     id: 'brunson',
@@ -82,20 +55,6 @@ const projects: Project[] = [
     image: brunsonImage,
     image360: brunson360,
     description: 'Contemporary living room redesign with custom built-ins and fireplace.',
-    variants: {
-      A: [
-        '/images/brunson-a-daylight.jpg',
-        '/images/brunson-a-golden.jpg',
-        '/images/brunson-a-night.jpg',
-        '/images/brunson-a-twilight.jpg'
-      ],
-      B: [
-        '/images/brunson-b-daylight.jpg',
-        '/images/brunson-b-golden.jpg',
-        '/images/brunson-b-night.jpg',
-        '/images/brunson-b-twilight.jpg'
-      ]
-    }
   }
 ];
 

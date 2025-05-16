@@ -168,19 +168,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             <div className="project-number">[{project.number}]</div>
             <h1 className="project-title">{project.title}</h1>
           </div>
-          
-          <div className="info-section">
-            <h2 className="info-heading">About</h2>
-            <p className="info-text">
-              {project.description}
-            </p>
-            <p className="info-text">
-              This remodeling visualization showcases our approach to creating immersive environments
-              that blend functionality with aesthetic appeal. Each design option
-              offers a unique perspective on the space.
-            </p>
-          </div>
-          
           {/* View mode toggle */}
           <div className="info-section">
             <h2 className="info-heading">View Mode</h2>
@@ -199,7 +186,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
               </button>
             </div>
           </div>
-          
           {viewMode === "gallery" && (
             <div className="info-section">
               <h2 className="info-heading">Design Options</h2>
@@ -216,6 +202,17 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
               </div>
             </div>
           )}
+          <div className="info-section">
+            <h2 className="info-heading">About</h2>
+            <p className="info-text">
+              {project.description}
+            </p>
+            <p className="info-text">
+              This remodeling visualization showcases our approach to creating immersive environments
+              that blend functionality with aesthetic appeal. Each design option
+              offers a unique perspective on the space.
+            </p>
+          </div>
         </div>
         
         {/* Right column - Images */}
@@ -264,7 +261,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             <div 
               className="sphere-container" 
               ref={sphereContainerRef}
-              style={{ height: sphereHeight }}
+              style={{ height: sphereHeight, background: 'white !important' }}
             >
               <ReactPhotoSphereViewer
                 src={project.image360}
@@ -272,9 +269,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
                 width="100%"
                 container="div"
                 defaultZoomLvl={0}
-                littlePlanet={false}
-                mousewheelCtrlKey={true}
-                navbar={["autorotate", "zoom", "fullscreen"]}
+                loadingImg={require('../assets/renova-logo.png')}
                 onReady={handleViewerReady}
                 plugins={[]}
                 sphereCorrection={{ pan: 0, tilt: 0, roll: 0 }}

@@ -7,7 +7,10 @@
 html {
   scroll-behavior: smooth;
 }
-
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 /* Nature-inspired green color scheme */
 :root {
   --primary-green: #3a5a40;
@@ -21,7 +24,6 @@ html {
   --text-color: #1a1a1a; /* Dark text */
   --parallax-scale: 0.1;
   --parallax-min-height: 44rem;
-  --container-offset-adjustment: 5rem;
 }
 
 @media (prefers-reduced-motion) {
@@ -39,8 +41,7 @@ body {
   background: var(--bg-color);
   -webkit-font-smoothing: antialiased;
   height: 100%;
-  overflow-x: hidden;
-  overscroll-behavior-y: none;
+  overflow-x: scroll;
 }
 
 .App {

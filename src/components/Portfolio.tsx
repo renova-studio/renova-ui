@@ -161,7 +161,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
     const targetPosition = typeof target === 'number' ? target : target.getBoundingClientRect().top + window.scrollY;
     const startPosition = window.scrollY;
     const distance = targetPosition - startPosition;
-    const duration = 1500; 
+    const duration = 1500; // Increased from 1500 to 2500ms for slower scrolling
     let startTime: number | null = null;
     
     // Animation function
@@ -170,8 +170,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
       
-      // Easing function for smoother motion
-      const ease = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      // Easing function for smoother motion (more pronounced ease)
+      const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       
       window.scrollTo(0, startPosition + distance * ease(progress));
       
@@ -217,7 +217,11 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
         opacity: window.scrollY < window.innerHeight ? 0 : 1,
         visibility: window.scrollY < window.innerHeight ? 'hidden' : 'visible',
       }} >
-        <div className="company-logo-container">
+        <div 
+          className="company-logo-container" 
+          onClick={() => smoothScrollTo(0)}
+          style={{ cursor: 'pointer' }}
+        >
           <Logo className="header-logo" style={{ filter: isInProject() ? 'invert(1)' : 'invert(0)'  }} />
           <Divider sx={{ 
             padding: '0 0.25rem', 
@@ -230,7 +234,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
           <span className="company-name-text" style={{ fontSize: '1.75rem', color: isInProject() ? 'white' : 'black' }}>renova</span>
         </div>
       </header>
-      <div className="home-logo-container-wrapper" style={getParallaxStyle(0.2)}>
+      <div className="home-logo-container-wrapper" style={getParallaxStyle(0.5)}>
         <div className="home-logo-container">
             <Logo className="home-logo" />  
             <Divider sx={{ 
@@ -247,8 +251,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       <section className="home-section" ref={infoSectionRef}>
         <div className="home-text">
           <p className="section-main-text" style={getParallaxStyle(-0.1)}>
-            We craft virtual experiences that align with <br />
-            your vision - turning your imagination<br />
+            We craft virtual experiences that align with
+            your vision - turning your imagination
             into immersive realities.
           </p>
           <p style={getParallaxStyle(-0.1)}>
@@ -351,10 +355,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
 
       {/* Add this JSX right after the <div className="minimal-container"> line */}
       <div className={`hamburger-menu-container ${menuOpen ? 'menu-open' : ''}`}>
-        <button className="hamburger-button" onClick={toggleMenu} style={{ filter: isInProject() ? 'invert(0)' : 'invert(1)' }}>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
+        <button className="hamburger-button" onClick={toggleMenu}>
+          <span className="hamburger-line" style={{ backgroundColor: isInProject() || menuOpen ? 'white' : 'black' }}></span>
+          <span className="hamburger-line" style={{ backgroundColor: isInProject() || menuOpen ? 'white' : 'black' }}></span>
+          <span className="hamburger-line" style={{ backgroundColor: isInProject() || menuOpen ? 'white' : 'black' }}></span>
         </button>
         
         <div className="menu-overlay">
@@ -370,10 +374,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                       smoothScrollTo(0); // Scroll to top
                     }}
                   >
-                    HOME
+                    Home
                   </a>
                 </li>
-                <li><p>WORK</p></li>
+                <li><p>Work</p></li>
                 {projects.map((project, index) => (
                   <li style={{ paddingLeft: '2rem' }} key={project.id}>
                     <p style={{ paddingRight: '0.5rem' }}>[{project.number}]</p>
@@ -404,7 +408,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                       }
                     }}
                   >
-                    CONTACT
+                    Contact
                   </a>
                 </li>
               </ul>

@@ -52,7 +52,7 @@
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 60px;
-  padding-left: 120px;
+  padding: 0 5vw;
 }
 
 /* Project Info */
@@ -78,7 +78,6 @@
   font-family: 'Times New Roman', serif;
   font-size: 4rem;
   font-weight: 400;
-  margin-bottom: 40px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -86,12 +85,12 @@
 }
 
 .info-section {
-  margin-bottom: 30px;
+  margin-bottom: 1rem;
 }
 
 .info-heading {
   font-family: 'Times New Roman', serif;
-  font-size: 20px;
+  font-size: 1.2rem;
   margin-bottom: 20px;
   position: relative;
   font-weight: 400;
@@ -120,7 +119,7 @@
 .variant-selector {
   display: flex;
   gap: 0;
-  margin-top: 20px;
+  margin-top: 1rem;
 }
 
 .variant-button {
@@ -159,6 +158,9 @@
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   height: 65vh;
+  @media (max-width: 768px) {
+    height: 30vh;
+  }
 }
 
 .main-image {
@@ -182,13 +184,15 @@
 
 /* 360 Viewer */
 .sphere-container {
-  height: 70vh;
   width: 100%;
   border-radius: 0;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
   position: relative;
+  @media (max-width: 768px) {
+    height: 30vh;
+  }
 }
 
 /* Ensure the 360 viewer has proper dimensions */
@@ -205,6 +209,7 @@
 
 /* Image Preview Carousel */
 .image-preview-carousel {
+  width: 100%;
   display: flex;
   gap: 10px;
   margin-top: 20px;
@@ -213,13 +218,16 @@
 }
 
 .preview-image {
-  width: auto;
-  height: 10vh;
+  width: 100%;
+  max-height: 10vh;
   object-fit: cover;
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.3s ease;
   opacity: 0.7;
+  @media (max-width: 768px) {
+    height: 7vh;
+  }
 }
 
 .preview-image.active {
@@ -254,7 +262,7 @@
   
   .detail-content {
     gap: 40px;
-    padding-left: 80px;
+    padding: 0 5vw;
   }
   
   .project-title {
@@ -265,7 +273,7 @@
 @media (max-width: 992px) {
   .detail-content {
     grid-template-columns: 1fr;
-    padding-left: 0;
+    padding: 0 5vw;
     gap: 30px;
   }
   
@@ -278,7 +286,7 @@
   }
   
   .project-meta {
-    padding-top: 2rem;
+    padding-top: 1rem;
   }
   
   .project-title {
@@ -292,7 +300,8 @@
   }
   
   .detail-header, .detail-content {
-    padding-left: 60px;
+    padding: 0 5vw;
+
   }
   
   .detail-nav {
@@ -311,7 +320,7 @@
 
 @media (max-width: 576px) {
   .detail-header, .detail-content {
-    padding-left: 0;
+    padding: 0 5vw;
     padding-top: 50px;
   }
   
@@ -322,4 +331,16 @@
   .variant-selector, .view-toggle {
     flex-direction: column;
   }
-} 
+}
+
+/* PhotoSphere Viewer loader customization */
+.psv-container {
+  background: #FFEFBA;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #FFFFFF, #FFEFBA);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.psv-loader-canvas{
+  display: none !important;
+}
