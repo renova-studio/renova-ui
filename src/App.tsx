@@ -155,18 +155,13 @@ const TransitionOverlay = () => {
   const { isTransitioning } = useTransition();
   const [phase, setPhase] = useState<'growing' | 'shrinking'>('growing');
   
-  // Add debugging log
-  console.log("Current animation phase:", phase);
-  
   useEffect(() => {
     if (isTransitioning) {
-      console.log("Starting transition with growing phase");
       // Start with growing phase
       setPhase('growing');
       
       // Switch to shrinking phase after all rectangles grow
       const timer = setTimeout(() => {
-        console.log("Switching to shrinking phase");
         setPhase('shrinking');
       }, 2500); // Adjust this time to allow for all rectangles to grow
       
@@ -178,6 +173,7 @@ const TransitionOverlay = () => {
   
   return (
     <div className="fullscreen-overlay">
+      <div className={`transition-rectangle ${phase}`}></div>
       <div className={`transition-rectangle ${phase}`}></div>
       <div className={`transition-rectangle ${phase}`}></div>
       <div className={`transition-rectangle ${phase}`}></div>

@@ -213,8 +213,8 @@
 }
 
 .preview-image {
-  width: 100px;
-  height: 70px;
+  width: auto;
+  height: 10vh;
   object-fit: cover;
   cursor: pointer;
   border: 2px solid transparent;

@@ -12,28 +12,31 @@
 /* Header */
 .minimal-header {
   position: fixed;
-  top: 60px;
-  right: 60px;
+  top: 2vw;
+  right: 2vw;
   z-index: 100;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
   background-color: transparent;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 
-.header-right {
+header {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 10px;
 }
 
 .company-logo-container {
   display: flex;
   align-items: center;
+  vertical-align: middle;
+  line-height: 1.5;
   gap: 10px;
   padding: 10px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(5px);
   border-radius: 5px;
 }
@@ -46,26 +49,19 @@
 }
 
 .header-logo {
-  height: 30px;
+  height: 2rem;
   width: auto;
+  filter: invert(100%);
+  z-index: 2;
 }
 
-/* Side Navigation */
-.side-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  position: fixed;
-  top: 60px;
-  left: 20px;
-  height: auto;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  z-index: 100;
+.header-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  pointer-events: none;
 }
+
 section {
   width: 100vw;
   min-height: 100vh;
@@ -81,7 +77,7 @@ section {
 /* Typography */
 .section-heading {
   font-family: 'Times New Roman', serif;
-  font-size: 4.5vw;
+  font-size: 10vw;
   font-weight: 400;
   margin-bottom: 30px;
   line-height: 1.2;
@@ -95,14 +91,19 @@ section {
   margin-bottom: 30px;
   line-height: 1.2;
   color: var(--text-dark);
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+
 }
 
 .section-paragraph {
-  font-size: 18px;
+  font-size: 2rem;
   line-height: 1.6;
   opacity: 0.8;
-  margin-bottom: 40px;
-  max-width: 800px;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  max-width: 900px;
 }
 
 /* Buttons */
@@ -151,35 +152,102 @@ section {
 }
 
 /* Home Section */
+
+.home-section {
+  display: flex;
+  align-items: center;
+  padding-top: 45vh;
+}
+
 .home-text {
-  padding-top: 40vh;
+  width: 100%;
   max-width: 800px;
+  padding: 0 2rem 0rem 1rem;
+  @media (max-width: 768px) {
+    padding: 0 1rem 0rem 0rem;
+  }
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 1.5s;
+}
+/* Add these styles to your existing CSS file */
+.home-logo-container-wrapper{
+  height: 70vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  position: absolute;
+}
+
+.home-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  margin: 0 auto;
+  font-family: 'Times New Roman', serif;
+  font-size: 10rem;
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 1s;
+  @media (max-width: 768px) {
+    font-size: 3rem;
+  }
+}
+
+.home-logo {
+  height: 20vh;
+  transition: transform 1.5s ease;
+  display: inline-block;
+  vertical-align: middle;
+  @media (max-width: 768px) {
+    height: 8vh;
+  }
+}
+
+.company-name-text {
+  font-family: 'Times New Roman', serif;
 }
 
 .project-thumbnails {
   display: flex;
+  align-items: flex-end;
   justify-content: flex-end;
+  flex-direction: row;
   gap: 30px;
-  margin-top: auto;
   overflow-x: hidden;
-  padding-bottom: 20px;
+  overflow-y: auto;
+  padding-top: 15vh;
   width: 100%;
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 1.75s;
 }
 
 .project-thumbnail {
-  flex: 0 0 200px;
+  width: 10vw;
+  min-width: 180px;
+  max-width: 200px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   text-decoration: none;
+  overflow-y: visible;
   color: var(--text-dark);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0.7;
 }
 
-/* Thumbnails */
+.project-thumbnail:hover {
+  transform: translateY(-5px);
+  opacity: 1;
+}
+
 .thumbnail-image-container {
   width: 100%;
-  height: 250px;
+  height: 200px;
   overflow: hidden;
   margin-bottom: 15px;
 }
@@ -189,6 +257,10 @@ section {
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
+}
+
+.project-thumbnail:hover .thumbnail-image {
+  transform: scale(1.05);
 }
 
 .thumbnail-number {
@@ -263,6 +335,10 @@ section {
 .section-background-image {
   position: absolute;
   top: 10vh;
+  @media (max-width: 768px) {
+    top: 0;
+    transform: scale(1.05);
+  }
   left: 0;
   width: 100vw;
   height: 120vh;
@@ -273,6 +349,10 @@ section {
 .section-background-image2 {
   position: absolute;
   top: 110vh;
+  @media (max-width: 768px) {
+    top: 0;
+    transform: scale(1.05);
+  }
   left: 0;
   width: 100vw;
   height: 120vh;
@@ -284,6 +364,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding-left: 1rem;
 }
 
 .contact-item {
@@ -337,6 +418,9 @@ section {
   width: 100%;
   gap: 5vw;
   padding: 10vh 10vw 30vh 10vw;
+  @media (max-width: 768px) {
+    padding-top:0;
+  };
   min-height: 100vh;
   align-items: center;
   justify-content: center;
@@ -361,9 +445,11 @@ section {
   color: white
 }
 .contact-section{
-  padding-top: 15vh;
+  padding-top: 10vh;
+  align-items: center;
+}
 
-
+.contact-section {
 }
 /* Media Queries */
 @media (prefers-reduced-motion) {
@@ -381,6 +467,9 @@ section {
 /* Move up the last project section (alternative approach) */
 .projects-container > section:last-child > .project-hero {
   margin-bottom: 15vh;
+  @media (max-width: 768px) {
+    margin-bottom: 0;
+  }
 }
 
 /* Fullscreen transition animation */
@@ -395,43 +484,6 @@ section {
   display: flex;
 }
 
-.transition-rectangle {
-  flex: 1;
-  height: 100%;
-  transform: scaleY(0);
-  transform-origin: top;
-  background-color: white;
-  animation: growRectangle 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-.transition-rectangle:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.transition-rectangle:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.transition-rectangle:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.transition-rectangle:nth-child(4) {
-  animation-delay: 0.45s;
-}
-
-.transition-rectangle:nth-child(5) {
-  animation-delay: 0.6s;
-}
-
-.transition-rectangle:nth-child(6) {
-  animation-delay: 0.75s;
-}
-
-.transition-rectangle:nth-child(7) {
-  animation-delay: 0.9s;
-}
-
 @keyframes growRectangle {
   0% {
     transform: scaleY(0);
@@ -439,4 +491,150 @@ section {
   100% {
     transform: scaleY(1);
   }
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hamburger Menu Styles */
+.hamburger-menu-container {
+  position: fixed;
+  top: 2vw;
+  left: 2vw;
+  z-index: 1000;
+}
+
+.hamburger-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+  position: relative;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 3px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+/* Animate the hamburger to an X when open */
+.menu-open .hamburger-line:nth-child(1) {
+  transform: translateY(8.5px) rotate(45deg);
+}
+
+.menu-open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-open .hamburger-line:nth-child(3) {
+  transform: translateY(-8.5px) rotate(-45deg);
+}
+
+/* Menu overlay */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  background-color: var(--dark-green);
+  backdrop-filter: blur(5px);
+  transition: width 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  overflow: hidden;
+}
+
+.menu-open .menu-overlay {
+  width: 20vw;
+}
+
+/* Menu content */
+.menu-content {
+  padding: 120px 60px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transition-delay: 0.1s;
+}
+
+.menu-open .menu-content {
+  opacity: 1;
+}
+
+/* Menu navigation */
+.menu-navigation ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-navigation li {
+  margin-bottom: 2rem;
+  transform: translateX(-20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.menu-open .menu-navigation li {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Stagger the animation of menu items */
+.menu-open .menu-navigation li:nth-child(1) { transition-delay: 0.1s; }
+.menu-open .menu-navigation li:nth-child(2) { transition-delay: 0.15s; }
+.menu-open .menu-navigation li:nth-child(3) { transition-delay: 0.2s; }
+.menu-open .menu-navigation li:nth-child(4) { transition-delay: 0.25s; }
+.menu-open .menu-navigation li:nth-child(5) { transition-delay: 0.3s; }
+.menu-open .menu-navigation li:nth-child(6) { transition-delay: 0.35s; }
+
+.menu-navigation a {
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Times New Roman', serif;
+  font-size: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.menu-navigation p {
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Times New Roman', serif;
+  font-size: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.menu-navigation a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #fff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+}
+
+.menu-navigation a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
