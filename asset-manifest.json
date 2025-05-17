@@ -1,0 +1,39 @@
+{
+  "files": {
+    "main.css": "/renova-visuals/static/css/main.83618b17.css",
+    "main.js": "/renova-visuals/static/js/main.dbb14a2b.js",
+    "static/js/453.46054b30.chunk.js": "/renova-visuals/static/js/453.46054b30.chunk.js",
+    "static/media/lucero-360.jpeg": "/renova-visuals/static/media/lucero-360.40850c3e7e6001913291.jpeg",
+    "static/media/mcknight-360.jpeg": "/renova-visuals/static/media/mcknight-360.a0327313aeeceac26a37.jpeg",
+    "static/media/brunson-360.jpeg": "/renova-visuals/static/media/brunson-360.7e8dd726d321fe5b1e55.jpeg",
+    "static/media/mcknight-b (1).png": "/renova-visuals/static/media/mcknight-b (1).2d937c391623c3918b48.png",
+    "static/media/mcknight-a (1).png": "/renova-visuals/static/media/mcknight-a (1).467f28d4cb8d16f1e392.png",
+    "static/media/mcknight-a (2).png": "/renova-visuals/static/media/mcknight-a (2).3dc728295625635c5447.png",
+    "static/media/lucero-b (3).png": "/renova-visuals/static/media/lucero-b (3).e36025946d2652433b7f.png",
+    "static/media/brunson-b (1).png": "/renova-visuals/static/media/brunson-b (1).9808d24b12943b0dc533.png",
+    "static/media/brunson-b (3).png": "/renova-visuals/static/media/brunson-b (3).9d7b220925352dfe081c.png",
+    "static/media/mcknight-b (2).png": "/renova-visuals/static/media/mcknight-b (2).3286d52f37520e288852.png",
+    "static/media/lucero-b (1).png": "/renova-visuals/static/media/lucero-b (1).c72f62ec804268761217.png",
+    "static/media/mcknight-a (3).png": "/renova-visuals/static/media/mcknight-a (3).482c901f9cad346b4e7a.png",
+    "static/media/brunson-a (1).png": "/renova-visuals/static/media/brunson-a (1).6560e4c2e08c168739f8.png",
+    "static/media/brunson-a (3).png": "/renova-visuals/static/media/brunson-a (3).937e7386ef0919ee3bba.png",
+    "static/media/lucero-a (3).png": "/renova-visuals/static/media/lucero-a (3).095ade0018b60a2eeb89.png",
+    "static/media/brunson-b (2).png": "/renova-visuals/static/media/brunson-b (2).3ae8a7685a3f6e46dba1.png",
+    "static/media/lucero-b (2).png": "/renova-visuals/static/media/lucero-b (2).9493b56a5548d4ff6739.png",
+    "static/media/lucero-a (1).png": "/renova-visuals/static/media/lucero-a (1).1d9c3e5ffbd4c46e5a1f.png",
+    "static/media/mcknight-b (3).png": "/renova-visuals/static/media/mcknight-b (3).e694923d44f89308bbea.png",
+    "static/media/lucero-a (2).png": "/renova-visuals/static/media/lucero-a (2).b7555a8b23824466165e.png",
+    "static/media/brunson-a (2).png": "/renova-visuals/static/media/brunson-a (2).a4239f10d2697734f426.png",
+    "static/media/lucero-a (4).png": "/renova-visuals/static/media/lucero-a (4).181f0909047185ba6835.png",
+    "static/media/lucero-b (4).png": "/renova-visuals/static/media/lucero-b (4).c4e66055dd9fde570ae3.png",
+    "index.html": "/renova-visuals/index.html",
+    "static/media/logo.svg": "/renova-visuals/static/media/logo.d80b6e95d5b76eb4d733a9bee480be19.svg",
+    "main.83618b17.css.map": "/renova-visuals/static/css/main.83618b17.css.map",
+    "main.dbb14a2b.js.map": "/renova-visuals/static/js/main.dbb14a2b.js.map",
+    "453.46054b30.chunk.js.map": "/renova-visuals/static/js/453.46054b30.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.83618b17.css",
+    "static/js/main.dbb14a2b.js"
+  ]
+}
