@@ -58,5 +58,5 @@
     "@types/react-scroll": "^1.8.10",
     "gh-pages": "^6.3.0"
   },
-  "homepage": "https://renova-studio.github.io/renova-visuals"
+  "homepage": "https://renova-studio.github.io/renova-ui"
 }
