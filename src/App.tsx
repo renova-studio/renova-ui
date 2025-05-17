@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import './App.css';
 import Logo from './components/Logo';
 import ProjectDetail from './components/ProjectDetail';
@@ -78,7 +78,7 @@ const App: React.FC = () => {
 
   return (
     <TransitionProvider>
-      <Router>
+      <HashRouter>
         <div className="app-container">
           <TransitionOverlay />
           <Routes>
@@ -87,7 +87,7 @@ const App: React.FC = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
-      </Router>
+      </HashRouter>
     </TransitionProvider>
   );
 };

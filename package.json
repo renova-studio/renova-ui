@@ -32,7 +32,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +55,8 @@
     ]
   },
   "devDependencies": {
-    "@types/react-scroll": "^1.8.10"
-  }
+    "@types/react-scroll": "^1.8.10",
+    "gh-pages": "^6.3.0"
+  },
+  "homepage": "https://renova-studio.github.io/renova-visuals"
 }
