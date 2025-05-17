@@ -37,7 +37,7 @@ const projects: Project[] = [
     title: 'LUCERO',
     image: luceroImage,
     image360: lucero360,
-    description: 'Modern kitchen remodel with open concept design and custom cabinetry.'
+    description: 'A timeless, light-filled kitchen with a central island and expansive storage under vaulted ceilings.'
   },
   {
     id: 'mcknight',
@@ -45,7 +45,7 @@ const projects: Project[] = [
     title: 'MCKNIGHT',
     image: mcknightImage,
     image360: mcknight360,
-    description: 'Elegant bathroom renovation with freestanding tub and walk-in shower.',
+    description: 'Elegant, functional design with layered cabinetry, open shelving, and statement lighting.',
 
   },
   {
@@ -54,7 +54,7 @@ const projects: Project[] = [
     title: 'BRUNSON',
     image: brunsonImage,
     image360: brunson360,
-    description: 'Contemporary living room redesign with custom built-ins and fireplace.',
+    description: 'Efficient design centered around a large window and an open island workspace.',
   }
 ];
 

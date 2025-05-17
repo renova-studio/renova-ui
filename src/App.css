@@ -7,9 +7,10 @@
 html {
   scroll-behavior: smooth;
 }
+
 html, body {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 /* Nature-inspired green color scheme */
 :root {

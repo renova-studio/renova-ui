@@ -20,6 +20,10 @@
   visibility: visible;
   transform: translateY(0);
   transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  @media (max-width: 768px) {
+    top: 1vh;
+    right: 1vh;
+  }
 }
 
 header {
@@ -39,6 +43,9 @@ header {
   background-color: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(5px);
   border-radius: 5px;
+  @media (max-width: 768px) {
+    padding: 5px;
+  }
 }
 
 .header-company-name {
@@ -82,7 +89,7 @@ section {
   font-family: 'Times New Roman', serif;
   font-size: 10vw;
   font-weight: 400;
-  margin-bottom: 30px;
+  margin-bottom: 1rem;
   line-height: 1.2;
   color: var(--text-dark);
   z-index: 10;
@@ -103,12 +110,16 @@ section {
 }
 
 .section-paragraph {
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 1.6;
   opacity: 0.8;
   margin-bottom: 2rem;
-  padding-left: 1rem;
   max-width: 900px;
+  padding-left: 1rem;
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    padding-left: 0;
+  }
 }
 
 /* Buttons */
@@ -161,6 +172,52 @@ section {
   display: flex;
   align-items: center;
   padding-top: 45vh;
+  position: relative;
+}
+
+.home-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 150vh;
+  background-color: var(--bg-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(193, 185, 161, 0.4)' d='M0,192L48,186.7C96,181,192,171,288,170.7C384,171,480,181,576,181.3C672,181,768,171,864,144C960,117,1056,75,1152,80C1248,85,1344,139,1392,165.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='rgba(171, 159, 130, 0.3)' d='M0,224L48,229.3C96,235,192,245,288,240C384,235,480,213,576,181.3C672,149,768,107,864,112C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='rgba(145, 135, 110, 0.2)' d='M0,96L48,128C96,160,192,224,288,224C384,224,480,160,576,138.7C672,117,768,139,864,165.3C960,192,1056,224,1152,208C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center 70%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.7;
+  transform: translateY(0);
+  @media (max-width: 768px) {
+    height: 150vh;
+  }
+}
+
+/* Remove the previous ::after pattern */
+.home-section::after {
+  display: none;
+}
+
+/* Add subtle movement to the waves */
+@keyframes waveMovement {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Add this for a more dynamic alternative with movement (optional) */
+.home-section.animated-waves::before {
+  animation: waveMovement 60s ease infinite;
+  background-size: 200% 100%;
+  background-position-y: bottom;
 }
 
 .home-text {
@@ -185,6 +242,7 @@ section {
   justify-content: center;
   background-color: transparent;
   position: absolute;
+  z-index: 10;
 }
 
 /* Replace the fadeInFromLeft animation with a reveal animation */
@@ -245,7 +303,6 @@ section {
   align-items: flex-end;
   justify-content: flex-end;
   flex-direction: row;
-  gap: 30px;
   padding-top: 15vh;
   padding-right: 2rem;
   padding-bottom: 2rem;
@@ -254,25 +311,41 @@ section {
   animation: fadeIn 1s ease forwards;
   animation-delay: 1.75s;
   @media (max-width: 768px) {
-    gap: 10px;
+    padding-right: 0;
+    padding-top: 10vh;
+    padding-left: 0.5rem;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 
+.project-thumbnails::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 .project-thumbnail {
-  width: 10vw;
-  min-width: 180px;
+  width: 100%;
   max-width: 200px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   text-decoration: none;
+  margin: 0 1rem;
   color: var(--text-dark);
   transition: transform 0.3s ease, opacity 0.3s ease;
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.7));
   opacity: 1;
   @media (max-width: 768px) {
-    width: 3vw;
-    min-width: 80px;
+    min-width: 140px;
+    max-width: 140px;
+    margin: 0 0.5rem;
+    flex-shrink: 0;
   }
 }
 
@@ -286,6 +359,10 @@ section {
   height: 200px;
   overflow: hidden;
   margin-bottom: 15px;
+  @media (max-width: 768px) {
+    height: 180px;
+    margin-bottom: 8px;
+  }
 }
 
 .thumbnail-image {
@@ -304,6 +381,10 @@ section {
   font-size: 14px;
   opacity: 0.7;
   margin-bottom: 5px;
+  @media (max-width: 768px) {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
 }
 
 .thumbnail-title {
@@ -311,6 +392,10 @@ section {
   font-size: 24px;
   font-weight: 400;
   margin-bottom: 10px;
+  @media (max-width: 768px) {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
 }
 
 .thumbnail-description {
@@ -348,6 +433,9 @@ section {
 
 .project-hero-header {
   margin-bottom: 30px;
+  @media (max-width: 768px) {
+    margin-bottom: 10px;
+  }
 }
 
 .project-hero-number {
@@ -360,35 +448,41 @@ section {
   font-size: 4.5vw;
   font-weight: 400;
   margin: 0;
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 }
 
 .project-hero-description {
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 40px;
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
 }
 
 
 .section-background-image {
   position: absolute;
   top: 10vh;
-  @media (max-width: 768px) {
-    top: 0;
-    transform: scale(1.05);
-  }
   left: 0;
   width: 100vw;
   height: 120vh;
   object-fit: cover;
   filter: brightness(40%) blur(15px);
   z-index: 0;
+  @media (max-width: 768px) {
+    top: 0;
+  }
+ 
 }
 .section-background-image2 {
   position: absolute;
   top: 110vh;
   @media (max-width: 768px) {
-    top: 0;
-    transform: scale(1.05);
+    top: 100vh;
   }
   left: 0;
   width: 100vw;
@@ -402,6 +496,9 @@ section {
   flex-direction: column;
   gap: 20px;
   padding-left: 1rem;
+  @media (max-width: 768px) {
+    padding-left: 0;
+  }
 }
 
 .contact-item {
@@ -435,6 +532,11 @@ section {
   width: 30vw;
   height: 30vw;
   pointer-events: auto;
+  @media (max-width: 768px) {
+    width: 70vw;
+    height: 70vw;
+    margin-bottom: 1rem;
+  }
 }
 
 .project-hero-image-wrapper {
@@ -455,13 +557,16 @@ section {
   width: 100%;
   gap: 5vw;
   padding: 10vh 10vw 30vh 10vw;
-  @media (max-width: 768px) {
-    padding-top:0;
-  };
   min-height: 100vh;
   align-items: center;
   justify-content: center;
   filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.7));
+  @media (max-width: 768px) {
+    padding-top: 0vh;
+    padding-bottom: 10vh;
+    flex-direction: column;
+    gap: 2rem;
+  }
 }
 
 /* Projects Container */
@@ -479,15 +584,24 @@ section {
   width: 100%;
   max-width: 100%;
   justify-self: start;
-  color: white
+  color: white;
+  @media (max-width: 768px) {
+    padding: 1rem 0;
+  }
 }
-.contact-section{
-  padding-top: 10vh;
+.contact-section {
   align-items: center;
+  @media (max-width: 1024px) {
+    padding-left: 20vw;
+    padding-right: 20vw;
+  }
+  @media (max-width: 768px) {
+    padding-top: 0vh;
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
 }
 
-.contact-section {
-}
 /* Media Queries */
 @media (prefers-reduced-motion) {
   :root {
@@ -501,13 +615,6 @@ section {
   }
 }
 
-/* Move up the last project section (alternative approach) */
-.projects-container > section:last-child > .project-hero {
-  margin-bottom: 15vh;
-  @media (max-width: 768px) {
-    margin-bottom: 0;
-  }
-}
 
 /* Fullscreen transition animation */
 .fullscreen-overlay {
@@ -545,12 +652,8 @@ section {
 /* Hamburger Menu Styles */
 .hamburger-menu-container {
   position: fixed;
-  top: 2vw;
-  left: 2vw;
-  @media (max-width: 768px) {
-    top: 5vw;
-    left: 3vw;
-  }
+  top: 3vh;
+  left: 3vh;
   z-index: 1000;
 }
 
@@ -602,7 +705,6 @@ section {
   border-bottom-right-radius: 20px;
   transform: translateX(-100%); /* Start off-screen */
   transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-  filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.7));
   pointer-events: none;
   @media (max-width: 768px) {
     width: 100vw;
@@ -613,6 +715,7 @@ section {
 .menu-open .menu-overlay {
   transform: translateX(0); /* Slide in */
   pointer-events: all;
+  filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.7));
 }
 
 /* Menu content - Fix animation */

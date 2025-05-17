@@ -126,11 +126,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
 
   // Create a utility function to generate parallax style
   const getParallaxStyle = (speed: number, isBackground: boolean = false) => {
-    // Return empty transform if mobile
-    if (isMobile) {
-      return {};
-    }
-    
+
     return {
       transform: isBackground ? `translateY(${scrollY * speed}px) scale(1.03)` : `translateY(${scrollY * speed}px)`,
       transition: 'transform scroll() cubic-bezier(0.1, 0, 0.9, 1)'
@@ -294,12 +290,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                 src={project.image} 
                 alt="" 
                 className="section-background-image parallax-element"
-                style={getParallaxStyle(-0.1, true)}
-              />
-               <img 
-                src={projects[(index + 1)%projects.length].image} 
-                alt="" 
-                className="section-background-image2 parallax-element"
                 style={getParallaxStyle(-0.1, true)}
               />
             </div>

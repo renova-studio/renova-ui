@@ -53,6 +53,7 @@
   grid-template-columns: 1fr 2fr;
   gap: 60px;
   padding: 0 5vw;
+  padding-top: 10vh;
 }
 
 /* Project Info */
@@ -263,6 +264,7 @@
   .detail-content {
     gap: 40px;
     padding: 0 5vw;
+    padding-top: 10vh;
   }
   
   .project-title {
@@ -274,6 +276,7 @@
   .detail-content {
     grid-template-columns: 1fr;
     padding: 0 5vw;
+    padding-top: 10vh;
     gap: 30px;
   }
   
@@ -301,7 +304,7 @@
   
   .detail-header, .detail-content {
     padding: 0 5vw;
-
+    padding-top: 10vh;
   }
   
   .detail-nav {
@@ -320,8 +323,8 @@
 
 @media (max-width: 576px) {
   .detail-header, .detail-content {
-    padding: 0 5vw;
-    padding-top: 50px;
+    padding: 5vw;
+    padding-top: 10vh;
   }
   
   .detail-nav {
@@ -335,12 +338,50 @@
 
 /* PhotoSphere Viewer loader customization */
 .psv-container {
-  background: #FFEFBA;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to bottom, #FFFFFF, #FFEFBA);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to bottom, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  background-color: var(--bg-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(193, 185, 161, 0.4)' d='M0,192L48,186.7C96,181,192,171,288,170.7C384,171,480,181,576,181.3C672,181,768,171,864,144C960,117,1056,75,1152,80C1248,85,1344,139,1392,165.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='rgba(171, 159, 130, 0.3)' d='M0,224L48,229.3C96,235,192,245,288,240C384,235,480,213,576,181.3C672,149,768,107,864,112C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='rgba(145, 135, 110, 0.2)' d='M0,96L48,128C96,160,192,224,288,224C384,224,480,160,576,138.7C672,117,768,139,864,165.3C960,192,1056,224,1152,208C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center 70%;
 }
 
 .psv-loader-canvas{
   display: none !important;
+}
+
+.back-button {
+  position: fixed;
+  top: 3vh;
+  left: 3vw;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Times New Roman', serif;
+  font-size: 1rem;
+  color: black;
+  padding: 8px;
+  z-index: 101;
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover {
+  transform: translateX(-5px);
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 768px) {
+  .back-button {
+    margin-bottom: 8px;
+  }
+  
+  .back-button svg {
+    width: 20px;
+    height: 20px;
+  }
 }

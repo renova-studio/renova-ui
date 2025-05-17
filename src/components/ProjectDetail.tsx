@@ -4,13 +4,15 @@ import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import Logo from "./Logo";
 import '../styles/ProjectDetail.css';
 import { useTransition } from '../context/TransitionContext';
-
+import { Divider } from "@mui/material";
+import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
 // Define view labels for thumbnails
 const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
 
 // Define types for variants
 type VariantKey = "A" | "B";
 type VariantImages = Record<VariantKey, string[]>;
+type VariantDescriptions = Record<VariantKey, string>;
 
 interface ProjectDetailProps {
   project: {
@@ -106,6 +108,26 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     }
   }, [project.id]);
 
+  // Add this inside the component
+  const variantDescriptions = React.useMemo<VariantDescriptions | null>(() => {
+    // This would ideally come from your project data
+    const descriptions: Record<string, VariantDescriptions> = {
+      lucero: {
+        A: "This immersive visualization features a light-filled kitchen with vaulted ceilings, exposed beams, and refined finishes. A marble-topped oak island pairs with cream cabinetry and gold hardware, while open shelving and a sculpted range hood add architectural charm—bringing the design to life with stunning realism.",
+        B: "This visualization showcases a bold, elevated take on transitional design. Warm wood cabinetry pairs with striking black stone countertops and backsplash, creating a rich contrast against the natural light and vaulted ceilings. Gold fixtures and hardware add a touch of refinement, while the oak island anchors the space with texture and balance—highlighting Renova’s ability to render design possibilities with clarity and depth."
+      },
+      mcknight: {
+        A: "This visualization features a vibrant blend of classic form and playful detail. White upper cabinetry contrasts with natural wood lowers, while a soft blue island adds a subtle pop of color. Brass fixtures, open shelving, and textured tile bring warmth and character, creating a space that feels fresh, functional, and full of personality—beautifully illustrating the versatility of Renova’s design approach.",
+        B: "This visualization pairs rich navy upper cabinetry with warm natural wood lowers for a striking yet balanced design. Light stone countertops and backsplash add softness, while brass fixtures and modern lighting elevate the space. Open shelving around the range provides both function and display, illustrating how thoughtful material contrasts can define a refined, livable kitchen."
+      },
+      brunson: {
+        A: "This visualization presents a sleek, minimalist kitchen with a timeless black-and-white palette. Crisp white cabinetry is contrasted by black hardware and matte black pendant lighting, while stone-look countertops and a full-height backsplash bring depth and texture. A large picture window floods the space with natural light, highlighting the refined simplicity of the design.",
+        B: "This warm, modern kitchen blends clean lines with organic textures. Light wood cabinetry and matching island surfaces create a cohesive, inviting atmosphere, while matte black hardware and lighting fixtures add modern contrast. A large picture window brings in natural light, enhancing the soft, neutral palette and highlighting the balance of simplicity and style."
+      }
+    };
+    return descriptions[project.id] || null;
+  }, [project.id]);
+
   // Handle viewer ready event
   const handleViewerReady = (instance: any) => {
     viewerRef.current = instance;
@@ -146,16 +168,28 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
 
   return (
     <div className="minimal-detail-view">
-      {/* Project header - Logo on right side */}
-      <header className="detail-header">
-        {/* Back navigation */}
-        <div className="detail-nav">
-          <Link to="/" className="back-link" onClick={handleGoBack}>
-            ← BACK TO HOME
-          </Link>
-        </div>
-        <div className="detail-logo-container">
-          <Logo className="detail-logo" />
+      {/* Separate back button outside the header */}
+      <div className="back-button" onClick={handleGoBack}>
+        <ExitToAppSharpIcon sx={{transform: 'scaleX(-1) scale(1.5)'}}/>
+      </div>
+      
+      <header className="minimal-header" style={{
+        position: 'fixed',
+      }}>
+        <div 
+          className="company-logo-container" 
+          style={{ cursor: 'pointer' }}
+        >
+          <Logo className="header-logo" style={{ filter: 'invert(0)'  }}/>
+          <Divider sx={{ 
+            padding: '0 0.25rem', 
+            opacity: 1, 
+            borderRightWidth: '2px', 
+            borderColor: 'black', 
+            marginTop:'0',
+            marginBottom:'0',
+            marginRight: '0.25rem'}} orientation="vertical" variant="middle" flexItem />
+          <span className="company-name-text" style={{ fontSize: '1.75rem', color: 'black' }}>renova</span>
         </div>
       </header>
       
@@ -205,12 +239,13 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
           <div className="info-section">
             <h2 className="info-heading">About</h2>
             <p className="info-text">
-              {project.description}
+              {viewMode === "gallery" && variantDescriptions && variantDescriptions[selectedVariant] 
+                ? variantDescriptions[selectedVariant] 
+                : project.description}
             </p>
-            <p className="info-text">
-              This remodeling visualization showcases our approach to creating immersive environments
-              that blend functionality with aesthetic appeal. Each design option
-              offers a unique perspective on the space.
+            <p className="info-text" style={{paddingTop: '1rem'}}>
+            <b>At renova, customization is limitless.</b><br/>
+            From materials and finishes to lighting and layout, we tailor every detail to your vision—bringing your unique style to life with precision and realism.
             </p>
           </div>
         </div>
