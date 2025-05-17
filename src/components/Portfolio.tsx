@@ -6,7 +6,8 @@ import { useTransition } from '../context/TransitionContext';
 import EmailIcon from '@mui/icons-material/Email';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { Divider } from '@mui/material';
-import logo from '../assets/logo.svg';
+// Removed unused logo import
+
 // Project interface
 interface Project {
   id: string;
@@ -25,20 +26,13 @@ interface PortfolioProps {
 }
 
 const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
-  // State variables
-  const [setCurrentTime] = useState('');
-  const [ setCurrentDate] = useState('');
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // Removed unused state variables
   const [activeSection, setActiveSection] = useState('home');
-  const [previewedProject, setPreviewedProject] = useState<string | null>(null);
-  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
   // Add scroll position state
   const [scrollY, setScrollY] = useState(0);
   // Add mobile detection state
   const [isMobile, setIsMobile] = useState(false);
-  // Add animation state
-  const [animatingToProject, setAnimatingToProject] = useState<string | null>(null);
+  // Remove unused animatingToProject state
   const navigate = useNavigate();
   const { startTransition } = useTransition();
   
@@ -46,12 +40,12 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
   const infoSectionRef = useRef<HTMLDivElement>(null);
   const portfolioSectionRef = useRef<HTMLDivElement>(null);
   const contactSectionRef = useRef<HTMLDivElement>(null);
-  const previewSectionRef = useRef<HTMLDivElement>(null);
+  // Removed unused previewSectionRef
   
   // Add refs for project sections
   const projectRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   
-  // Add this inside your component, near the other state variables
+  // Menu state
   const [menuOpen, setMenuOpen] = useState(false);
   
   useEffect(() => {
@@ -85,10 +79,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       sectionObserver.observe(contactSectionRef.current);
     }
     
-    if (previewSectionRef.current && selectedProject) {
-      previewSectionRef.current.id = 'preview';
-      sectionObserver.observe(previewSectionRef.current);
-    }
+    // Removed unused previewSectionRef observer
 
     // Add scroll event listener for parallax effect
     const handleScroll = () => {
@@ -111,13 +102,9 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
     };
-  }, [selectedProject]);
+  }, []); // Removed selectedProject dependency since it's no longer used
   
-  useEffect(() => {
-    if (projects.length > 0) {
-      setCurrentImage(projects[0].image);
-    }
-  }, [projects]);
+  // Removed unused useEffect for currentImage
   
   // Add this function to handle menu toggling
   const toggleMenu = () => {
@@ -126,7 +113,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
 
   // Create a utility function to generate parallax style
   const getParallaxStyle = (speed: number, isBackground: boolean = false) => {
-
     return {
       transform: isBackground ? `translateY(${scrollY * speed}px) scale(1.03)` : `translateY(${scrollY * speed}px)`,
       transition: 'transform scroll() cubic-bezier(0.1, 0, 0.9, 1)'
@@ -151,13 +137,13 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
     }
   };
 
-  // Add this function after the handleThumbnailClick function
+  // Smooth scroll function
   const smoothScrollTo = (target: HTMLElement | number) => {
     // Get the target position
     const targetPosition = typeof target === 'number' ? target : target.getBoundingClientRect().top + window.scrollY;
     const startPosition = window.scrollY;
     const distance = targetPosition - startPosition;
-    const duration = 1500; // Increased from 1500 to 2500ms for slower scrolling
+    const duration = 1500;
     let startTime: number | null = null;
     
     // Animation function
@@ -166,23 +152,26 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
       
-      // Easing function for smoother motion (more pronounced ease)
-      const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      // Easing function (easeInOutQuad)
+      const ease = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
       
-      window.scrollTo(0, startPosition + distance * ease(progress));
+      const newPosition = startPosition + distance * ease(progress);
+      window.scrollTo(0, newPosition);
       
       if (timeElapsed < duration) {
         requestAnimationFrame(animation);
       }
     };
     
-    // Start animation
     requestAnimationFrame(animation);
   };
 
+  // Helper function to check if in project preview
   const isInProject = () => {
-    return window.scrollY > window.innerHeight && window.scrollY < window.innerHeight * 4 ;
+    // Check if current active section is a project section
+    return activeSection.startsWith('project-hero-');
   };
+
   useEffect(() => {
     // Function to check if we're at the top of the page
     const handleScroll = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import Logo from "./Logo";
 import '../styles/ProjectDetail.css';
@@ -114,10 +114,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     const descriptions: Record<string, VariantDescriptions> = {
       lucero: {
         A: "This immersive visualization features a light-filled kitchen with vaulted ceilings, exposed beams, and refined finishes. A marble-topped oak island pairs with cream cabinetry and gold hardware, while open shelving and a sculpted range hood add architectural charm—bringing the design to life with stunning realism.",
-        B: "This visualization showcases a bold, elevated take on transitional design. Warm wood cabinetry pairs with striking black stone countertops and backsplash, creating a rich contrast against the natural light and vaulted ceilings. Gold fixtures and hardware add a touch of refinement, while the oak island anchors the space with texture and balance—highlighting Renova’s ability to render design possibilities with clarity and depth."
+        B: "This visualization showcases a bold, elevated take on transitional design. Warm wood cabinetry pairs with striking black stone countertops and backsplash, creating a rich contrast against the natural light and vaulted ceilings. Gold fixtures and hardware add a touch of refinement, while the oak island anchors the space with texture and balance—highlighting Renova's ability to render design possibilities with clarity and depth."
       },
       mcknight: {
-        A: "This visualization features a vibrant blend of classic form and playful detail. White upper cabinetry contrasts with natural wood lowers, while a soft blue island adds a subtle pop of color. Brass fixtures, open shelving, and textured tile bring warmth and character, creating a space that feels fresh, functional, and full of personality—beautifully illustrating the versatility of Renova’s design approach.",
+        A: "This visualization features a vibrant blend of classic form and playful detail. White upper cabinetry contrasts with natural wood lowers, while a soft blue island adds a subtle pop of color. Brass fixtures, open shelving, and textured tile bring warmth and character, creating a space that feels fresh, functional, and full of personality—beautifully illustrating the versatility of Renova's design approach.",
         B: "This visualization pairs rich navy upper cabinetry with warm natural wood lowers for a striking yet balanced design. Light stone countertops and backsplash add softness, while brass fixtures and modern lighting elevate the space. Open shelving around the range provides both function and display, illustrating how thoughtful material contrasts can define a refined, livable kitchen."
       },
       brunson: {
