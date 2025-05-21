@@ -76,7 +76,7 @@
 }
 
 .project-title {
-  font-family: 'Times New Roman', serif;
+  font-family: "Times New Roman", serif;
   font-size: 4rem;
   font-weight: 400;
   display: flex;
@@ -90,7 +90,7 @@
 }
 
 .info-heading {
-  font-family: 'Times New Roman', serif;
+  font-family: "Times New Roman", serif;
   font-size: 1.2rem;
   margin-bottom: 20px;
   position: relative;
@@ -99,7 +99,7 @@
 }
 
 .info-heading::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   left: 0;
@@ -255,18 +255,109 @@
   border-radius: 0;
 }
 
+/* Comparison Slider Styles */
+.comparison-slider-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+}
+
+.comparison-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rendered-image {
+  z-index: 2;
+}
+
+.real-image {
+  z-index: 1;
+}
+
+.slider-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  z-index: 3;
+  cursor: col-resize;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-line {
+  flex-grow: 1;
+  width: 2px;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.slider-handle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.handle-arrow {
+  position: absolute;
+  font-size: 12px;
+  color: #333;
+}
+
+.left-arrow {
+  left: 8px;
+}
+
+.right-arrow {
+  right: 8px;
+}
+
+.comparison-labels {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  z-index: 4;
+}
+
+.label {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 /* Responsive adjustments for Project Detail */
 @media (max-width: 1200px) {
   .minimal-detail-view {
     padding: 40px;
   }
-  
+
   .detail-content {
     gap: 40px;
     padding: 0 5vw;
     padding-top: 10vh;
   }
-  
+
   .project-title {
     font-size: 3rem;
   }
@@ -279,19 +370,19 @@
     padding-top: 10vh;
     gap: 30px;
   }
-  
+
   .detail-info {
     order: 2;
   }
-  
+
   .detail-visuals {
     order: 1;
   }
-  
+
   .project-meta {
     padding-top: 1rem;
   }
-  
+
   .project-title {
     font-size: 2.5rem;
   }
@@ -301,37 +392,40 @@
   .minimal-detail-view {
     padding: 20px;
   }
-  
-  .detail-header, .detail-content {
+
+  .detail-header,
+  .detail-content {
     padding: 0 5vw;
     padding-top: 10vh;
   }
-  
+
   .detail-nav {
     top: 20px;
     left: 20px;
   }
-  
+
   .project-title {
     font-size: 2rem;
   }
-  
+
   .sphere-container {
     height: 40vh;
   }
 }
 
 @media (max-width: 576px) {
-  .detail-header, .detail-content {
+  .detail-header,
+  .detail-content {
     padding: 5vw;
     padding-top: 10vh;
   }
-  
+
   .detail-nav {
     position: absolute;
   }
-  
-  .variant-selector, .view-toggle {
+
+  .variant-selector,
+  .view-toggle {
     flex-direction: column;
   }
 }
@@ -344,7 +438,7 @@
   background-position: center 70%;
 }
 
-.psv-loader-canvas{
+.psv-loader-canvas {
   display: none !important;
 }
 
@@ -358,7 +452,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  font-family: 'Times New Roman', serif;
+  font-family: "Times New Roman", serif;
   font-size: 1rem;
   color: black;
   padding: 8px;
@@ -379,7 +473,7 @@
   .back-button {
     margin-bottom: 8px;
   }
-  
+
   .back-button svg {
     width: 20px;
     height: 20px;
