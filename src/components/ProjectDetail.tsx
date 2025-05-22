@@ -11,7 +11,7 @@ const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
 
 // Define types for variants
 type VariantKey = "A" | "B";
-type VariantImages = Record<VariantKey, string[]>;
+type VariantImages = Record<VariantKey | "real", string[]>;
 type VariantDescriptions = Record<VariantKey, string>;
 
 interface ProjectDetailProps {
@@ -81,6 +81,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             require(`../assets/lucero-b (3).png`),
             require(`../assets/lucero-b (4).png`),
           ],
+          real: [require("../assets/lucero-b (1).png")],
         },
         mcknight: {
           A: [
@@ -93,6 +94,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             require(`../assets/mcknight-b (2).png`),
             require(`../assets/mcknight-b (3).png`),
           ],
+          real: [require("../assets/mcknight-real-warped.png")],
         },
         brunson: {
           A: [
@@ -105,6 +107,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             require(`../assets/brunson-b (2).png`),
             require(`../assets/brunson-b (3).png`),
           ],
+          real: [require("../assets/brunson-b (1).png")],
         },
       };
       return projectVariants[project.id];
@@ -209,16 +212,16 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   // Add and remove event listeners
   useEffect(() => {
     if (viewMode === "real") {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove);
-      document.addEventListener('touchend', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("touchmove", handleTouchMove);
+      document.addEventListener("touchend", handleMouseUp);
 
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleMouseUp);
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleMouseUp);
       };
     }
   }, [viewMode]);
@@ -431,7 +434,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
 
               {/* Real photo (right side) */}
               <img
-                src={variants?.B[0]} // Using B variant as real image for demo
+                src={variants?.real[0]}
                 alt="Real photo"
                 className="comparison-image real-image"
               />
