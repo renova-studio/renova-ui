@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.83618b17.css",
-    "main.js": "/static/js/main.78affdfd.js",
+    "main.css": "/static/css/main.43dd221b.css",
+    "main.js": "/static/js/main.2a111c97.js",
     "static/js/453.46054b30.chunk.js": "/static/js/453.46054b30.chunk.js",
     "static/media/lucero-360.jpeg": "/static/media/lucero-360.40850c3e7e6001913291.jpeg",
     "static/media/mcknight-360.jpeg": "/static/media/mcknight-360.a0327313aeeceac26a37.jpeg",
@@ -26,14 +26,15 @@
     "static/media/brunson-a (2).png": "/static/media/brunson-a (2).a4239f10d2697734f426.png",
     "static/media/lucero-a (4).png": "/static/media/lucero-a (4).181f0909047185ba6835.png",
     "static/media/lucero-b (4).png": "/static/media/lucero-b (4).c4e66055dd9fde570ae3.png",
+    "static/media/mcknight-real-warped.png": "/static/media/mcknight-real-warped.b8ef29ab9d796d252996.png",
     "index.html": "/index.html",
     "static/media/logo.svg": "/static/media/logo.d80b6e95d5b76eb4d733a9bee480be19.svg",
-    "main.83618b17.css.map": "/static/css/main.83618b17.css.map",
-    "main.78affdfd.js.map": "/static/js/main.78affdfd.js.map",
+    "main.43dd221b.css.map": "/static/css/main.43dd221b.css.map",
+    "main.2a111c97.js.map": "/static/js/main.2a111c97.js.map",
     "453.46054b30.chunk.js.map": "/static/js/453.46054b30.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.83618b17.css",
-    "static/js/main.78affdfd.js"
+    "static/css/main.43dd221b.css",
+    "static/js/main.2a111c97.js"
   ]
 }
