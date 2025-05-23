@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
+    "@photo-sphere-viewer/core": "^5.13.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -56,7 +57,9 @@
   },
   "devDependencies": {
     "@types/react-scroll": "^1.8.10",
-    "gh-pages": "^6.3.0"
+    "@vitejs/plugin-react": "^4.2.1",
+    "gh-pages": "^6.3.0",
+    "vite": "^4.5.2"
   },
   "homepage": "https://renova-studio.github.io"
 }

@@ -70,44 +70,44 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
       const projectVariants: Record<string, VariantImages> = {
         lucero: {
           A: [
-            require(`../assets/lucero-a (1).png`),
-            require(`../assets/lucero-a (2).png`),
-            require(`../assets/lucero-a (3).png`),
-            require(`../assets/lucero-a (4).png`),
+            require(`../assets/projects/lucero-a (1).png`),
+            require(`../assets/projects/lucero-a (2).png`),
+            require(`../assets/projects/lucero-a (3).png`),
+            require(`../assets/projects/lucero-a (4).png`),
           ],
           B: [
-            require(`../assets/lucero-b (1).png`),
-            require(`../assets/lucero-b (2).png`),
-            require(`../assets/lucero-b (3).png`),
-            require(`../assets/lucero-b (4).png`),
+            require(`../assets/projects/lucero-b (1).png`),
+            require(`../assets/projects/lucero-b (2).png`),
+            require(`../assets/projects/lucero-b (3).png`),
+            require(`../assets/projects/lucero-b (4).png`),
           ],
-          real: [require("../assets/lucero-b (1).png")],
+          real: [require("../assets/projects/lucero-b (1).png")],
         },
         mcknight: {
           A: [
-            require(`../assets/mcknight-a (1).png`),
-            require(`../assets/mcknight-a (2).png`),
-            require(`../assets/mcknight-a (3).png`),
+            require(`../assets/projects/mcknight-a (1).png`),
+            require(`../assets/projects/mcknight-a (2).png`),
+            require(`../assets/projects/mcknight-a (3).png`),
           ],
           B: [
-            require(`../assets/mcknight-b (1).png`),
-            require(`../assets/mcknight-b (2).png`),
-            require(`../assets/mcknight-b (3).png`),
+            require(`../assets/projects/mcknight-b (1).png`),
+            require(`../assets/projects/mcknight-b (2).png`),
+            require(`../assets/projects/mcknight-b (3).png`),
           ],
-          real: [require("../assets/mcknight-real-warped.png")],
+          real: [require("../assets/projects/mcknight-real-warped.png")],
         },
         brunson: {
           A: [
-            require(`../assets/brunson-a (1).png`),
-            require(`../assets/brunson-a (2).png`),
-            require(`../assets/brunson-a (3).png`),
+            require(`../assets/projects/brunson-a (1).png`),
+            require(`../assets/projects/brunson-a (2).png`),
+            require(`../assets/projects/brunson-a (3).png`),
           ],
           B: [
-            require(`../assets/brunson-b (1).png`),
-            require(`../assets/brunson-b (2).png`),
-            require(`../assets/brunson-b (3).png`),
+            require(`../assets/projects/brunson-b (1).png`),
+            require(`../assets/projects/brunson-b (2).png`),
+            require(`../assets/projects/brunson-b (3).png`),
           ],
-          real: [require("../assets/brunson-b (1).png")],
+          real: [require("../assets/projects/brunson-b (1).png")],
         },
       };
       return projectVariants[project.id];
@@ -257,7 +257,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
           />
           <span
             className="company-name-text"
-            style={{ fontSize: "1.75rem", color: "black" }}
           >
             renova
           </span>

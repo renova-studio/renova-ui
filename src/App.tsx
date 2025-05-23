@@ -5,16 +5,17 @@ import Logo from './components/Logo';
 import ProjectDetail from './components/ProjectDetail';
 import Portfolio from './components/Portfolio';
 import { TransitionProvider, useTransition } from './context/TransitionContext';
+import Materials from './components/Materials';
 
 // Import project 360° images
-import lucero360 from './assets/lucero-360.jpeg';
-import mcknight360 from './assets/mcknight-360.jpeg';
-import brunson360 from './assets/brunson-360.jpeg';
+import lucero360 from './assets/projects/lucero-360.jpeg';
+import mcknight360 from './assets/projects/mcknight-360.jpeg';
+import brunson360 from './assets/projects/brunson-360.jpeg';
 
 // Import project main images (variant A, first image)
-import luceroImage from './assets/lucero-a (2).png';
-import mcknightImage from './assets/mcknight-a (1).png';
-import brunsonImage from './assets/brunson-a (1).png';
+import luceroImage from './assets/projects/lucero-a (2).png';
+import mcknightImage from './assets/projects/mcknight-a (1).png';
+import brunsonImage from './assets/projects/brunson-a (1).png';
 
 // Define project type
 interface Project {
@@ -84,6 +85,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Portfolio projects={projects} />} />
             <Route path="/projects/:projectId" element={<ProjectDetailWrapper projects={projects} />} />
+            <Route path="/materials" element={<Materials />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

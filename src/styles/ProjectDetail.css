@@ -355,7 +355,6 @@
   .detail-content {
     gap: 40px;
     padding: 0 5vw;
-    padding-top: 10vh;
   }
 
   .project-title {
@@ -367,7 +366,6 @@
   .detail-content {
     grid-template-columns: 1fr;
     padding: 0 5vw;
-    padding-top: 10vh;
     gap: 30px;
   }
 
@@ -396,7 +394,6 @@
   .detail-header,
   .detail-content {
     padding: 0 5vw;
-    padding-top: 10vh;
   }
 
   .detail-nav {
@@ -417,7 +414,6 @@
   .detail-header,
   .detail-content {
     padding: 5vw;
-    padding-top: 10vh;
   }
 
   .detail-nav {

@@ -12,7 +12,7 @@
 /* Header */
 .minimal-header {
   position: fixed;
-  top: 3vh;
+  top: 2vh;
   right: 3vh;
   z-index: 100;
   background-color: transparent;
@@ -21,7 +21,7 @@
   transform: translateY(0);
   transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
   @media (max-width: 768px) {
-    top: 1vh;
+    top: 2vh;
     right: 1vh;
   }
 }
@@ -290,12 +290,22 @@ section {
   }
 }
 
-.company-name-text {
+.home-company-name-text {
   font-family: 'Times New Roman', serif;
+  font-size: 15vh;
   opacity: 1;
   animation: revealFromLeft 1.2s ease forwards;
   animation-delay: 1.5s; 
   clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); /* Start with nothing visible */
+  @media (max-width: 768px) {
+    font-size: 5vh;
+  }
+}
+
+.company-name-text {
+  font-family: 'Times New Roman', serif;
+  font-size: 1.5rem;
+  opacity: 1;
 }
 
 .project-thumbnails {

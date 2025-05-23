@@ -229,7 +229,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
               borderRightWidth: '2px', 
               borderColor: 'gray', 
               marginRight: isMobile ? '2rem' : '3rem' }} orientation="vertical" variant="middle" flexItem />
-            <span className="company-name-text">renova</span>
+            <span className="home-company-name-text">renova</span>
         </div>
       </div>
       
@@ -354,6 +354,20 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                     }}
                   >
                     Home
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="/materials"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleMenu();
+                      startTransition('in', () => {
+                        navigate('/materials');
+                      });
+                    }}
+                  >
+                    Materials
                   </a>
                 </li>
                 <li><p>Work</p></li>
