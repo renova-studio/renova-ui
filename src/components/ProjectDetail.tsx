@@ -6,6 +6,7 @@ import "../styles/ProjectDetail.css";
 import { useTransition } from "../context/TransitionContext";
 import { Divider } from "@mui/material";
 import ExitToAppSharpIcon from "@mui/icons-material/ExitToAppSharp";
+import { debounce } from 'lodash';
 // Define view labels for thumbnails
 const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
 
@@ -225,6 +226,18 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
       };
     }
   }, [viewMode]);
+
+  useEffect(() => {
+    const handleScroll = debounce(() => {
+      // Your scroll handling logic
+    }, 16); // Approximately 60fps
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      handleScroll.cancel();
+    };
+  }, []);
 
   return (
     <div className="minimal-detail-view">

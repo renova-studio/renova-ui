@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getImages } from '../utils/imageImports';
 import '../styles/Materials.css';
@@ -79,6 +79,41 @@ const Materials: React.FC = () => {
       navigate(path);
     });
   };
+
+  // Memoize expensive calculations
+  const materialsList = useMemo(() => {
+    return filteredMaterials.map(material => ({
+      ...material,
+      // Any expensive transformations here
+    }));
+  }, [filteredMaterials]);
+
+  // Use React.memo for child components
+  const MaterialItem = React.memo(({ material }: { material: Material }) => (
+    <div 
+      className="material-card"
+      onClick={() => handleImageClick(material)}
+    >
+      <div className="material-image-container">
+        <img
+          src={material.imagePath}
+          alt={material.originalName || material.name}
+          className="material-image"
+        />
+        <div className="material-overlay">
+          <span className="material-code">{material.name.substring(0, 3).toUpperCase()}</span>
+        </div>
+      </div>
+      <div className="material-info">
+        <h3 className="material-name">
+          {material.originalName || material.name}
+        </h3>
+        <div className="material-meta">
+          <span className="material-category">{material.category}</span>
+        </div>
+      </div>
+    </div>
+  ));
 
   return (
     <div className="materials-page">
@@ -169,7 +204,7 @@ const Materials: React.FC = () => {
         <div className="materials-header">
           <div className="project-number">Materials Library</div>
           <h1 className="materials-title">Premium Materials Collection</h1>
-          <p className="info-text">
+          <p className="materials-subtitle">
             A curated selection of exceptional materials, carefully chosen to enhance your space
             with sophistication and enduring elegance.
           </p>
@@ -194,31 +229,8 @@ const Materials: React.FC = () => {
         </div>
 
         <div className="materials-grid">
-          {filteredMaterials.map((material) => (
-            <div 
-              key={material.name} 
-              className="material-card"
-              onClick={() => handleImageClick(material)}
-            >
-              <div className="material-image-container">
-                <img
-                  src={material.imagePath}
-                  alt={material.originalName || material.name}
-                  className="material-image"
-                />
-                <div className="material-overlay">
-                  <span className="material-code">{material.name.substring(0, 3).toUpperCase()}</span>
-                </div>
-              </div>
-              <div className="material-info">
-                <h3 className="material-name">
-                  {material.originalName || material.name}
-                </h3>
-                <div className="material-meta">
-                  <span className="material-category">{material.category}</span>
-                </div>
-              </div>
-            </div>
+          {materialsList.map((material) => (
+            <MaterialItem key={material.name} material={material} />
           ))}
         </div>
       </div>

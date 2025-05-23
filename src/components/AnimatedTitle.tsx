@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import '../styles/TitleAnimation.css';
 
 interface AnimatedTitleProps {
@@ -28,14 +28,26 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({
     }
   }, [isActive]);
 
+  // Add useMemo to prevent unnecessary recalculations
+  const letters = useMemo(() => title.split('\n').flatMap(line => line.split('')), [title]);
+  
   return (
     <div 
       ref={titleRef}
       className={`animated-title ${isActive ? 'active' : ''} ${isPrev ? 'prev' : ''} ${isNext ? 'next' : ''}`}
     >
-      {title.split('\n').map((line, i) => (
-        <span key={i} className="title-line">
-          {line}
+      {letters.map((letter, index) => (
+        <span
+          key={index}
+          style={{
+            // Use transform instead of top/left positioning
+            transform: `translateY(0)`,
+            willChange: 'transform, opacity',
+            animationDelay: `${index * 0.1}s`
+          }}
+          className="animated-letter"
+        >
+          {letter}
         </span>
       ))}
     </div>

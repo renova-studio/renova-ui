@@ -48,6 +48,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
   // Menu state
   const [menuOpen, setMenuOpen] = useState(false);
   
+  // Add loading state for images
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [visibleProjects, setVisibleProjects] = useState<Set<string>>(new Set());
+  
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -196,6 +200,36 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const projectId = entry.target.getAttribute('data-project-id');
+          if (projectId) {
+            setVisibleProjects(prev => new Set(prev).add(projectId));
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+
+    // Observe project containers
+    document.querySelectorAll('[data-project-id]').forEach(el => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Handle image load events
+  const handleImageLoad = (projectId: string) => {
+    setLoadedImages(prev => new Set(prev).add(projectId));
+  };
+
   return (
     <div className="minimal-container">
       <header className="minimal-header" style={{ 
@@ -248,14 +282,30 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
         <div className="project-thumbnails">
           {projects.map((project, index) => (
             <div 
-              key={project.id} 
+              key={project.id}
               className="project-thumbnail"
+              data-project-id={project.id}
               onClick={() => handleThumbnailClick(project.id)}
               style={getParallaxStyle(-0.15 - 0.05 * (index))}
             >
               <div className="thumbnail-number">[{project.number}]</div>
               <div className="thumbnail-image-container">
-                <img src={project.image} alt={project.title} className="thumbnail-image" />
+                {visibleProjects.has(project.id) && (
+                  <>
+                    {!loadedImages.has(project.id) && (
+                      <div className="image-placeholder">
+                        <div className="loading-spinner"></div>
+                      </div>
+                    )}
+                    <img 
+                      src={project.image}
+                      alt={project.title}
+                      className={`thumbnail-image ${loadedImages.has(project.id) ? 'loaded' : ''}`}
+                      loading="lazy"
+                      onLoad={() => handleImageLoad(project.id)}
+                    />
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -264,23 +314,36 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       
       {/* Wrap your project sections in a projects-container */}
       <div className="projects-container">
-        {projects.map((project, index) => (
+        {projects.map((project) => (
           <section 
             key={project.id}
             id={`project-hero-${project.id}`}
             className="project-hero-section"
+            data-project-id={project.id}
             ref={(el) => {
               projectRefs.current[project.id] = el;
             }}
           >
-            {/* Background image with parallax effect */}
             <div className="parallax-background-container">
-              <img 
-                src={project.image} 
-                alt="" 
-                className="section-background-image parallax-element"
-                style={getParallaxStyle(-0.1, true)}
-              />
+              {visibleProjects.has(project.id) && (
+                <>
+                  {!loadedImages.has(`hero-${project.id}`) && (
+                    <div className="image-placeholder">
+                      <div className="loading-spinner"></div>
+                    </div>
+                  )}
+                  <img 
+                    src={project.image}
+                    alt=""
+                    className={`section-background-image parallax-element ${
+                      loadedImages.has(`hero-${project.id}`) ? 'loaded' : ''
+                    }`}
+                    style={getParallaxStyle(-0.1, true)}
+                    loading="lazy"
+                    onLoad={() => handleImageLoad(`hero-${project.id}`)}
+                  />
+                </>
+              )}
             </div>
             <div className="project-hero">
               <div className="project-hero-image-container" style={getParallaxStyle(0.05)}>
