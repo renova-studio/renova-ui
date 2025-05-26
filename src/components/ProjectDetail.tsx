@@ -6,7 +6,7 @@ import "../styles/ProjectDetail.css";
 import { useTransition } from "../context/TransitionContext";
 import { Divider } from "@mui/material";
 import ExitToAppSharpIcon from "@mui/icons-material/ExitToAppSharp";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 // Define view labels for thumbnails
 const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
 
@@ -108,7 +108,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             require(`../assets/projects/brunson-b (2).png`),
             require(`../assets/projects/brunson-b (3).png`),
           ],
-          real: [require("../assets/projects/brunson-b (1).png")],
+          real: [require("../assets/brunson-real.jpg")],
         },
       };
       return projectVariants[project.id];
@@ -232,9 +232,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
       // Your scroll handling logic
     }, 16); // Approximately 60fps
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       handleScroll.cancel();
     };
   }, []);
@@ -268,11 +268,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             variant="middle"
             flexItem
           />
-          <span
-            className="company-name-text"
-          >
-            renova
-          </span>
+          <span className="company-name-text">renova</span>
         </div>
       </header>
 
@@ -320,7 +316,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
               <h2 className="info-heading">Design Options</h2>
               <div className="variant-selector">
                 {variants &&
-                  Object.keys(variants).map((variant) => (
+                  ["A", "B"].map((variant) => (
                     <button
                       key={variant}
                       className={`variant-button ${
