@@ -286,7 +286,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
           <div className="project-meta">
             <div className="project-number">[{project.number}]</div>
             <h1 className="project-title">{project.title}</h1>
-            <p className="project-hero-description" style={{ fontSize: '0.9rem', marginTop: '0rem' }}>Designed by <a href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" target="_blank" rel="noopener noreferrer">House Sprucing <OpenInNewIcon sx={{ fontSize: '0.9rem' }} /></a></p>
+            {project.id == "mcknight" && <p className="project-hero-description" style={{ fontSize: '0.9rem', marginTop: '0rem' }}>Designed by <a href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" target="_blank" rel="noopener noreferrer">House Sprucing <OpenInNewIcon sx={{ fontSize: '0.9rem' }} /></a></p>}
           </div>
           {/* View mode toggle */}
           <div className="info-section">
