@@ -174,7 +174,7 @@
 }
 
 /* Preview Modal */
-.preview-overlay {
+.material-preview-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -187,7 +187,7 @@
   z-index: 1000;
 }
 
-.preview-container {
+.material-preview-container {
   position: relative;
   width: 100%;
   height: 100%;
@@ -197,7 +197,7 @@
   align-items: center;
 }
 
-.preview-close {
+.material-preview-close {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -216,7 +216,7 @@
 }
 
 
-.preview-image-container {
+.material-preview-image-container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -225,14 +225,14 @@
   padding: 40px;
 }
 
-.preview-image {
+.material-preview-image {
   max-height: 100%;
   max-width: 90%;
   object-fit: contain;
   opacity: 1;
 }
 
-.preview-info {
+.material-preview-info {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -243,20 +243,20 @@
   backdrop-filter: blur(10px);
 }
 
-.preview-title {
+.material-preview-title {
   font-family: "Times New Roman", serif;
   font-size: 1.4rem;
   margin-bottom: 10px;
   color: white;
 }
 
-.preview-meta {
+.material-preview-meta {
   display: flex;
   gap: 20px;
 }
 
-.preview-category,
-.preview-finish {
+.material-preview-category,
+.material-preview-finish {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -265,24 +265,24 @@
 
 /* Media Queries for Preview Modal */
 @media (max-width: 768px) {
-  .preview-container {
+  .material-preview-container {
     padding: 0;
   }
 
-  .preview-image-container {
+  .material-preview-image-container {
     padding: 20px;
     height: calc(100% - 80px); /* Smaller info bar on mobile */
   }
 
-  .preview-image {
+  .material-preview-image {
     height: 100%;
   }
 
-  .preview-info {
+  .material-preview-info {
     padding: 15px 20px;
   }
 
-  .preview-title {
+  .material-preview-title {
     font-size: 1.2rem;
   }
 }

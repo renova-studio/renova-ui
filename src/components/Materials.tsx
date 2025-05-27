@@ -237,25 +237,25 @@ const Materials: React.FC = () => {
 
       {/* Image Preview Modal */}
       {selectedMaterial && (
-        <div className="preview-overlay" onClick={handleClosePreview}>
-          <div className="preview-container" onClick={e => e.stopPropagation()}>
-            <button className="preview-close" onClick={handleClosePreview}>
+        <div className="material-preview-overlay" onClick={handleClosePreview}>
+          <div className="material-preview-container" onClick={e => e.stopPropagation()}>
+            <button className="material-preview-close" onClick={handleClosePreview}>
               ×
             </button>
-            <div className="preview-image-container">
+            <div className="material-preview-image-container">
               <img
                 src={selectedMaterial.imagePath}
                 alt={selectedMaterial.originalName || selectedMaterial.name}
-                className="preview-image"
+                className="material-preview-image"
               />
             </div>
-            <div className="preview-info">
-              <h2 className="preview-title">
+            <div className="material-preview-info">
+              <h2 className="material-preview-title">
                 {selectedMaterial.originalName || selectedMaterial.name}
               </h2>
-              <div className="preview-meta">
-                <span className="preview-category">{selectedMaterial.category}</span>
-                <span className="preview-finish">Natural Finish</span>
+              <div className="material-preview-meta">
+                <span className="material-preview-category">{selectedMaterial.category}</span>
+                <span className="material-preview-finish">Natural Finish</span>
               </div>
             </div>
           </div>

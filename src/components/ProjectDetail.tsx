@@ -7,6 +7,7 @@ import { useTransition } from "../context/TransitionContext";
 import { Divider } from "@mui/material";
 import ExitToAppSharpIcon from "@mui/icons-material/ExitToAppSharp";
 import { debounce } from "lodash";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 // Define view labels for thumbnails
 const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
 
@@ -41,6 +42,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const [sliderPosition, setSliderPosition] = useState(50); // Default to middle (50%)
   const sliderRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef<boolean>(false);
+
+  // Add this useEffect at the top of other useEffects
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Calculate the appropriate height for the sphere container
   useEffect(() => {
@@ -280,6 +286,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
           <div className="project-meta">
             <div className="project-number">[{project.number}]</div>
             <h1 className="project-title">{project.title}</h1>
+            <p className="project-hero-description" style={{ fontSize: '0.9rem', marginTop: '0rem' }}>Designed by <a href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" target="_blank" rel="noopener noreferrer">House Sprucing <OpenInNewIcon sx={{ fontSize: '0.9rem' }} /></a></p>
           </div>
           {/* View mode toggle */}
           <div className="info-section">

@@ -6,7 +6,7 @@ import { useTransition } from '../context/TransitionContext';
 import EmailIcon from '@mui/icons-material/Email';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { Divider } from '@mui/material';
-// Removed unused logo import
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Project interface
 interface Project {
@@ -274,7 +274,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
             your vision - turning your imagination
             into immersive realities.
           </p>
-          <p style={getParallaxStyle(-0.1)}>
+          <p className="scroll-to-explore" style={getParallaxStyle(-0.1)} >
             [SCROLL TO EXPLORE]
           </p>
         </div>
@@ -314,7 +314,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
       
       {/* Wrap your project sections in a projects-container */}
       <div className="projects-container">
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <section 
             key={project.id}
             id={`project-hero-${project.id}`}
@@ -359,6 +359,9 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                 <div className="project-hero-header">
                   <div className="project-hero-number">[{project.number}]</div>
                   <h2 className="project-hero-title">{project.title}</h2>
+                  {index == 1 && (
+                    <p className="project-hero-description" style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Designed by <a href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" target="_blank" rel="noopener noreferrer">House Sprucing <OpenInNewIcon sx={{ fontSize: '0.9rem' }} /></a></p>
+                  )}
                 </div>
                 <p className="project-hero-description">{project.description}</p>
                 <button 
