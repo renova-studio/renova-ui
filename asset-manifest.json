@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.1f5f0b92.css",
-    "main.js": "/static/js/main.898afd0e.js",
+    "main.css": "/static/css/main.396c6607.css",
+    "main.js": "/static/js/main.98edc190.js",
     "static/js/453.ae69ceb6.chunk.js": "/static/js/453.ae69ceb6.chunk.js",
     "static/media/lucero-360.jpeg": "/static/media/lucero-360.40850c3e7e6001913291.jpeg",
     "static/media/mcknight-360.jpeg": "/static/media/mcknight-360.a0327313aeeceac26a37.jpeg",
@@ -56,20 +56,24 @@
     "static/media/Smooth Walnut.png": "/static/media/Smooth Walnut.088a5177a1b11aefd48f.png",
     "static/media/Bronze.png": "/static/media/Bronze.49d020bd785b274d00b3.png",
     "static/media/Quartzite Calacatta.png": "/static/media/Quartzite Calacatta.7f2570d47778cf8fa242.png",
+    "static/media/video-compressed.mp4": "/static/media/video-compressed.4770198e4c8a21130d93.mp4",
     "static/media/Cast Iron.png": "/static/media/Cast Iron.878318366a246b605abe.png",
     "static/media/Dark Hickory.png": "/static/media/Dark Hickory.7ab119c0f0cbe2857bd0.png",
     "static/media/Hickory.png": "/static/media/Hickory.6529981f51436ecadb14.png",
     "static/media/Sanded African Mahogany.png": "/static/media/Sanded African Mahogany.f0bc8caf047dee47037f.png",
+    "static/media/video-compressed.webm": "/static/media/video-compressed.be61f91fd7081c7435f4.webm",
     "static/media/Brushed Gold.png": "/static/media/Brushed Gold.478c464bc32559a7b2fe.png",
     "static/media/mcknight-real-warped.png": "/static/media/mcknight-real-warped.b8ef29ab9d796d252996.png",
+    "static/media/video-low.mp4": "/static/media/video-low.86a0eb939168ec8dcc07.mp4",
+    "static/media/video-poster.jpg": "/static/media/video-poster.818d1ad7d903392dd525.jpg",
     "index.html": "/index.html",
     "static/media/logo.svg": "/static/media/logo.d80b6e95d5b76eb4d733a9bee480be19.svg",
-    "main.1f5f0b92.css.map": "/static/css/main.1f5f0b92.css.map",
-    "main.898afd0e.js.map": "/static/js/main.898afd0e.js.map",
+    "main.396c6607.css.map": "/static/css/main.396c6607.css.map",
+    "main.98edc190.js.map": "/static/js/main.98edc190.js.map",
     "453.ae69ceb6.chunk.js.map": "/static/js/453.ae69ceb6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1f5f0b92.css",
-    "static/js/main.898afd0e.js"
+    "static/css/main.396c6607.css",
+    "static/js/main.98edc190.js"
   ]
 }
