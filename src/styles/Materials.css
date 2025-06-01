@@ -149,7 +149,7 @@
   .materials-container {
     padding: 60px 20px;
   }
-  
+
   .materials-title {
     font-size: 3rem;
   }
@@ -159,15 +159,15 @@
   .materials-page {
     padding: 20px;
   }
-  
+
   .materials-title {
     font-size: 2.5rem;
   }
-  
+
   .category-nav {
     gap: 15px;
   }
-  
+
   .category-button {
     padding: 8px 15px;
   }
@@ -214,7 +214,6 @@
   justify-content: center;
   transition: opacity 0.3s ease;
 }
-
 
 .material-preview-image-container {
   width: 100%;

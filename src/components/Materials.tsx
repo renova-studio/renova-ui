@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getImages } from '../utils/imageImports';
-import '../styles/Materials.css';
-import Logo from './Logo';
-import { Divider } from '@mui/material';
-import { useTransition } from '../context/TransitionContext';
+import React, { useEffect, useState, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getImages } from "../utils/imageImports";
+import "../styles/Materials.css";
+import Logo from "./Logo";
+import { Divider } from "@mui/material";
+import { useTransition } from "../context/TransitionContext";
 
 interface Material {
   name: string;
@@ -15,8 +15,10 @@ interface Material {
 
 const Materials: React.FC = () => {
   const [materials, setMaterials] = useState<Record<string, Material[]>>({});
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
+    null
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const { startTransition } = useTransition();
   const navigate = useNavigate();
@@ -28,25 +30,25 @@ const Materials: React.FC = () => {
         const organizedMaterials: Record<string, Material[]> = {};
 
         Object.entries(images).forEach(([path, imageModule]) => {
-          const pathParts = path.split('/');
+          const pathParts = path.split("/");
           const category = pathParts[0];
           const filename = pathParts[1];
-          
+
           if (!organizedMaterials[category]) {
             organizedMaterials[category] = [];
           }
 
           organizedMaterials[category].push({
-            name: filename.replace(/-/g, ' '),
+            name: filename.replace(/-/g, " "),
             category,
             imagePath: imageModule.default,
-            originalName: imageModule.originalName
+            originalName: imageModule.originalName,
           });
         });
 
         setMaterials(organizedMaterials);
       } catch (error) {
-        console.error('Error loading materials:', error);
+        console.error("Error loading materials:", error);
       }
     };
 
@@ -54,19 +56,20 @@ const Materials: React.FC = () => {
   }, []);
 
   const categories = Object.keys(materials);
-  
-  const filteredMaterials = activeCategory === 'all' 
-    ? Object.values(materials).flat()
-    : materials[activeCategory] || [];
+
+  const filteredMaterials =
+    activeCategory === "all"
+      ? Object.values(materials).flat()
+      : materials[activeCategory] || [];
 
   const handleImageClick = (material: Material) => {
     setSelectedMaterial(material);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const handleClosePreview = () => {
     setSelectedMaterial(null);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   const toggleMenu = () => {
@@ -75,14 +78,14 @@ const Materials: React.FC = () => {
 
   const handleNavigation = (path: string) => {
     toggleMenu();
-    startTransition('in', () => {
+    startTransition("in", () => {
       navigate(path);
     });
   };
 
   // Memoize expensive calculations
   const materialsList = useMemo(() => {
-    return filteredMaterials.map(material => ({
+    return filteredMaterials.map((material) => ({
       ...material,
       // Any expensive transformations here
     }));
@@ -90,10 +93,7 @@ const Materials: React.FC = () => {
 
   // Use React.memo for child components
   const MaterialItem = React.memo(({ material }: { material: Material }) => (
-    <div 
-      className="material-card"
-      onClick={() => handleImageClick(material)}
-    >
+    <div className="material-card" onClick={() => handleImageClick(material)}>
       <div className="material-image-container">
         <img
           src={material.imagePath}
@@ -101,7 +101,9 @@ const Materials: React.FC = () => {
           className="material-image"
         />
         <div className="material-overlay">
-          <span className="material-code">{material.name.substring(0, 3).toUpperCase()}</span>
+          <span className="material-code">
+            {material.name.substring(0, 3).toUpperCase()}
+          </span>
         </div>
       </div>
       <div className="material-info">
@@ -139,56 +141,81 @@ const Materials: React.FC = () => {
       </header>
 
       {/* Add hamburger menu */}
-      <div className={`hamburger-menu-container ${menuOpen ? 'menu-open' : ''}`}>
+      <div
+        className={`hamburger-menu-container ${menuOpen ? "menu-open" : ""}`}
+      >
         <button className="hamburger-button" onClick={toggleMenu}>
-          <span className="hamburger-line" style={{backgroundColor: menuOpen ? "white" : "black"}}></span>
-          <span className="hamburger-line" style={{backgroundColor: menuOpen ? "white" : "black"}}></span>
-          <span className="hamburger-line" style={{backgroundColor: menuOpen ? "white" : "black"}}></span>
+          <span
+            className="hamburger-line"
+            style={{ backgroundColor: menuOpen ? "white" : "black" }}
+          ></span>
+          <span
+            className="hamburger-line"
+            style={{ backgroundColor: menuOpen ? "white" : "black" }}
+          ></span>
+          <span
+            className="hamburger-line"
+            style={{ backgroundColor: menuOpen ? "white" : "black" }}
+          ></span>
         </button>
-        
+
         <div className="menu-overlay">
           <div className="menu-content">
             <nav className="menu-navigation">
               <ul>
                 <li>
-                  <a 
+                  <a
                     href="/"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation('/');
+                      handleNavigation("/");
                     }}
                   >
                     Home
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/materials"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation('/materials');
+                      handleNavigation("/materials");
                     }}
                   >
                     Materials
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="/"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation('/');
+                      handleNavigation("/");
                     }}
                   >
                     Work
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
+                    href="/about"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleMenu();
+                      startTransition("in", () => {
+                        navigate("/about");
+                      });
+                    }}
+                  >
+                    How It Works
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="/#contact"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation('/#contact');
+                      handleNavigation("/#contact");
                     }}
                   >
                     Contact
@@ -205,22 +232,26 @@ const Materials: React.FC = () => {
           <div className="project-number">Materials Library</div>
           <h1 className="materials-title">Premium Materials Collection</h1>
           <p className="materials-subtitle">
-            A curated selection of exceptional materials, carefully chosen to enhance your space
-            with sophistication and enduring elegance.
+            A curated selection of exceptional materials, carefully chosen to
+            enhance your space with sophistication and enduring elegance.
           </p>
         </div>
 
         <div className="category-nav">
-          <button 
-            className={`category-button ${activeCategory === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('all')}
+          <button
+            className={`category-button ${
+              activeCategory === "all" ? "active" : ""
+            }`}
+            onClick={() => setActiveCategory("all")}
           >
             All
           </button>
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category}
-              className={`category-button ${activeCategory === category ? 'active' : ''}`}
+              className={`category-button ${
+                activeCategory === category ? "active" : ""
+              }`}
               onClick={() => setActiveCategory(category)}
             >
               {category}
@@ -238,8 +269,14 @@ const Materials: React.FC = () => {
       {/* Image Preview Modal */}
       {selectedMaterial && (
         <div className="material-preview-overlay" onClick={handleClosePreview}>
-          <div className="material-preview-container" onClick={e => e.stopPropagation()}>
-            <button className="material-preview-close" onClick={handleClosePreview}>
+          <div
+            className="material-preview-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="material-preview-close"
+              onClick={handleClosePreview}
+            >
               ×
             </button>
             <div className="material-preview-image-container">
@@ -254,7 +291,9 @@ const Materials: React.FC = () => {
                 {selectedMaterial.originalName || selectedMaterial.name}
               </h2>
               <div className="material-preview-meta">
-                <span className="material-preview-category">{selectedMaterial.category}</span>
+                <span className="material-preview-category">
+                  {selectedMaterial.category}
+                </span>
                 <span className="material-preview-finish">Natural Finish</span>
               </div>
             </div>
@@ -265,4 +304,4 @@ const Materials: React.FC = () => {
   );
 };
 
-export default Materials; 
+export default Materials;

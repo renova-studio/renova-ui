@@ -1,0 +1,255 @@
+.about-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+}
+
+.about-container {
+  padding: 80px 40px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.about-header {
+  position: relative;
+  text-align: center;
+  z-index: 3;
+  color: white;
+  padding: 0 20px;
+  max-width: 800px;
+}
+
+.project-number {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.about-title {
+  font-family: "Times New Roman", serif;
+  font-size: 4rem;
+  font-weight: 400;
+  margin-bottom: 30px;
+  color: white;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.about-subtitle {
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: white;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1200px) {
+  .about-container {
+    padding: 60px 20px;
+  }
+
+  .about-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    padding: 20px;
+  }
+
+  .about-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Hero Video Styles */
+.hero-video-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: -1.5rem;
+  margin-bottom: 3rem;
+  overflow: hidden;
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-video {
+  width: 100%;
+  height: 800px;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+  z-index: 2;
+}
+
+.process-description {
+  margin: 3rem 0;
+  max-width: 1000px;
+}
+
+.process-description h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.process-description p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Process Section - New Modern Design */
+.process-section {
+  margin: 6rem 0;
+  width: 100%;
+}
+
+.section-title {
+  font-family: "Times New Roman", serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.process-step {
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.process-step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.step-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.process-step h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.process-step p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* CTA Section - Redesigned */
+.cta-section {
+  margin: 6rem 0;
+  padding: 0;
+  background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+  color: white;
+  text-align: center;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cta-content {
+  padding: 5rem 2rem;
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/></svg>');
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.cta-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 400;
+  font-family: "Times New Roman", serif;
+}
+
+.cta-section p {
+  margin-bottom: 2.5rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.cta-button {
+  padding: 15px 40px;
+  background-color: white;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.cta-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .process-steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+}
