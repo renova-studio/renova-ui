@@ -1,13 +1,12 @@
 .about-page {
   width: 100%;
   min-height: 100vh;
-  padding: 40px;
   background-color: var(--bg-color);
   color: var(--text-dark);
 }
 
 .about-container {
-  padding: 80px 40px;
+
   max-width: 1800px;
   margin: 0 auto;
 }
@@ -21,7 +20,7 @@
   max-width: 800px;
 }
 
-.project-number {
+.section-pre-title {
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 10px;
   font-weight: 500;
@@ -47,7 +46,7 @@
 
 @media (max-width: 1200px) {
   .about-container {
-    padding: 60px 20px;
+    padding: 20px;
   }
 
   .about-title {
@@ -57,7 +56,7 @@
 
 @media (max-width: 768px) {
   .about-page {
-    padding: 20px;
+    padding: 0 20px;
   }
 
   .about-title {
@@ -80,6 +79,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: 768px) {
+    height: 100vh;
+  }
 }
 
 .hero-video {
@@ -90,6 +92,9 @@
   top: 0;
   left: 0;
   z-index: 1;
+  @media (max-width: 768px) {
+    height: 100vh;
+  }
 }
 
 .video-overlay {

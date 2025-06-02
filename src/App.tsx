@@ -94,11 +94,11 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Portfolio projects={projects} />} />
             <Route
-              path="/projects/:projectId"
+              path="/portfolio/:projectId"
               element={<ProjectDetailWrapper projects={projects} />}
             />
             <Route path="/materials" element={<Materials />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/our-vision" element={<About />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

@@ -7,8 +7,24 @@ import { useTransition } from "../context/TransitionContext";
 
 const About: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
   const { startTransition } = useTransition();
   const navigate = useNavigate();
+
+  // Add scroll handler
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const handleScroll = () => {
+      const videoSection = document.querySelector('.hero-video-container');
+      if (videoSection) {
+        const rect = videoSection.getBoundingClientRect();
+        setPastHero(rect.bottom <= 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -51,15 +67,15 @@ const About: React.FC = () => {
         <button className="hamburger-button" onClick={toggleMenu}>
           <span
             className="hamburger-line"
-            style={{ backgroundColor: menuOpen ? "white" : "black" }}
+            style={{ backgroundColor: menuOpen ? "white" : (pastHero ? "black" : "white") }}
           ></span>
           <span
             className="hamburger-line"
-            style={{ backgroundColor: menuOpen ? "white" : "black" }}
+            style={{ backgroundColor: menuOpen ? "white" : (pastHero ? "black" : "white") }}
           ></span>
           <span
             className="hamburger-line"
-            style={{ backgroundColor: menuOpen ? "white" : "black" }}
+            style={{ backgroundColor: menuOpen ? "white" : (pastHero ? "black" : "white") }}
           ></span>
         </button>
 
@@ -80,13 +96,27 @@ const About: React.FC = () => {
                 </li>
                 <li>
                   <a
+                    href="/our-vision"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleMenu();
+                      startTransition("in", () => {
+                        navigate("/our-vision");
+                      });
+                    }}
+                  >
+                    Our Vision
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="/materials"
                     onClick={(e) => {
                       e.preventDefault();
                       handleNavigation("/materials");
                     }}
                   >
-                    Materials
+                    Materials & Finishes
                   </a>
                 </li>
                 <li>
@@ -97,21 +127,7 @@ const About: React.FC = () => {
                       handleNavigation("/");
                     }}
                   >
-                    Work
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/about"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleMenu();
-                      startTransition("in", () => {
-                        navigate("/about");
-                      });
-                    }}
-                  >
-                    How It Works
+                    Portfolio
                   </a>
                 </li>
                 <li>
@@ -122,7 +138,7 @@ const About: React.FC = () => {
                       handleNavigation("/#contact");
                     }}
                   >
-                    Contact
+                    Contact Us
                   </a>
                 </li>
               </ul>
@@ -159,10 +175,10 @@ const About: React.FC = () => {
           </video>
           <div className="video-overlay"></div>
           <div className="about-header">
-            <div className="project-number">How It Works</div>
+            <div className="section-pre-title">Our Vision</div>
             <h1 className="about-title">Your Home, Reimagined</h1>
             <p className="about-subtitle">
-              Renova lets you step inside your future home before a single wall
+              At Renova, we craft elegant experiences that let you step inside your future home before a single wall
               is touched. Explore layout options, materials, and finishes in an
               immersive environment, making confident design decisions with zero
               guesswork.

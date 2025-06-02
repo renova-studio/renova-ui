@@ -176,13 +176,16 @@ const Materials: React.FC = () => {
                 </li>
                 <li>
                   <a
-                    href="/materials"
+                    href="/our-vision"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation("/materials");
+                      toggleMenu();
+                      startTransition("in", () => {
+                        navigate("/our-vision");
+                      });
                     }}
                   >
-                    Materials
+                    Our Vision
                   </a>
                 </li>
                 <li>
@@ -193,21 +196,18 @@ const Materials: React.FC = () => {
                       handleNavigation("/");
                     }}
                   >
-                    Work
+                    Portfolio
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/about"
+                    href="/materials"
                     onClick={(e) => {
                       e.preventDefault();
-                      toggleMenu();
-                      startTransition("in", () => {
-                        navigate("/about");
-                      });
+                      handleNavigation("/materials");
                     }}
                   >
-                    How It Works
+                    Materials & Finishes
                   </a>
                 </li>
                 <li>
@@ -218,7 +218,7 @@ const Materials: React.FC = () => {
                       handleNavigation("/#contact");
                     }}
                   >
-                    Contact
+                    Contact Us
                   </a>
                 </li>
               </ul>
@@ -229,7 +229,7 @@ const Materials: React.FC = () => {
 
       <div className="materials-container">
         <div className="materials-header">
-          <div className="project-number">Materials Library</div>
+          <div className="project-number">Materials & Finishes</div>
           <h1 className="materials-title">Premium Materials Collection</h1>
           <p className="materials-subtitle">
             A curated selection of exceptional materials, carefully chosen to

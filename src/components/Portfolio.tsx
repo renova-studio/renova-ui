@@ -133,7 +133,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
 
     // Use the context to start the transition
     startTransition("in", () => {
-      navigate(`/projects/${projectId}`);
+      navigate(`/portfolio/${projectId}`);
     });
   };
 
@@ -544,6 +544,40 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                 </li>
                 <li>
                   <a
+                    href="/our-vision"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleMenu();
+                      startTransition("in", () => {
+                        navigate("/our-vision");
+                      });
+                    }}
+                  >
+                    Our Vision
+                  </a>
+                </li>
+                <li>
+                  <p>Portfolio</p>
+                </li>
+                {projects.map((project, index) => (
+                  <li style={{ paddingLeft: "2rem" }} key={project.id}>
+                    <p style={{ paddingRight: "0.5rem" }}>[{project.number}]</p>
+                    <a
+                      href={`/portfolio/${project.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleMenu();
+                        startTransition("in", () => {
+                          navigate(`/portfolio/${project.id}`);
+                        });
+                      }}
+                    >
+                      {project.title}
+                    </a>
+                  </li>
+                ))}
+                <li>
+                  <a
                     href="/materials"
                     onClick={(e) => {
                       e.preventDefault();
@@ -553,42 +587,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                       });
                     }}
                   >
-                    Materials
-                  </a>
-                </li>
-                <li>
-                  <p>Work</p>
-                </li>
-                {projects.map((project, index) => (
-                  <li style={{ paddingLeft: "2rem" }} key={project.id}>
-                    <p style={{ paddingRight: "0.5rem" }}>[{project.number}]</p>
-                    <a
-                      href={`#project-hero-${project.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleMenu();
-                        // Use the projectRefs directly with our smooth scroll function
-                        if (projectRefs.current[project.id]) {
-                          smoothScrollTo(projectRefs.current[project.id]!);
-                        }
-                      }}
-                    >
-                      {project.title}
-                    </a>
-                  </li>
-                ))}
-                <li>
-                  <a
-                    href="/about"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleMenu();
-                      startTransition("in", () => {
-                        navigate("/about");
-                      });
-                    }}
-                  >
-                    How It Works
+                    Materials & Finishes
                   </a>
                 </li>
                 <li>
@@ -603,7 +602,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                       }
                     }}
                   >
-                    Contact
+                    Contact Us
                   </a>
                 </li>
               </ul>

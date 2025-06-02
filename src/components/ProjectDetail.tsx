@@ -42,6 +42,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const [sliderPosition, setSliderPosition] = useState(50); // Default to middle (50%)
   const sliderRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef<boolean>(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   // Add this useEffect at the top of other useEffects
   useEffect(() => {
@@ -88,7 +89,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             require(`../assets/projects/lucero-b (3).png`),
             require(`../assets/projects/lucero-b (4).png`),
           ],
-          real: [require("../assets/projects/lucero-b (1).png")],
+          real: [require("../assets/projects/lucero-real.jpg")],
         },
         mcknight: {
           A: [
@@ -114,7 +115,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             require(`../assets/projects/brunson-b (2).png`),
             require(`../assets/projects/brunson-b (3).png`),
           ],
-          real: [require("../assets/brunson-real.jpg")],
+          real: [require("../assets/projects/brunson-real.jpg")],
         },
       };
       return projectVariants[project.id];
@@ -245,6 +246,21 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     };
   }, []);
 
+  const togglePreviewMode = () => {
+    setIsPreviewMode(!isPreviewMode);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isPreviewMode) {
+        setIsPreviewMode(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPreviewMode]);
+
   return (
     <div className="minimal-detail-view">
       {/* Separate back button outside the header */}
@@ -359,26 +375,47 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
         {/* Right column - Images */}
         <div className="detail-visuals">
           {viewMode === "gallery" ? (
-            /* Gallery View */
             <>
               <div className="main-image-container">
                 {getCurrentImage() && (
-                  <img
-                    src={getCurrentImage() || ""}
-                    alt={`${project.title} - Option ${selectedVariant} - ${
-                      viewLabels[selectedImageIndex] ||
-                      `View ${selectedImageIndex + 1}`
-                    }`}
-                    className="main-image"
-                  />
+                  <>
+                    <img
+                      src={getCurrentImage() || ""}
+                      alt={`${project.title} - Option ${selectedVariant} - ${
+                        viewLabels[selectedImageIndex] || `View ${selectedImageIndex + 1}`
+                      }`}
+                      className="main-image"
+                      onClick={togglePreviewMode}
+                      style={{ cursor: 'zoom-in' }}
+                    />
+                    {/* Image Preview Overlay */}
+                    {isPreviewMode && (
+                      <div 
+                        className="image-preview-overlay"
+                        onClick={togglePreviewMode}
+                      >
+                        <button 
+                          className="close-preview-button"
+                          onClick={togglePreviewMode}
+                        >
+                          ×
+                        </button>
+                        <img
+                          src={getCurrentImage() || ""}
+                          alt={`${project.title} - Option ${selectedVariant} - ${
+                            viewLabels[selectedImageIndex] || `View ${selectedImageIndex + 1}`
+                          }`}
+                          className="preview-mode-image"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
                 <div className="image-meta">
-                  <span className="image-variant">
-                    Option {selectedVariant}
-                  </span>
+                  <span className="image-variant">Option {selectedVariant}</span>
                   <span className="image-view">
-                    {viewLabels[selectedImageIndex] ||
-                      `View ${selectedImageIndex + 1}`}
+                    {viewLabels[selectedImageIndex] || `View ${selectedImageIndex + 1}`}
                   </span>
                 </div>
               </div>
