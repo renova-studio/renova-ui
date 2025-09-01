@@ -1,20 +1,58 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
-import Logo from "./Logo";
-import "../styles/ProjectDetail.css";
+import Logo from "../assets/logo.svg?react";
 import { useTransition } from "../context/TransitionContext";
-import { Divider } from "@mui/material";
-import ExitToAppSharpIcon from "@mui/icons-material/ExitToAppSharp";
-import { debounce } from "lodash";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-// Define view labels for thumbnails
-const viewLabels = ["Daylight", "Golden Hour", "Nightfall", "Twilight"];
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-// Define types for variants
-type VariantKey = "A" | "B";
-type VariantImages = Record<VariantKey | "real", string[]>;
-type VariantDescriptions = Record<VariantKey, string>;
+// Import all project images
+// Juniper project images
+import juniperS1 from "../assets/projects/juniper-still (1).jpg"
+import juniperS2 from "../assets/projects/juniper-still (2).jpg"
+import juniperS3 from "../assets/projects/juniper-still (3).jpg"
+import juniperA1 from "../assets/projects/juniper-a (1).jpg";
+import juniperA2 from "../assets/projects/juniper-a (2).jpg";
+import juniperA3 from "../assets/projects/juniper-a (3).jpg";
+import juniperA4 from "../assets/projects/juniper-a (4).jpg";
+import juniperB1 from "../assets/projects/juniper-b (1).jpg";
+import juniperB2 from "../assets/projects/juniper-b (2).jpg";
+import juniperB3 from "../assets/projects/juniper-b (3).jpg";
+import juniperB4 from "../assets/projects/juniper-b (4).jpg";
+
+// Lucero project images
+import luceroA1 from "../assets/projects/lucero-a (1).png";
+import luceroA2 from "../assets/projects/lucero-a (2).png";
+import luceroA3 from "../assets/projects/lucero-a (3).png";
+import luceroA4 from "../assets/projects/lucero-a (4).png";
+import luceroB1 from "../assets/projects/lucero-b (1).png";
+import luceroB2 from "../assets/projects/lucero-b (2).png";
+import luceroB3 from "../assets/projects/lucero-b (3).png";
+import luceroB4 from "../assets/projects/lucero-b (4).png";
+import luceroReal from "../assets/projects/lucero-real.png";
+
+// McKnight project images
+import mcknightA1 from "../assets/projects/mcknight-a (1).png";
+import mcknightA2 from "../assets/projects/mcknight-a (2).png";
+import mcknightA3 from "../assets/projects/mcknight-a (3).png";
+import mcknightA4 from "../assets/projects/mcknight-a (4).png";
+import mcknightB1 from "../assets/projects/mcknight-b (1).png";
+import mcknightB2 from "../assets/projects/mcknight-b (2).png";
+import mcknightB3 from "../assets/projects/mcknight-b (3).png";
+import mcknightB4 from "../assets/projects/mcknight-b (4).png";
+import mcknightReal from "../assets/projects/mcknight-real-warped.png";
+
+// Brunson project images
+import brunsonA1 from "../assets/projects/brunson-a (1).png";
+import brunsonA2 from "../assets/projects/brunson-a (2).png";
+import brunsonA3 from "../assets/projects/brunson-a (3).png";
+import brunsonA4 from "../assets/projects/brunson-a (4).png";
+import brunsonB1 from "../assets/projects/brunson-b (1).png";
+import brunsonB2 from "../assets/projects/brunson-b (2).png";
+import brunsonB3 from "../assets/projects/brunson-b (3).png";
+import brunsonB4 from "../assets/projects/brunson-b (4).png";
+import brunsonReal from "../assets/projects/brunson-real.jpg";
 
 interface ProjectDetailProps {
   project: {
@@ -31,229 +69,213 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { startTransition } = useTransition();
-  const [selectedVariant, setSelectedVariant] = useState<VariantKey>("A");
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [viewMode, setViewMode] = useState<"gallery" | "360" | "real">(
-    "gallery"
-  );
-  const viewerRef = useRef<any>(null);
-  const sphereContainerRef = useRef<HTMLDivElement>(null);
-  const [sphereHeight, setSphereHeight] = useState("70vh");
-  const [sliderPosition, setSliderPosition] = useState(50); // Default to middle (50%)
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef<boolean>(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string>("");
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
-  // Add this useEffect at the top of other useEffects
+  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Calculate the appropriate height for the sphere container
-  useEffect(() => {
-    if (viewMode === "360") {
-      const updateHeight = () => {
-        if (sphereContainerRef.current) {
-          const windowHeight = window.innerHeight;
-          const containerTop =
-            sphereContainerRef.current.getBoundingClientRect().top;
-          const availableHeight = windowHeight - containerTop - 40; // 40px for margin
-          setSphereHeight(`${availableHeight}px`);
-        }
-      };
-
-      updateHeight();
-      window.addEventListener("resize", updateHeight);
-
-      return () => {
-        window.removeEventListener("resize", updateHeight);
-      };
-    }
-  }, [viewMode]);
-
-  // Import project variant images based on project ID
-  const variants = React.useMemo<VariantImages | null>(() => {
-    try {
-      // This is a simplified version - in reality, you'd import these dynamically
-      const projectVariants: Record<string, VariantImages> = {
-        lucero: {
-          A: [
-            require(`../assets/projects/lucero-a (1).png`),
-            require(`../assets/projects/lucero-a (2).png`),
-            require(`../assets/projects/lucero-a (3).png`),
-            require(`../assets/projects/lucero-a (4).png`),
-          ],
-          B: [
-            require(`../assets/projects/lucero-b (1).png`),
-            require(`../assets/projects/lucero-b (2).png`),
-            require(`../assets/projects/lucero-b (3).png`),
-            require(`../assets/projects/lucero-b (4).png`),
-          ],
-          real: [require("../assets/projects/lucero-real.jpg")],
-        },
-        mcknight: {
-          A: [
-            require(`../assets/projects/mcknight-a (1).png`),
-            require(`../assets/projects/mcknight-a (2).png`),
-            require(`../assets/projects/mcknight-a (3).png`),
-          ],
-          B: [
-            require(`../assets/projects/mcknight-b (1).png`),
-            require(`../assets/projects/mcknight-b (2).png`),
-            require(`../assets/projects/mcknight-b (3).png`),
-          ],
-          real: [require("../assets/projects/mcknight-real-warped.png")],
-        },
-        brunson: {
-          A: [
-            require(`../assets/projects/brunson-a (1).png`),
-            require(`../assets/projects/brunson-a (2).png`),
-            require(`../assets/projects/brunson-a (3).png`),
-          ],
-          B: [
-            require(`../assets/projects/brunson-b (1).png`),
-            require(`../assets/projects/brunson-b (2).png`),
-            require(`../assets/projects/brunson-b (3).png`),
-          ],
-          real: [require("../assets/projects/brunson-real.jpg")],
-        },
-      };
-      return projectVariants[project.id];
-    } catch (error) {
-      console.error("Error loading project variants:", error);
-      return null;
-    }
-  }, [project.id]);
-
-  // Add this inside the component
-  const variantDescriptions = React.useMemo<VariantDescriptions | null>(() => {
-    // This would ideally come from your project data
-    const descriptions: Record<string, VariantDescriptions> = {
-      lucero: {
-        A: "This immersive visualization features a light-filled kitchen with vaulted ceilings, exposed beams, and refined finishes. A marble-topped oak island pairs with cream cabinetry and gold hardware, while open shelving and a sculpted range hood add architectural charm—bringing the design to life with stunning realism.",
-        B: "This visualization showcases a bold, elevated take on transitional design. Warm wood cabinetry pairs with striking black stone countertops and backsplash, creating a rich contrast against the natural light and vaulted ceilings. Gold fixtures and hardware add a touch of refinement, while the oak island anchors the space with texture and balance—highlighting Renova's ability to render design possibilities with clarity and depth.",
-      },
-      mcknight: {
-        A: "This visualization features a vibrant blend of classic form and playful detail. White upper cabinetry contrasts with natural wood lowers, while a soft blue island adds a subtle pop of color. Brass fixtures, open shelving, and textured tile bring warmth and character, creating a space that feels fresh, functional, and full of personality—beautifully illustrating the versatility of Renova's design approach.",
-        B: "This visualization pairs rich navy upper cabinetry with warm natural wood lowers for a striking yet balanced design. Light stone countertops and backsplash add softness, while brass fixtures and modern lighting elevate the space. Open shelving around the range provides both function and display, illustrating how thoughtful material contrasts can define a refined, livable kitchen.",
-      },
-      brunson: {
-        A: "This visualization presents a sleek, minimalist kitchen with a timeless black-and-white palette. Crisp white cabinetry is contrasted by black hardware and matte black pendant lighting, while stone-look countertops and a full-height backsplash bring depth and texture. A large picture window floods the space with natural light, highlighting the refined simplicity of the design.",
-        B: "This warm, modern kitchen blends clean lines with organic textures. Light wood cabinetry and matching island surfaces create a cohesive, inviting atmosphere, while matte black hardware and lighting fixtures add modern contrast. A large picture window brings in natural light, enhancing the soft, neutral palette and highlighting the balance of simplicity and style.",
-      },
+  // Get all project images based on project ID
+  const projectImages = React.useMemo(() => {
+    const images: Record<string, { src: string; label: string }[]> = {
+      juniper: [
+        { src: juniperA1, label: "Option A - Daylight" },
+        { src: juniperS1, label: "View 1" },
+        { src: juniperS2, label: "View 2" },
+        { src: juniperS3, label: "View 3" },
+        { src: juniperA2, label: "Option A - Forenoon" },
+        { src: juniperA3, label: "Option A - Golden Hour" },
+        { src: juniperA4, label: "Option A - Twilight" },
+        { src: juniperB1, label: "Option B - Daylight" },
+        { src: juniperB2, label: "Option B - Golden Hour" },
+        { src: juniperB3, label: "Option B - Nightfall" },
+        { src: juniperB4, label: "Option B - Twilight" },
+      ],
+      lucero: [
+        { src: luceroA1, label: "Option A - Daylight" },
+        { src: luceroA2, label: "Option A - Golden Hour" },
+        { src: luceroA3, label: "Option A - Nightfall" },
+        { src: luceroA4, label: "Option A - Twilight" },
+        { src: luceroB1, label: "Option B - Daylight" },
+        { src: luceroB2, label: "Option B - Golden Hour" },
+        { src: luceroB3, label: "Option B - Nightfall" },
+        { src: luceroB4, label: "Option B - Twilight" },
+        { src: luceroReal, label: "Real Photo" },
+      ],
+      mcknight: [
+        { src: mcknightA1, label: "Option A - Daylight" },
+        { src: mcknightA2, label: "Option A - Golden Hour" },
+        { src: mcknightA3, label: "Option A - Nightfall" },
+        { src: mcknightA4, label: "Option A - Twilight" },
+        { src: mcknightB1, label: "Option B - Daylight" },
+        { src: mcknightB2, label: "Option B - Golden Hour" },
+        { src: mcknightB3, label: "Option B - Nightfall" },
+        { src: mcknightB4, label: "Option B - Twilight" },
+        { src: mcknightReal, label: "Real Photo" },
+      ],
+      brunson: [
+        { src: brunsonA1, label: "Option A - Daylight" },
+        { src: brunsonA2, label: "Option A - Golden Hour" },
+        { src: brunsonA3, label: "Option A - Nightfall" },
+        { src: brunsonA4, label: "Option A - Twilight" },
+        { src: brunsonB1, label: "Option B - Daylight" },
+        { src: brunsonB2, label: "Option B - Golden Hour" },
+        { src: brunsonB3, label: "Option B - Nightfall" },
+        { src: brunsonB4, label: "Option B - Twilight" },
+        { src: brunsonReal, label: "Real Photo" },
+      ],
     };
-    return descriptions[project.id] || null;
+    return images[project.id] || [];
   }, [project.id]);
-
-  // Handle viewer ready event
-  const handleViewerReady = (instance: any) => {
-    viewerRef.current = instance;
-
-    // Force resize after viewer is ready
-    setTimeout(() => {
-      if (viewerRef.current) {
-        viewerRef.current.resize();
-      }
-    }, 100);
-  };
-
-  // Handle variant button click
-  const handleVariantClick = (variant: VariantKey) => {
-    setSelectedVariant(variant);
-    setSelectedImageIndex(0);
-  };
-
-  // Handle image click
-  const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-  };
-
-  // Get current image based on selected variant and index
-  const getCurrentImage = () => {
-    if (!variants || !variants[selectedVariant]) return null;
-    return variants[selectedVariant][selectedImageIndex];
-  };
 
   const handleGoBack = (event: React.MouseEvent) => {
     event.preventDefault();
-
-    // Start the exit transition
     startTransition("out", () => {
       navigate("/");
     });
   };
 
-  // Handle slider dragging
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    isDragging.current = true;
+  const openPreview = (imageSrc: string) => {
+    setPreviewImage(imageSrc);
+    setIsPreviewMode(true);
   };
 
-  const handleTouchStart = () => {
-    isDragging.current = true;
+  const closePreview = () => {
+    setIsPreviewMode(false);
+    setPreviewImage("");
   };
 
-  const updateSliderPosition = (clientX: number) => {
-    if (isDragging.current && sliderRef.current) {
-      const container = sliderRef.current.getBoundingClientRect();
-      const position = ((clientX - container.left) / container.width) * 100;
-      // Clamp position between 0 and 100
-      const clampedPosition = Math.max(0, Math.min(100, position));
-      setSliderPosition(clampedPosition);
+  const animIdRef = useRef<number | null>(null);
+
+  const cancelAnim = () => {
+    if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
+    animIdRef.current = null;
+  };
+  
+  // Temporarily disable scroll-snap during animation so the browser doesn't "grab" the scroll
+  const animateScrollTo = (target: number, duration = 600) => {
+    const sc = scrollContainerRef.current;
+    if (!sc) return;
+  
+    cancelAnim();
+  
+    const start = sc.scrollLeft;
+    const delta = target - start;
+    if (Math.abs(delta) < 0.5) {
+      sc.scrollLeft = target;
+      return;
     }
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    updateSliderPosition(e.clientX);
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (e.touches[0]) {
-      updateSliderPosition(e.touches[0].clientX);
-    }
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
-  };
-
-  // Add and remove event listeners
-  useEffect(() => {
-    if (viewMode === "real") {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      document.addEventListener("touchmove", handleTouchMove);
-      document.addEventListener("touchend", handleMouseUp);
-
-      return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleMouseUp);
-      };
-    }
-  }, [viewMode]);
-
-  useEffect(() => {
-    const handleScroll = debounce(() => {
-      // Your scroll handling logic
-    }, 16); // Approximately 60fps
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      handleScroll.cancel();
+  
+    // Save & disable snap just for the tween
+    const originalSnap = sc.style.scrollSnapType;
+    sc.style.scrollSnapType = 'none';
+  
+    const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+    const t0 = performance.now();
+  
+    const step = (now: number) => {
+      const p = Math.min((now - t0) / duration, 1);
+      const eased = easeInOutQuad(p);
+      sc.scrollLeft = start + delta * eased;
+  
+      if (p < 1) {
+        animIdRef.current = requestAnimationFrame(step);
+      } else {
+        // restore snap after animation ends (use proximity/mandatory in your CSS)
+        sc.style.scrollSnapType = originalSnap;
+        animIdRef.current = null;
+      }
     };
-  }, []);
-
-  const togglePreviewMode = () => {
-    setIsPreviewMode(!isPreviewMode);
+  
+    animIdRef.current = requestAnimationFrame(step);
   };
-
+  
+  const leftOf = (el: HTMLElement, sc: HTMLElement) => {
+    const er = el.getBoundingClientRect();
+    const sr = sc.getBoundingClientRect();
+    return er.left - sr.left + sc.scrollLeft;
+  };
+  
+  const getItems = () =>
+    Array.from(scrollContainerRef.current?.children ?? []) as HTMLElement[];
+  
+  // First item whose left edge is strictly to the right of current viewport left
+  const nextIndex = (sc: HTMLElement, items: HTMLElement[]) => {
+    const x = sc.scrollLeft + 1; // small epsilon
+    for (let i = 0; i < items.length; i++) {
+      if (leftOf(items[i], sc) > x) return i;
+    }
+    return items.length - 1;
+  };
+  
+  // Last item whose left edge is strictly to the left of current viewport left
+  const prevIndex = (sc: HTMLElement, items: HTMLElement[]) => {
+    const x = sc.scrollLeft - 1;
+    let idx = 0;
+    for (let i = 0; i < items.length; i++) {
+      if (leftOf(items[i], sc) < x) idx = i;
+      else break;
+    }
+    return idx;
+  };
+  
+  /**
+   * Scroll to index with an option to allow a no-op if already at that item.
+   * This prevents the "first item + click left jumps forward" bug.
+   */
+  const scrollToIdx = (idx: number, allowNoop = true, duration = 600) => {
+    const sc = scrollContainerRef.current;
+    if (!sc) return;
+    const items = getItems();
+    if (!items.length) return;
+  
+    const clamped = Math.max(0, Math.min(idx, items.length - 1));
+    const target = leftOf(items[clamped], sc);
+    const diff = Math.abs(target - sc.scrollLeft);
+  
+    if (diff < 1 && allowNoop) {
+      // already aligned; do nothing
+      return;
+    }
+    animateScrollTo(target, duration);
+  };
+  
+  const scrollRight = () => {
+    const sc = scrollContainerRef.current;
+    if (!sc) return;
+    const items = getItems();
+    if (!items.length) return;
+  
+    const idx = nextIndex(sc, items);
+    // when moving right, if we're already perfectly on that idx, advance one more (if possible)
+    const alignedTarget = leftOf(items[idx], sc);
+    const alreadyAligned = Math.abs(alignedTarget - sc.scrollLeft) < 1;
+    const finalIdx = alreadyAligned ? Math.min(idx + 1, items.length - 1) : idx;
+  
+    scrollToIdx(finalIdx, /*allowNoop*/ false, 600);
+  };
+  
+  const scrollLeft = () => {
+    const sc = scrollContainerRef.current;
+    if (!sc) return;
+    const items = getItems();
+    if (!items.length) return;
+  
+    const idx = prevIndex(sc, items);
+    // when moving left, if we're already at the first item, no-op
+    const isFirst = idx === 0 && Math.abs(leftOf(items[0], sc) - sc.scrollLeft) < 1;
+    if (isFirst) return;
+  
+    scrollToIdx(idx, /*allowNoop*/ true, 600);
+  };
+  // Escape key handler for preview mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isPreviewMode) {
-        setIsPreviewMode(false);
+        closePreview();
       }
     };
 
@@ -262,262 +284,147 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   }, [isPreviewMode]);
 
   return (
-    <div className="minimal-detail-view">
-      {/* Separate back button outside the header */}
-      <div className="back-button" onClick={handleGoBack}>
-        <ExitToAppSharpIcon sx={{ transform: "scaleX(-1) scale(1.5)" }} />
-      </div>
-
-      <header
-        className="minimal-header"
-        style={{
-          position: "fixed",
-        }}
-      >
-        <div className="company-logo-container" style={{ cursor: "pointer" }}>
-          <Logo className="header-logo" style={{ filter: "invert(0)" }} />
-          <Divider
-            sx={{
-              padding: "0 0.25rem",
-              opacity: 1,
-              borderRightWidth: "2px",
-              borderColor: "black",
-              marginTop: "0",
-              marginBottom: "0",
-              marginRight: "0.25rem",
-            }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <span className="company-name-text">renova</span>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <div className="detail-content">
-        {/* Left column - Project info */}
-        <div className="detail-info">
-          {/* Project title moved to top of content */}
-          <div className="project-meta">
-            <div className="project-number">[{project.number}]</div>
-            <h1 className="project-title">{project.title}</h1>
-            {project.id == "mcknight" && <p className="project-hero-description" style={{ fontSize: '0.9rem', marginTop: '0rem' }}>Designed by <a href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" target="_blank" rel="noopener noreferrer">House Sprucing <OpenInNewIcon sx={{ fontSize: '0.9rem' }} /></a></p>}
-          </div>
-          {/* View mode toggle */}
-          <div className="info-section">
-            <h2 className="info-heading">View Mode</h2>
-            <div className="variant-selector">
-              <button
-                className={`variant-button ${
-                  viewMode === "gallery" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("gallery")}
-              >
-                Gallery View
-              </button>
-              <button
-                className={`variant-button ${
-                  viewMode === "360" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("360")}
-              >
-                360° View
-              </button>
-              <button
-                className={`variant-button ${
-                  viewMode === "real" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("real")}
-              >
-                Real Life View
-              </button>
-            </div>
-          </div>
-          {viewMode === "gallery" && (
-            <div className="info-section">
-              <h2 className="info-heading">Design Options</h2>
-              <div className="variant-selector">
-                {variants &&
-                  ["A", "B"].map((variant) => (
-                    <button
-                      key={variant}
-                      className={`variant-button ${
-                        selectedVariant === variant ? "active" : ""
-                      }`}
-                      onClick={() => handleVariantClick(variant as VariantKey)}
-                    >
-                      Option {variant}
-                    </button>
-                  ))}
+    <div className="h-screen bg-base-200">
+        {/* Full Screen Layout with 12-row Grid */}
+        {/* Header - 2/12 rows */}
+        <div className="h-full grid grid-rows-12 px-16">
+          <header className="h-2xl py-8">
+            <div className="flex items-center">
+              <div className="flex items-center gap-4 cursor-pointer" onClick={handleGoBack}>
+                <ArrowBackIcon className="text-primary text-2xl" />
+                <span className="text-sm font-sans uppercase tracking-wider text-primary">Back</span>
+              </div>
+              <div className="absolute left-1/2 transform -translate-x-1/2">
+                <Logo fill="currentColor" className="h-8 will-change-transform text-primary" />
               </div>
             </div>
-          )}
-          <div className="info-section">
-            <h2 className="info-heading">About</h2>
-            <p className="info-text">
-              {viewMode === "gallery" &&
-              variantDescriptions &&
-              variantDescriptions[selectedVariant]
-                ? variantDescriptions[selectedVariant]
-                : project.description}
-            </p>
-            <p className="info-text" style={{ paddingTop: "1rem" }}>
-              <b>At Renova, customization is limitless.</b>
-              <br />
-              From materials and finishes to lighting and layout, we tailor
-              every detail to your vision—bringing your unique style to life
-              with precision and realism.
-            </p>
-          </div>
-        </div>
+          </header>
 
-        {/* Right column - Images */}
-        <div className="detail-visuals">
-          {viewMode === "gallery" ? (
-            <>
-              <div className="main-image-container">
-                {getCurrentImage() && (
-                  <>
-                    <img
-                      src={getCurrentImage() || ""}
-                      alt={`${project.title} - Option ${selectedVariant} - ${
-                        viewLabels[selectedImageIndex] || `View ${selectedImageIndex + 1}`
-                      }`}
-                      className="main-image"
-                      onClick={togglePreviewMode}
-                      style={{ cursor: 'zoom-in' }}
-                    />
-                    {/* Image Preview Overlay */}
-                    {isPreviewMode && (
-                      <div 
-                        className="image-preview-overlay"
-                        onClick={togglePreviewMode}
-                      >
-                        <button 
-                          className="close-preview-button"
-                          onClick={togglePreviewMode}
-                        >
-                          ×
-                        </button>
-                        <img
-                          src={getCurrentImage() || ""}
-                          alt={`${project.title} - Option ${selectedVariant} - ${
-                            viewLabels[selectedImageIndex] || `View ${selectedImageIndex + 1}`
-                          }`}
-                          className="preview-mode-image"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                    )}
-                  </>
-                )}
-                <div className="image-meta">
-                  <span className="image-variant">Option {selectedVariant}</span>
-                  <span className="image-view">
-                    {viewLabels[selectedImageIndex] || `View ${selectedImageIndex + 1}`}
-                  </span>
-                </div>
-              </div>
-
-              {/* Image Preview Carousel */}
-              {variants &&
-                variants[selectedVariant] &&
-                variants[selectedVariant].length > 1 && (
-                  <div className="image-preview-carousel">
-                    {variants[selectedVariant].map(
-                      (image: string, index: number) => (
-                        <div
-                          key={index}
-                          className="preview-item"
-                          onClick={() => handleImageClick(index)}
-                        >
-                          <img
-                            src={image}
-                            alt={`Preview ${index + 1}`}
-                            className={`preview-image ${
-                              selectedImageIndex === index ? "active" : ""
-                            }`}
-                          />
-                          <div className="preview-label">
-                            {viewLabels[index] || `View ${index + 1}`}
-                          </div>
+        {/* Image Row - 6/12 rows */}
+          <section className="row-span-7">
+            <div className="relative flex items-center h-full">
+              <div 
+                ref={scrollContainerRef}
+                className="flex gap-4 overflow-x-auto scrollbar-hide w-full h-full"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {projectImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className="flex-shrink-0 cursor-pointer group h-full"
+                    onClick={() => openPreview(image.src)}
+                  >
+                    <div className="relative overflow-hidden bg-white shadow-lg h-full">
+                      <img
+                        src={image.src}
+                        alt={image.label}
+                        className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      
+                      {/* Image Label Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
+                        <div className="text-sm font-sans text-white">
+                          {image.label}
                         </div>
-                      )
+                      </div>
+
+                      {/* Hover Effect */}
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-300 flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-sans">
+                          Click to view
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Scroll Navigation Arrows */}
+              <button
+                onClick={scrollLeft}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-primary p-3 rounded-full shadow-lg transition-all duration-300"
+              >
+                <ChevronLeftIcon className="text-2xl" />
+              </button>
+              
+              <button
+                onClick={scrollRight}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-primary p-3 rounded-full shadow-lg transition-all duration-300"
+              >
+                <ChevronRightIcon className="text-2xl" />
+              </button>
+            </div>
+          </section>
+
+          {/* Project Details - 4/12 rows */}
+          <section className="mx-auto my-auto h-max row-span-5 max-w-3/5 flex items-center justify-center p-auto">
+            <div className="grid grid-cols-12 justify-between">
+                {/* Left Column - Project Info */}
+                <div className="col-span-6">
+                  <div>
+                    <div className="text-sm font-sans uppercase tracking-wider text-neutral">
+                      {project.number}
+                    </div>
+                    <div className="text-8xl font-title text-primary leading-tight ">
+                      {project.title}
+                    </div>
+                    {project.id === "mcknight" && (
+                      <p className="text-base font-roboto text-neutral leading-relaxed">
+                        Designed by{" "}
+                        <a 
+                          href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-accent hover:text-primary transition-colors duration-300"
+                        >
+                          House Sprucing <OpenInNewIcon className="inline-block text-sm" />
+                        </a>
+                      </p>
                     )}
                   </div>
-                )}
-            </>
-          ) : viewMode === "360" ? (
-            /* 360 View */
-            <div
-              className="sphere-container"
-              ref={sphereContainerRef}
-              style={{ height: sphereHeight, background: "white !important" }}
-            >
-              <ReactPhotoSphereViewer
-                src={project.image360}
-                height="100%"
-                width="100%"
-                container="div"
-                defaultZoomLvl={0}
-                loadingImg={require("../assets/renova-logo.png")}
-                onReady={handleViewerReady}
-                plugins={[]}
-                sphereCorrection={{ pan: 0, tilt: 0, roll: 0 }}
-                minFov={30}
-                maxFov={90}
-                moveSpeed={1}
-                zoomSpeed={1}
-              />
-            </div>
-          ) : (
-            /* Real Life View - Image Comparison Slider */
-            <div className="comparison-slider-container" ref={sliderRef}>
-              {/* Rendered image (left side) */}
-              <img
-                src={variants?.A[0]}
-                alt="Rendered view"
-                className="comparison-image rendered-image"
-                style={{
-                  clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
-                }}
-              />
-
-              {/* Real photo (right side) */}
-              <img
-                src={variants?.real[0]}
-                alt="Real photo"
-                className="comparison-image real-image"
-              />
-
-              {/* Slider handle */}
-              <div
-                className="slider-divider"
-                style={{ left: `${sliderPosition}%` }}
-                onMouseDown={handleMouseDown}
-                onTouchStart={handleTouchStart}
-              >
-                <div className="slider-handle">
-                  <div className="handle-arrow left-arrow">◀</div>
-                  <div className="handle-arrow right-arrow">▶</div>
                 </div>
-                <div className="slider-line"></div>
-              </div>
 
-              {/* Labels */}
-              <div className="comparison-labels">
-                <div className="label left-label" style={{ left: "10px" }}>
-                  Rendered
-                </div>
-                <div className="label right-label" style={{ right: "10px" }}>
-                  Real
+                {/* Right Column - About Section */}
+                <div className="col-span-6">
+                  <h2 className="text-lg font-tiempos font-title text-primary">About</h2>
+                    <p className="text-base font-roboto text-neutral leading-relaxed">
+                      {project.description}<br /><br />
+                    </p>
+                    <p className="text-base font-roboto text-neutral leading-relaxed">
+                      <span className="font-semibold text-primary">At Renova, customization is limitless.</span>
+                      <br />
+                      From materials and finishes to lighting and layout, we tailor
+                      every detail to your vision—bringing your unique style to life
+                      with precision and realism.
+                    </p>
                 </div>
               </div>
-            </div>
-          )}
+          </section>
         </div>
-      </div>
+
+      {/* Image Preview Modal */}
+      {isPreviewMode && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8"
+          onClick={closePreview}
+        >
+          <button 
+            className="absolute top-8 right-8 text-white text-4xl hover:text-gray-300 transition-colors duration-300"
+            onClick={closePreview}
+          >
+            ×
+          </button>
+          <img
+            src={previewImage}
+            alt="Preview"
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+
+    
     </div>
   );
 };

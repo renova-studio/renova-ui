@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "./Logo";
+import Logo from "../assets/logo.svg?react";
 import "../styles/Portfolio.css";
 import { useTransition } from "../context/TransitionContext";
 import EmailIcon from "@mui/icons-material/Email";

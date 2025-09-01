@@ -1,90 +1,40 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Fullscreen overlay container */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  z-index: 9999;
+  pointer-events: none;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-html, body {
-  max-width: 100%;
-  overflow-x: hidden !important;
-}
-/* Nature-inspired green color scheme */
-:root {
-  --primary-green: #3a5a40;
-  --light-green: #588157;
-  --dark-green: #4C5B48;
-  --cream: #f5f5f5;
-  --text-light: #ffffff;
-  --text-dark: #1a1a1a;
-  --bg-color: #f1ecd6; /* Light cream background */
-  --text-color: #1a1a1a; /* Dark text */
-  --parallax-scale: 0.1;
-  --parallax-min-height: 44rem;
-}
-
-@media (prefers-reduced-motion) {
-  html {
-    scroll-behavior: auto;
-  }
-  :root {
-    --parallax-scale: 0;
-  }
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--text-dark);
-  background: var(--bg-color);
-  -webkit-font-smoothing: antialiased;
-  height: 100%;
-  overflow-x: scroll;
-}
-
-.App {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-}
-
-/* Common button styles */
-button {
-  cursor: pointer;
-  font-family: inherit;
-}
-
-/* Common link styles */
-a {
-  color: inherit;
-  text-decoration: none;
-}
 /* Base rectangle styles */
 .fullscreen-overlay .transition-rectangle {
   flex: 1;
   height: 100%;
-  background-color: var(--dark-green);
+  background-color: #5C4439;
+  min-width: 0; /* Ensure flex items can shrink */
 }
 
-/* Growing phase */
+/* Growing phase - simplified for debugging */
 .fullscreen-overlay .transition-rectangle.growing {
   transform-origin: top;
   transform: scaleY(0);
   animation-name: growRectangle;
-  animation-duration: 0.9s;
-  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  animation-duration: 0.7s;
+  animation-timing-function: cubic-bezier(0.7, 0, 0.175, 1);
   animation-fill-mode: forwards;
 }
 
-/* Shrinking phase */
+/* Shrinking phase - simplified for debugging */
 .fullscreen-overlay .transition-rectangle.shrinking {
   transform-origin: top;
   transform: scaleY(1);
   animation-name: shrinkRectangle;
-  animation-duration: 0.9s;
-  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  animation-duration: 0.7s;
+  animation-timing-function: cubic-bezier(0.7, 0, 0.175, 1);
   animation-fill-mode: forwards;
 }
 
@@ -106,44 +56,70 @@ a {
   }
 }
 
-.transition-rectangle {
-  flex: 1;
-  height: 100%;
-  transform: scaleY(0);
-  transform-origin: top;
-  background-color: white;
-  animation: growRectangle 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-.transition-rectangle:nth-child(1) {
+/* Animation delays for growing phase */
+.fullscreen-overlay .transition-rectangle.growing:nth-child(1) {
   animation-delay: 0s;
 }
 
-.transition-rectangle:nth-child(2) {
-  animation-delay: 0.15s;
+.fullscreen-overlay .transition-rectangle.growing:nth-child(2) {
+  animation-delay: 0.10s;
 }
 
-.transition-rectangle:nth-child(3) {
+.fullscreen-overlay .transition-rectangle.growing:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.fullscreen-overlay .transition-rectangle.growing:nth-child(4) {
   animation-delay: 0.3s;
 }
 
-.transition-rectangle:nth-child(4) {
-  animation-delay: 0.45s;
+.fullscreen-overlay .transition-rectangle.growing:nth-child(5) {
+  animation-delay: 0.4s;
 }
 
-.transition-rectangle:nth-child(5) {
+.fullscreen-overlay .transition-rectangle.growing:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+.fullscreen-overlay .transition-rectangle.growing:nth-child(7) {
   animation-delay: 0.6s;
 }
 
-.transition-rectangle:nth-child(6) {
-  animation-delay: 0.75s;
+.fullscreen-overlay .transition-rectangle.growing:nth-child(8) {
+  animation-delay: 0.7s;
 }
 
-.transition-rectangle:nth-child(7) {
-  animation-delay: 0.9s;
+/* Animation delays for shrinking phase */
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(1) {
+  animation-delay: 0s;
 }
-.transition-rectangle:nth-child(8) {
-  animation-delay: 1.05s;
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(7) {
+  animation-delay: 0.6s;
+}
+
+.fullscreen-overlay .transition-rectangle.shrinking:nth-child(8) {
+  animation-delay: 0.7s;
 }
 
 /* Replace any position animations with transform */

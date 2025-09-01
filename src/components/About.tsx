@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/About.css";
-import Logo from "./Logo";
+import Logo from "../assets/logo.svg?react";
 import { Divider } from "@mui/material";
 import { useTransition } from "../context/TransitionContext";
 

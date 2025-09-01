@@ -1,54 +1,29 @@
-// Create a type for our image module
-interface ImageModule {
-  [key: string]: {
-    default: string;
-    originalName: string;
-  };
-}
+// utils/imageImports.ts
+// Simplified: category + name come from the filename, not folder structure
 
-// Add type declarations for webpack's require.context
-declare const require: {
-  context(
-    directory: string,
-    useSubdirectories: boolean,
-    regExp: RegExp
-  ): {
-    keys(): string[];
-    (key: string): { default: string };
-  };
-};
+export type ImageEntry = { default: string; originalName: string };
 
-interface ImageInfo {
-  path: string;
-  module: { default: string } | string;
-}
-
-export async function getImages() {
-  const images: ImageModule = {};
-  const categories = ['marble', 'metal', 'stone', 'terrazzo', 'wood'];
+export async function getImages(): Promise<Record<string, ImageEntry>> {
+  const images: Record<string, ImageEntry> = {};
 
   try {
-    // Import all images using webpack's require
-    const context = (require as any).context('../assets/materials', true, /\.(png|jpe?g|svg)$/);
-    const keys = context.keys();
+    // Import all images inside assets/materials
+    const imageModules = import.meta.glob(
+      "../assets/materials/**/*.{png,jpg,jpeg,webp,svg}",
+      { eager: true }
+    );
 
-    keys.forEach((key: string) => {
-      const pathParts = key.split('/');
-      const category = pathParts[1];
-      const filename = pathParts[pathParts.length - 1].split('.')[0]; // Get name without extension
-      
-      if (categories.includes(category)) {
-        // Use a more readable key format: category/filename
-        const readableKey = `${category}/${filename}`;
-        images[readableKey] = { 
-          default: context(key),
-          originalName: filename.replace(/-/g, ' ') // Replace hyphens with spaces
-        };
-      }
+    Object.entries(imageModules).forEach(([path, module]) => {
+      const fileName = path.split("/").pop() || "";            // "Brick_ConcretePavers.jpg"
+      const noExt = fileName.replace(/\.[^/.]+$/, "");         // "Brick_ConcretePavers"
+      images[noExt] = {
+        default: (module as any).default || (module as string),
+        originalName: fileName,
+      };
     });
-  } catch (error) {
-    console.error('Error loading materials:', error);
+  } catch (err) {
+    console.error("Error loading materials:", err);
   }
 
   return images;
-} 
+}

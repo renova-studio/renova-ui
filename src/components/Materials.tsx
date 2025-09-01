@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { getImages } from "../utils/imageImports";
-import "../styles/Materials.css";
-import Logo from "./Logo";
-import { Divider } from "@mui/material";
+import React, { useEffect, useMemo, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import Logo from "../assets/logo.svg?react";
 import { useTransition } from "../context/TransitionContext";
+import { getImages } from "../utils/imageImports";
 
 interface Material {
   name: string;
@@ -16,285 +14,209 @@ interface Material {
 const Materials: React.FC = () => {
   const [materials, setMaterials] = useState<Record<string, Material[]>>({});
   const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
-    null
-  );
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [selected, setSelected] = useState<Material | null>(null);
+  const [headerTextColor, setHeaderTextColor] = useState("text-white");
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+
   const { startTransition } = useTransition();
   const navigate = useNavigate();
+  const pageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const organizeMaterials = async () => {
-      try {
-        const images = await getImages();
-        const organizedMaterials: Record<string, Material[]> = {};
+    const organize = async () => {
+      const images = await getImages();
+      const grouped: Record<string, Material[]> = {};
 
-        Object.entries(images).forEach(([path, imageModule]) => {
-          const pathParts = path.split("/");
-          const category = pathParts[0];
-          const filename = pathParts[1];
+      Object.entries(images).forEach(([base, mod]) => {
+        // base is like "Brick_ConcretePavers"
+        const [category, itemRaw] = base.split("_");
+        if (!category || !itemRaw) return;
 
-          if (!organizedMaterials[category]) {
-            organizedMaterials[category] = [];
-          }
+        // Insert spaces before capital letters → "Concrete Pavers"
+        const name = itemRaw.replace(/([a-z])([A-Z])/g, "$1 $2");
 
-          organizedMaterials[category].push({
-            name: filename.replace(/-/g, " "),
-            category,
-            imagePath: imageModule.default,
-            originalName: imageModule.originalName,
-          });
+        if (!grouped[category]) grouped[category] = [];
+        grouped[category].push({
+          name,
+          category,
+          imagePath: (mod as any).default,
+          originalName: mod.originalName,
         });
+      });
 
-        setMaterials(organizedMaterials);
-      } catch (error) {
-        console.error("Error loading materials:", error);
-      }
+      setMaterials(grouped);
+
+      // Hero = first image if available
+      const firstCat = Object.keys(grouped)[0];
+      const firstImg = firstCat && grouped[firstCat]?.[0]?.imagePath;
+      setHeroImage(firstImg ?? null);
     };
 
-    organizeMaterials();
+    organize();
   }, []);
 
-  const categories = Object.keys(materials);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const h = window.innerHeight;
+      setHeaderTextColor(y < h - 10 ? "text-white" : "text-primary");
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  const filteredMaterials =
-    activeCategory === "all"
-      ? Object.values(materials).flat()
-      : materials[activeCategory] || [];
+  const categories = useMemo(() => Object.keys(materials), [materials]);
+  const allMaterials = useMemo(
+    () =>
+      activeCategory === "all"
+        ? Object.values(materials).flat()
+        : materials[activeCategory] || [],
+    [materials, activeCategory]
+  );
 
-  const handleImageClick = (material: Material) => {
-    setSelectedMaterial(material);
+  // modal handlers
+  const openPreview = (m: Material) => {
+    setSelected(m);
     document.body.style.overflow = "hidden";
   };
-
-  const handleClosePreview = () => {
-    setSelectedMaterial(null);
+  const closePreview = () => {
+    setSelected(null);
     document.body.style.overflow = "auto";
   };
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const handleNavigation = (path: string) => {
-    toggleMenu();
-    startTransition("in", () => {
-      navigate(path);
-    });
-  };
-
-  // Memoize expensive calculations
-  const materialsList = useMemo(() => {
-    return filteredMaterials.map((material) => ({
-      ...material,
-      // Any expensive transformations here
-    }));
-  }, [filteredMaterials]);
-
-  // Use React.memo for child components
-  const MaterialItem = React.memo(({ material }: { material: Material }) => (
-    <div className="material-card" onClick={() => handleImageClick(material)}>
-      <div className="material-image-container">
-        <img
-          src={material.imagePath}
-          alt={material.originalName || material.name}
-          className="material-image"
-        />
-        <div className="material-overlay">
-          <span className="material-code">
-            {material.name.substring(0, 3).toUpperCase()}
-          </span>
-        </div>
-      </div>
-      <div className="material-info">
-        <h3 className="material-name">
-          {material.originalName || material.name}
-        </h3>
-        <div className="material-meta">
-          <span className="material-category">{material.category}</span>
-        </div>
-      </div>
-    </div>
-  ));
-
   return (
-    <div className="materials-page">
-      <header className="minimal-header">
-        <div className="company-logo-container">
-          <Logo className="header-logo" style={{ filter: "invert(0)" }} />
-          <Divider
-            sx={{
-              padding: "0 0.25rem",
-              opacity: 1,
-              borderRightWidth: "2px",
-              borderColor: "black",
-              marginTop: "0",
-              marginBottom: "0",
-              marginRight: "0.25rem",
-            }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <span className="company-name-text">renova</span>
+    <div ref={pageRef} className="bg-white min-h-screen">
+      {/* Header */}
+      <header className="fixed top-8 left-8 right-8 z-50">
+        <div className="flex items-center justify-between">
+          <Logo fill="currentColor" className={`h-8 ${headerTextColor}`} />
+          <nav className="hidden md:flex items-center gap-8">
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                startTransition("in", () => navigate("/"));
+              }}
+              className={`text-sm font-sans uppercase tracking-wider ${headerTextColor}`}
+            >
+              Home
+            </a>
+          </nav>
         </div>
       </header>
 
-      {/* Add hamburger menu */}
-      <div
-        className={`hamburger-menu-container ${menuOpen ? "menu-open" : ""}`}
-      >
-        <button className="hamburger-button" onClick={toggleMenu}>
-          <span
-            className="hamburger-line"
-            style={{ backgroundColor: menuOpen ? "white" : "black" }}
-          ></span>
-          <span
-            className="hamburger-line"
-            style={{ backgroundColor: menuOpen ? "white" : "black" }}
-          ></span>
-          <span
-            className="hamburger-line"
-            style={{ backgroundColor: menuOpen ? "white" : "black" }}
-          ></span>
-        </button>
-
-        <div className="menu-overlay">
-          <div className="menu-content">
-            <nav className="menu-navigation">
-              <ul>
-                <li>
-                  <a
-                    href="/"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigation("/");
-                    }}
-                  >
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/our-vision"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleMenu();
-                      startTransition("in", () => {
-                        navigate("/our-vision");
-                      });
-                    }}
-                  >
-                    Our Vision
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigation("/");
-                    }}
-                  >
-                    Portfolio
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/materials"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigation("/materials");
-                    }}
-                  >
-                    Materials & Finishes
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/#contact"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigation("/#contact");
-                    }}
-                  >
-                    Contact Us
-                  </a>
-                </li>
-              </ul>
-            </nav>
+      {/* Hero */}
+      <section className="relative flex items-center justify-center overflow-hidden bg-primary">
+        <div className="absolute inset-0">
+        </div>
+        <div className="relative text-white px-8 w-full max-w-7xl">
+          <div className="flex items-center p-16 pt-24">
+            <div>
+              <div className="text-3xl md:text-8xl font-title leading-tight">
+                Materials & Finishes
+              </div>
+              <p className="mt-6 font-sans text-white/85 max-w-3xl">
+                A curated collection of surfaces and textures for your spaces.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="materials-container">
-        <div className="materials-header">
-          <div className="project-number">Materials & Finishes</div>
-          <h1 className="materials-title">Premium Materials Collection</h1>
-          <p className="materials-subtitle">
-            A curated selection of exceptional materials, carefully chosen to
-            enhance your space with sophistication and enduring elegance.
-          </p>
-        </div>
-
-        <div className="category-nav">
-          <button
-            className={`category-button ${
-              activeCategory === "all" ? "active" : ""
-            }`}
-            onClick={() => setActiveCategory("all")}
-          >
-            All
-          </button>
-          {categories.map((category) => (
+      {/* Category filter */}
+      <section className="py-12  px-6 md:px-12 lg:px-24 bg-base-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4">
             <button
-              key={category}
-              className={`category-button ${
-                activeCategory === category ? "active" : ""
+              onClick={() => setActiveCategory("all")}
+              className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${
+                activeCategory === "all"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-white text-primary border-primary hover:bg-primary hover:text-white"
               }`}
-              onClick={() => setActiveCategory(category)}
             >
-              {category}
+              All
             </button>
+            {categories.map((c) => (
+              <button
+                key={c}
+                onClick={() => setActiveCategory(c)}
+                className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${
+                  activeCategory === c
+                    ? "bg-primary text-white border-primary"
+                    : "bg-white text-primary border-primary hover:bg-primary hover:text-white"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Grid */}
+      <section className="pb-28 px-6 md:px-12 lg:px-24 bg-base-200">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          {allMaterials.map((m) => (
+            <article
+              key={`${m.category}-${m.name}`}
+              className="group shadow-lg cursor-pointer transition-transform duration-500 hover:scale-[1.015] border border-neutral/10 rounded-lg"
+              onClick={() => openPreview(m)}
+            >
+              <div className="relative overflow-hidden aspect-[14/16]">
+                <img
+                  src={m.imagePath}
+                  alt={m.originalName || m.name}
+                  className="w-full h-full object-contain transform transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute top-4 left-4 px-3 py-1 bg-primary text-xs font-sans tracking-wider uppercase p-2 rounded lg text-white">
+                  {m.category}
+                </div>
+              </div>
+              <div className="p-5">
+                <h3 className="text-xl font-title text-primary  tracking-wide">
+                  {m.name}
+                </h3>
+              </div>
+            </article>
           ))}
         </div>
+      </section>
 
-        <div className="materials-grid">
-          {materialsList.map((material) => (
-            <MaterialItem key={material.name} material={material} />
-          ))}
-        </div>
-      </div>
-
-      {/* Image Preview Modal */}
-      {selectedMaterial && (
-        <div className="material-preview-overlay" onClick={handleClosePreview}>
+      {/* Modal */}
+      {selected && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={closePreview}
+        >
           <div
-            className="material-preview-container"
+            className="bg-white max-w-7xl w-full grid md:grid-cols-2 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              className="material-preview-close"
-              onClick={handleClosePreview}
-            >
-              ×
-            </button>
-            <div className="material-preview-image-container">
+            <div className="relative overflow-hidden">
               <img
-                src={selectedMaterial.imagePath}
-                alt={selectedMaterial.originalName || selectedMaterial.name}
-                className="material-preview-image"
+                src={selected.imagePath}
+                alt={selected.originalName || selected.name}
+                className="w-full h-full object-cover"
               />
             </div>
-            <div className="material-preview-info">
-              <h2 className="material-preview-title">
-                {selectedMaterial.originalName || selectedMaterial.name}
-              </h2>
-              <div className="material-preview-meta">
-                <span className="material-preview-category">
-                  {selectedMaterial.category}
-                </span>
-                <span className="material-preview-finish">Natural Finish</span>
+            <div className="p-8 flex flex-col justify-center">
+              <div>
+                <div className="bg-primary text-xs font-sans uppercase tracking-wider mb-2 w-fit p-2 rounded lg text-white">
+                  {selected.category}
+                </div>
+                <h3 className="text-5xl font-title text-primary tracking-wide">
+                  {selected.name}
+                </h3>
+              </div>
+              <div className="mt-12">
+                <button
+                  onClick={closePreview}
+                  className="uppercase text-xs font-sans tracking-wider border border-primary text-primary px-4 py-2 hover:bg-primary hover:text-white transition-colors duration-300"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>

@@ -7,19 +7,21 @@ import {
   useParams,
   useNavigate,
 } from "react-router-dom";
-import "./App.css";
-import Logo from "./components/Logo";
 import ProjectDetail from "./components/ProjectDetail";
-import Portfolio from "./components/Portfolio";
+import Home from "./components/Home";
 import { TransitionProvider, useTransition } from "./context/TransitionContext";
 import Materials from "./components/Materials";
 
+import "./App.css"
+
 // Import project 360° images
+import juniper360 from "./assets/projects/juniper-a (1).jpg";
 import lucero360 from "./assets/projects/lucero-360.jpeg";
 import mcknight360 from "./assets/projects/mcknight-360.jpeg";
 import brunson360 from "./assets/projects/brunson-360.jpeg";
 
 // Import project main images (variant A, first image)
+import juniperImage from "./assets/projects/juniper-a (1).jpg";
 import luceroImage from "./assets/projects/lucero-a (2).png";
 import mcknightImage from "./assets/projects/mcknight-a (1).png";
 import brunsonImage from "./assets/projects/brunson-a (1).png";
@@ -41,8 +43,17 @@ interface Project {
 // Project data with correct 360° images and main images
 const projects: Project[] = [
   {
-    id: "lucero",
+    id: "juniper",
     number: "01",
+    title: "JUNIPER",
+    image: juniperImage,
+    image360: juniper360,
+    description:
+      "This immersive visualization captures a bright, spacious kitchen with balanced proportions and refined design details, brought to life with stunning realism.",
+  },
+  {
+    id: "lucero",
+    number: "02",
     title: "LUCERO",
     image: luceroImage,
     image360: lucero360,
@@ -51,7 +62,7 @@ const projects: Project[] = [
   },
   {
     id: "mcknight",
-    number: "02",
+    number: "03",
     title: "MCKNIGHT",
     image: mcknightImage,
     image360: mcknight360,
@@ -60,7 +71,7 @@ const projects: Project[] = [
   },
   {
     id: "brunson",
-    number: "03",
+    number: "04",
     title: "BRUNSON",
     image: brunsonImage,
     image360: brunson360,
@@ -68,6 +79,43 @@ const projects: Project[] = [
       "Efficient design centered around a large window and an open island workspace.",
   },
 ];
+
+// Transition Overlay Component - Moved outside App component
+const TransitionOverlay = () => {
+  const { isTransitioning } = useTransition();
+  const [phase, setPhase] = useState<"growing" | "shrinking">("growing");
+
+  useEffect(() => {
+    if (isTransitioning) {
+      // Start with growing phase
+      setPhase("growing");
+
+      // Switch to shrinking phase after all rectangles grow
+      const timer = setTimeout(() => {
+        setPhase("shrinking");
+      }, 2500); // Adjust this time to allow for all rectangles to grow
+
+      return () => clearTimeout(timer);
+    }
+  }, [isTransitioning]);
+
+  if (!isTransitioning) {
+    return null;
+  }
+
+  return (
+    <div className="fullscreen-overlay">
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+      <div className={`transition-rectangle ${phase}`}></div>
+    </div>
+  );
+};
 
 const App: React.FC = () => {
   const [detailView, setDetailView] = useState<string | null>(null);
@@ -92,7 +140,7 @@ const App: React.FC = () => {
         <div className="app-container">
           <TransitionOverlay />
           <Routes>
-            <Route path="/" element={<Portfolio projects={projects} />} />
+            <Route path="/" element={<Home projects={projects} />} />
             <Route
               path="/portfolio/:projectId"
               element={<ProjectDetailWrapper projects={projects} />}
@@ -124,41 +172,6 @@ const ProjectDetailWrapper: React.FC<ProjectDetailWrapperProps> = ({
   }
 
   return <ProjectDetail project={project} />;
-};
-
-// Transition Overlay Component
-const TransitionOverlay = () => {
-  const { isTransitioning } = useTransition();
-  const [phase, setPhase] = useState<"growing" | "shrinking">("growing");
-
-  useEffect(() => {
-    if (isTransitioning) {
-      // Start with growing phase
-      setPhase("growing");
-
-      // Switch to shrinking phase after all rectangles grow
-      const timer = setTimeout(() => {
-        setPhase("shrinking");
-      }, 2500); // Adjust this time to allow for all rectangles to grow
-
-      return () => clearTimeout(timer);
-    }
-  }, [isTransitioning]);
-
-  if (!isTransitioning) return null;
-
-  return (
-    <div className="fullscreen-overlay">
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-      <div className={`transition-rectangle ${phase}`}></div>
-    </div>
-  );
 };
 
 export default App;

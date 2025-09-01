@@ -23,16 +23,16 @@ export const TransitionProvider: React.FC<{children: React.ReactNode}> = ({ chil
       // Execute callback after the growing phase is complete
       setTimeout(() => {
         cb();
-      }, 2200); // Growing phase + max delay (0.8s animation + 1.2s max delay + 0.2s buffer)
+      }, 1800); // Growing phase + max delay (0.8s animation + 1.2s max delay + 0.2s buffer)
       
       // End the transition after all animations complete
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 4400); // Complete cycle (growing + shrinking + all delays)
+      }, 3800); // Complete cycle (growing + shrinking + all delays)
     } else {
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 4400);
+      }, 3800);
     }
   };
   
