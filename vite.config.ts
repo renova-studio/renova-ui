@@ -19,5 +19,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        // removes content hashes from filenames
+        assetFileNames: 'assets/[name][extname]',
+      },
+    }
   },
 });
