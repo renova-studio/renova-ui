@@ -7,6 +7,8 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import { Divider } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import juniperMain from "..//assets/projects/juniper-a (4).jpg";
+import mcKnightMain from "../assets/projects/mcknight-a (1).png";
 import juniperImage1 from "../assets/projects/juniper-a (4).jpg";
 import juniperImage2 from "../assets/projects/juniper-b (3).jpg";
 import juniperImage3 from "../assets/projects/juniper-a (1).jpg";
@@ -186,7 +188,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
           <div
             className="w-full h-screen bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: `url('/src/assets/projects/juniper-a (4).jpg')`,
+              backgroundImage: `url(${juniperMain})`,
               filter: "brightness(0.5) contrast(1.1)",
             }}
           />
@@ -283,7 +285,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
           <div
             className="w-full h-full bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: `url('/src/assets/projects/mcknight-a (1).png')`,
+              backgroundImage: `url(${mcKnightMain})`,
               filter: "brightness(0.6) contrast(1.1)",
             }}
           />
