@@ -132,8 +132,8 @@ const Materials: React.FC = () => {
               onClick={() => setActiveCategory("all")}
               className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${
                 activeCategory === "all"
-                  ? "bg-primary text-white border-primary"
-                  : "bg-white text-primary border-primary hover:bg-primary hover:text-white"
+                  ? "bg-secondary text-white border-primary"
+                  : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
               }`}
             >
               All
@@ -144,8 +144,8 @@ const Materials: React.FC = () => {
                 onClick={() => setActiveCategory(c)}
                 className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${
                   activeCategory === c
-                    ? "bg-primary text-white border-primary"
-                    : "bg-white text-primary border-primary hover:bg-primary hover:text-white"
+                    ? "bg-secondary text-white border-primary"
+                    : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
                 }`}
               >
                 {c}
@@ -161,21 +161,24 @@ const Materials: React.FC = () => {
           {allMaterials.map((m) => (
             <article
               key={`${m.category}-${m.name}`}
-              className="group shadow-lg cursor-pointer transition-transform duration-500 hover:scale-[1.015] border border-neutral/10 rounded-lg"
+              className="group cursor-pointer transition-transform duration-500 hover:scale-[1.015] rounded-lg"
               onClick={() => openPreview(m)}
             >
-              <div className="relative overflow-hidden aspect-[14/16]">
+              <div className="relative overflow-hidden">
                 <img
                   src={m.imagePath}
                   alt={m.originalName || m.name}
                   className="w-full h-full object-contain transform transition-transform duration-700 group-hover:scale-105"
+                  style={{
+                    filter: "drop-shadow(0 6px 12px rgba(0,0,0,0.35))",
+                  }}
                 />
-                <div className="absolute top-4 left-4 px-3 py-1 bg-primary text-xs font-sans tracking-wider uppercase p-2 rounded lg text-white">
+                <div className="absolute top-4 left-4 px-3 py-1 bg-secondary text-xs font-sans tracking-wider uppercase p-2 rounded lg text-white">
                   {m.category}
                 </div>
               </div>
-              <div className="p-5">
-                <h3 className="text-xl font-title text-primary  tracking-wide">
+              <div className="flex p-5 justify-center text-center">
+                <h3 className="text-xl font-title text-primary tracking-wide">
                   {m.name}
                 </h3>
               </div>
@@ -203,7 +206,7 @@ const Materials: React.FC = () => {
             </div>
             <div className="p-8 flex flex-col justify-center">
               <div>
-                <div className="bg-primary text-xs font-sans uppercase tracking-wider mb-2 w-fit p-2 rounded lg text-white">
+                <div className="bg-secondary text-xs font-sans uppercase tracking-wider mb-2 w-fit p-2 rounded lg text-white">
                   {selected.category}
                 </div>
                 <h3 className="text-5xl font-title text-primary tracking-wide">
@@ -213,7 +216,7 @@ const Materials: React.FC = () => {
               <div className="mt-12">
                 <button
                   onClick={closePreview}
-                  className="uppercase text-xs font-sans tracking-wider border border-primary text-primary px-4 py-2 hover:bg-primary hover:text-white transition-colors duration-300"
+                  className="uppercase text-xs font-sans tracking-wider border border-primary text-primary px-4 py-2 hover:bg-secondary hover:text-white transition-colors duration-300"
                 >
                   Close
                 </button>

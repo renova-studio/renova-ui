@@ -31,6 +31,9 @@ import luceroB2 from "../assets/projects/lucero-b (2).png";
 import luceroB3 from "../assets/projects/lucero-b (3).png";
 import luceroB4 from "../assets/projects/lucero-b (4).png";
 import luceroReal from "../assets/projects/lucero-real.png";
+import luceroS1 from "../assets/projects/lucero-still (1).png"
+import luceroS2 from "../assets/projects/lucero-still (2).png"
+import luceroS3 from "../assets/projects/lucero-still (3).png"
 
 // McKnight project images
 import mcknightA1 from "../assets/projects/mcknight-a (1).png";
@@ -82,10 +85,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const projectImages = React.useMemo(() => {
     const images: Record<string, { src: string; label: string }[]> = {
       juniper: [
+        { src: juniperS2, label: "" },
+        { src: juniperS1, label: "" },
         { src: juniperA1, label: "Option A - Daylight" },
-        { src: juniperS1, label: "View 1" },
-        { src: juniperS2, label: "View 2" },
-        { src: juniperS3, label: "View 3" },
+        { src: juniperS3, label: "" },
         { src: juniperA2, label: "Option A - Forenoon" },
         { src: juniperA3, label: "Option A - Golden Hour" },
         { src: juniperA4, label: "Option A - Twilight" },
@@ -95,7 +98,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
         { src: juniperB4, label: "Option B - Twilight" },
       ],
       lucero: [
+        { src: luceroS1, label: "" },
+        { src: luceroS3, label: "" },
         { src: luceroA1, label: "Option A - Daylight" },
+        { src: luceroS2, label: "" },
         { src: luceroA2, label: "Option A - Golden Hour" },
         { src: luceroA3, label: "Option A - Nightfall" },
         { src: luceroA4, label: "Option A - Twilight" },
@@ -134,10 +140,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const handleGoBack = (event: React.MouseEvent) => {
     event.preventDefault();
     startTransition("out", () => {
-      navigate("/");
+      // send an instruction for Home to scroll to "portfolio"
+      navigate("/", { state: { scrollTo: "portfolio" } });
     });
   };
-
   const openPreview = (imageSrc: string) => {
     setPreviewImage(imageSrc);
     setIsPreviewMode(true);
@@ -284,13 +290,13 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   }, [isPreviewMode]);
 
   return (
-    <div className="h-screen bg-base-200">
+    <div className="h-screen w-screen bg-base-200">
         {/* Full Screen Layout with 12-row Grid */}
         {/* Header - 2/12 rows */}
-        <div className="h-full grid grid-rows-12 px-16">
+        <div className="h-full grid grid-rows-12 px-4 sm:px-8 md:px-12 xl:px-16 ">
           <header className="h-2xl py-8">
             <div className="flex items-center">
-              <div className="flex items-center gap-4 cursor-pointer" onClick={handleGoBack}>
+              <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoBack}>
                 <ArrowBackIcon className="text-primary text-2xl" />
                 <span className="text-sm font-sans uppercase tracking-wider text-primary">Back</span>
               </div>
@@ -357,49 +363,50 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             </div>
           </section>
 
-          {/* Project Details - 4/12 rows */}
-          <section className="mx-auto my-auto h-max row-span-5 max-w-3/5 flex items-center justify-center p-auto">
-            <div className="grid grid-cols-12 justify-between">
-                {/* Left Column - Project Info */}
-                <div className="col-span-6">
-                  <div>
-                    <div className="text-sm font-sans uppercase tracking-wider text-neutral">
-                      {project.number}
-                    </div>
-                    <div className="text-8xl font-title text-primary leading-tight ">
-                      {project.title}
-                    </div>
-                    {project.id === "mcknight" && (
-                      <p className="text-base font-roboto text-neutral leading-relaxed">
-                        Designed by{" "}
-                        <a 
-                          href="https://www.housesprucing.com/portfolio/mindy-mcknight-project" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-accent hover:text-primary transition-colors duration-300"
-                        >
-                          House Sprucing <OpenInNewIcon className="inline-block text-sm" />
-                        </a>
-                      </p>
-                    )}
-                  </div>
+          {/* Project Details */}
+          <section className="w-full max-w-6xl mx-auto py-8 sm:py-12 md:py-16 px-2 sm:px-4 md:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+              <div>
+                <div className="text-xs sm:text-sm font-sans uppercase tracking-wider text-neutral">
+                  {project.number}
                 </div>
-
-                {/* Right Column - About Section */}
-                <div className="col-span-6">
-                  <h2 className="text-lg font-tiempos font-title text-primary">About</h2>
-                    <p className="text-base font-roboto text-neutral leading-relaxed">
-                      {project.description}<br /><br />
-                    </p>
-                    <p className="text-base font-roboto text-neutral leading-relaxed">
-                      <span className="font-semibold text-primary">At Renova, customization is limitless.</span>
-                      <br />
-                      From materials and finishes to lighting and layout, we tailor
-                      every detail to your vision—bringing your unique style to life
-                      with precision and realism.
-                    </p>
+                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-title text-primary leading-tight">
+                  {project.title}
                 </div>
+                {project.id === "mcknight" && (
+                  <p className="text-sm sm:text-base font-roboto text-neutral leading-relaxed mt-2">
+                    Designed by{" "}
+                    <a
+                      href="https://www.housesprucing.com/portfolio/mindy-mcknight-project"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent hover:text-primary transition-colors duration-300"
+                    >
+                      House Sprucing{" "}
+                      <OpenInNewIcon className="inline-block text-xs sm:text-sm" />
+                    </a>
+                  </p>
+                )}
               </div>
+
+              <div>
+                <h2 className="text-lg sm:text-xl md:text-2xl font-tiempos font-title text-primary mb-2">
+                  About
+                </h2>
+                <p className="text-sm sm:text-base md:text-lg font-roboto text-neutral leading-relaxed">
+                  {project.description}
+                </p>
+                <p className="text-sm sm:text-base md:text-lg font-roboto text-neutral leading-relaxed mt-4">
+                  <span className="font-semibold text-primary">
+                    At Renova, customization is limitless.
+                  </span>
+                  <br />
+                  From materials and finishes to lighting and layout, we tailor
+                  every detail to your vision—bringing your unique style to life
+                  with precision and realism.
+                </p>
+              </div>
+            </div>
           </section>
         </div>
 

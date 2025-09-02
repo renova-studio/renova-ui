@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg?react";
 import { Divider } from "@mui/material";
 import { useTransition } from "../context/TransitionContext";
+import videoPoster from "../assets/video-poster.jpg"
+import videoCompressedWebM from "../assets/video-compressed.webm"
+import videoCompressedMp4 from "../assets/video-compressed.mp4"
+import videoCompressedMp4Low from "../assets/video-low.mp4"
 
 const About: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -156,18 +160,18 @@ const About: React.FC = () => {
             loop
             playsInline
             preload="none"
-            poster={require("../assets/video-poster.jpg")}
+            poster={videoPoster}
           >
             <source
-              src={require("../assets/video-compressed.webm")}
+              src={videoCompressedWebM}
               type="video/webm"
             />
             <source
-              src={require("../assets/video-compressed.mp4")}
+              src={videoCompressedMp4}
               type="video/mp4"
             />
             <source
-              src={require("../assets/video-low.mp4")}
+              src={videoCompressedMp4}
               type="video/mp4"
               media="(max-width: 768px) or (prefers-reduced-data: reduce)"
             />
