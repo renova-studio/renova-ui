@@ -293,14 +293,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
       <header className="z-50 p-2 lg:p-6">
         <div className="flex items-center justify-center">
           <nav className="absolute left-4 lg:left-8">
-            <div className="flex items-center text-2xl md:text-3xl text-primary">
+            <div className="flex items-center text-2xl md:text-3xl text-primary cursor-pointer">
               <ArrowBackIcon onClick={(e) => {
                 e.preventDefault();
                 startTransition("in", () => navigate("/"));
               }} sx={{ fontSize: 'inherit' }} />
             </div>
           </nav>
-          <Logo fill="currentColor" className="h-8 text-primary self-center" onClick={(e) => {
+          <Logo fill="currentColor" className="h-8 text-primary self-center cursor-pointer" onClick={(e) => {
             e.preventDefault();
             startTransition("in", () => navigate("/"));
           }} />

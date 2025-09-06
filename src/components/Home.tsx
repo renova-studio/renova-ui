@@ -296,7 +296,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
               RENOVA
             </h1>
             <p className="mt-6 text-base sm:text-lg md:text-xl font-sans text-center opacity-95">
-              We craft virtual experiences that align with your vision —
+              We craft digital experiences that align with your vision —
             </p>
             <p className="mt-2 text-base sm:text-lg md:text-xl font-sans text-center opacity-95">
               turning your imagination into immersive realities.

@@ -104,14 +104,14 @@ const Materials: React.FC = () => {
         <div className="p-4 lg:p-8">
           <div className="flex items-center justify-center text-white">
             <nav className="absolute left-4 lg:left-8 z-10">
-              <div className="flex items-center text-2xl md:text-3xl text-white">
+              <div className="flex items-center text-2xl md:text-3xl text-white cursor-pointer">
                 <ArrowBackIcon onClick={(e) => {
                   e.preventDefault();
                   startTransition("in", () => navigate("/"));
                 }} sx={{ fontSize: 'inherit' }} />
               </div>
             </nav>
-            <Logo fill="currentColor" className="h-8 text-white self-center z-10"
+            <Logo fill="currentColor" className="h-8 text-white self-center z-10 cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 startTransition("in", () => navigate("/"));
@@ -138,7 +138,7 @@ const Materials: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3 md:gap-4">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${activeCategory === "all"
+              className={`cursor-pointer uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${activeCategory === "all"
                 ? "bg-secondary text-white border-primary"
                 : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
                 }`}
@@ -149,7 +149,7 @@ const Materials: React.FC = () => {
               <button
                 key={c}
                 onClick={() => setActiveCategory(c)}
-                className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${activeCategory === c
+                className={`cursor-pointer uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${activeCategory === c
                   ? "bg-secondary text-white border-primary"
                   : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
                   }`}
