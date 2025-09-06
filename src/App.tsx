@@ -25,8 +25,6 @@ import juniperImage from "./assets/projects/juniper-a (1).jpg";
 import luceroImage from "./assets/projects/lucero-a (2).png";
 import mcknightImage from "./assets/projects/mcknight-a (1).png";
 import brunsonImage from "./assets/projects/brunson-a (1).png";
-import About from "./components/About";
-
 // Define project type
 interface Project {
   id: string;
@@ -146,7 +144,6 @@ const App: React.FC = () => {
               element={<ProjectDetailWrapper projects={projects} />}
             />
             <Route path="/materials" element={<Materials />} />
-            <Route path="/our-vision" element={<About />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
