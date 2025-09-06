@@ -261,7 +261,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
 
       {/* ABOUT */}
       <section className="relative bg-base-200 min-h-screen flex items-center">
-        <div className="mx-auto container px-6 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 md:py-24 w-full">
+        <div className="mx-auto container px-10 sm:px-10 lg:px-16 xl:px-0 py-16 sm:py-20 md:py-24 w-full">
           <div className="grid gap-10 md:grid-cols-12 md:gap-16 items-center">
             <div className="md:col-span-5">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-tiempos font-normal text-primary pb-6 md:pb-8 leading-tight">
@@ -335,7 +335,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
             }}
           />
         </div>
-        <div className="mx-auto container px-6 sm:px-10 lg:px-16 xl:px-0 py-0 sm:py-20 md:py-24 w-full">
+        <div className="mx-auto px-10 sm:px-10 md:px-12 lg:px-48 xl:px-48 py-16 sm:py-10 md:py-12 lg:py-6 w-full">
           <div className="absolute inset-0 -z-10">
             <div
               className="w-full h-full bg-cover bg-center bg-no-repeat"
@@ -348,11 +348,11 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
           <div className="px-6 sm:px-8 py-20 sm:py-28 md:py-36 w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
               <div className="text-white self-center z-10">
-                <div className="text-xs sm:text-sm font-sans uppercase tracking-wider text-gray-300 mb-3 sm:mb-4">
+                <div className="text-sm sm:text-md font-sans uppercase tracking-wider text-gray-300 mb-3 sm:mb-4">
                   PORTFOLIO
                 </div>
                 <h2 className="font-tiempos font-normal leading-tight mb-6 sm:mb-8">
-                  <span className="block font-title text-4xl sm:text-5xl">
+                  <span className="block font-title text-4xl sm:text-5xl md:">
                     Design that
                   </span>
                   <span className="block font-title uppercase text-5xl sm:text-6xl md:text-7xl">
@@ -397,7 +397,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       {/* PROCESS */}
       <section
         id="process"
-        className="relative bg-white min-h-screen flex items-center"
+        className="relative bg-white to-primary min-h-screen flex items-center"
       >
         <div className="mx-auto container px-6 sm:px-8 py-20 sm:py-24 md:py-28 w-full">
           <div className="mb-10 sm:mb-12 text-center">
@@ -467,7 +467,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       {/* CONTACT */}
       <section
         id="contact"
-        className="bg-primary min-h-screen flex items-center"
+        className="bg-primary min-h-1/2 flex items-center"
       >
         <div className="mx-autocontainer px-6 sm:px-8 py-16 sm:py-20 md:py-24 text-center text-white w-full">
           <h2 className="font-title font-normal mb-6 sm:mb-8 text-4xl sm:text-5xl md:text-6xl lg:text-7xl">

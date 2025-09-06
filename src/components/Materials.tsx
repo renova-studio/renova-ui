@@ -91,7 +91,7 @@ const Materials: React.FC = () => {
       <header className="fixed top-8 left-8 right-8 z-50">
         <div className="flex items-center justify-between">
           <Logo fill="currentColor" className={`h-8 ${headerTextColor}`} />
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="md:flex items-center gap-8">
             <a
               href="/"
               onClick={(e) => {
