@@ -69,7 +69,6 @@ interface ProjectDetailProps {
 }
 
 const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
-  const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { startTransition } = useTransition();
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -160,33 +159,33 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
     animIdRef.current = null;
   };
-  
+
   // Temporarily disable scroll-snap during animation so the browser doesn't "grab" the scroll
   const animateScrollTo = (target: number, duration = 600) => {
     const sc = scrollContainerRef.current;
     if (!sc) return;
-  
+
     cancelAnim();
-  
+
     const start = sc.scrollLeft;
     const delta = target - start;
     if (Math.abs(delta) < 0.5) {
       sc.scrollLeft = target;
       return;
     }
-  
+
     // Save & disable snap just for the tween
     const originalSnap = sc.style.scrollSnapType;
     sc.style.scrollSnapType = 'none';
-  
+
     const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
     const t0 = performance.now();
-  
+
     const step = (now: number) => {
       const p = Math.min((now - t0) / duration, 1);
       const eased = easeInOutQuad(p);
       sc.scrollLeft = start + delta * eased;
-  
+
       if (p < 1) {
         animIdRef.current = requestAnimationFrame(step);
       } else {
@@ -195,19 +194,19 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
         animIdRef.current = null;
       }
     };
-  
+
     animIdRef.current = requestAnimationFrame(step);
   };
-  
+
   const leftOf = (el: HTMLElement, sc: HTMLElement) => {
     const er = el.getBoundingClientRect();
     const sr = sc.getBoundingClientRect();
     return er.left - sr.left + sc.scrollLeft;
   };
-  
+
   const getItems = () =>
     Array.from(scrollContainerRef.current?.children ?? []) as HTMLElement[];
-  
+
   // First item whose left edge is strictly to the right of current viewport left
   const nextIndex = (sc: HTMLElement, items: HTMLElement[]) => {
     const x = sc.scrollLeft + 1; // small epsilon
@@ -216,7 +215,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     }
     return items.length - 1;
   };
-  
+
   // Last item whose left edge is strictly to the left of current viewport left
   const prevIndex = (sc: HTMLElement, items: HTMLElement[]) => {
     const x = sc.scrollLeft - 1;
@@ -227,7 +226,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     }
     return idx;
   };
-  
+
   /**
    * Scroll to index with an option to allow a no-op if already at that item.
    * This prevents the "first item + click left jumps forward" bug.
@@ -237,44 +236,44 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     if (!sc) return;
     const items = getItems();
     if (!items.length) return;
-  
+
     const clamped = Math.max(0, Math.min(idx, items.length - 1));
     const target = leftOf(items[clamped], sc);
     const diff = Math.abs(target - sc.scrollLeft);
-  
+
     if (diff < 1 && allowNoop) {
       // already aligned; do nothing
       return;
     }
     animateScrollTo(target, duration);
   };
-  
+
   const scrollRight = () => {
     const sc = scrollContainerRef.current;
     if (!sc) return;
     const items = getItems();
     if (!items.length) return;
-  
+
     const idx = nextIndex(sc, items);
     // when moving right, if we're already perfectly on that idx, advance one more (if possible)
     const alignedTarget = leftOf(items[idx], sc);
     const alreadyAligned = Math.abs(alignedTarget - sc.scrollLeft) < 1;
     const finalIdx = alreadyAligned ? Math.min(idx + 1, items.length - 1) : idx;
-  
+
     scrollToIdx(finalIdx, /*allowNoop*/ false, 600);
   };
-  
+
   const scrollLeft = () => {
     const sc = scrollContainerRef.current;
     if (!sc) return;
     const items = getItems();
     if (!items.length) return;
-  
+
     const idx = prevIndex(sc, items);
     // when moving left, if we're already at the first item, no-op
     const isFirst = idx === 0 && Math.abs(leftOf(items[0], sc) - sc.scrollLeft) < 1;
     if (isFirst) return;
-  
+
     scrollToIdx(idx, /*allowNoop*/ true, 600);
   };
   // Escape key handler for preview mode
@@ -290,133 +289,138 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   }, [isPreviewMode]);
 
   return (
-    <div className="h-screen w-screen bg-base-200">
-        {/* Full Screen Layout with 12-row Grid */}
-        {/* Header - 2/12 rows */}
-        <div className="h-full grid grid-rows-12 px-4 sm:px-8 md:px-12 xl:px-16 ">
-          <header className="h-2xl py-8">
-            <div className="flex items-center">
-              <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoBack}>
-                <ArrowBackIcon className="text-primary text-2xl" />
-                <span className="text-sm font-sans uppercase tracking-wider text-primary">Back</span>
-              </div>
-              <div className="absolute left-1/2 transform -translate-x-1/2">
-                <Logo fill="currentColor" className="h-8 will-change-transform text-primary" />
-              </div>
+    <div className="min-h-screen">
+      <header className="z-50 p-2 lg:p-6">
+        <div className="flex items-center justify-center">
+          <nav className="absolute left-4 lg:left-8">
+            <div className="flex items-center text-2xl md:text-3xl text-primary">
+              <ArrowBackIcon onClick={(e) => {
+                e.preventDefault();
+                startTransition("in", () => navigate("/"));
+              }} sx={{ fontSize: 'inherit' }} />
             </div>
-          </header>
+          </nav>
+          <Logo fill="currentColor" className="h-8 text-primary self-center" onClick={(e) => {
+            e.preventDefault();
+            startTransition("in", () => navigate("/"));
+          }} />
 
-        {/* Image Row - 6/12 rows */}
-          <section className="row-span-7">
-            <div className="relative flex items-center h-full">
-              <div 
-                ref={scrollContainerRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide w-full h-full"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {projectImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className="flex-shrink-0 cursor-pointer group h-full"
-                    onClick={() => openPreview(image.src)}
-                  >
-                    <div className="relative overflow-hidden bg-white shadow-lg h-full">
-                      <img
-                        src={image.src}
-                        alt={image.label}
-                        className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                      
-                      {/* Image Label Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
-                        <div className="text-sm font-sans text-white">
-                          {image.label}
-                        </div>
+        </div>
+      </header>
+
+
+      {/* Project Details */}
+      <div className="mx-auto">
+        <section className="h-[50vh] md:h-[75vh] lg:h-[65vh]">
+          <div className="relative flex items-center h-full">
+            <button
+              onClick={scrollLeft}
+              className="absolute top-1/2 transform -translate-y-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
+            >
+              <ChevronLeftIcon className="text-2xl" />
+            </button>
+            <div
+              ref={scrollContainerRef}
+              className="flex gap-4 overflow-x-auto scrollbar-hide w-full h-full"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {projectImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 cursor-pointer group h-full"
+                  onClick={() => openPreview(image.src)}
+                >
+                  <div className="relative overflow-hidden bg-white shadow-lg h-full">
+                    <img
+                      src={image.src}
+                      alt={image.label}
+                      className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+
+                    {/* Image Label Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
+                      <div className="text-sm font-sans text-white">
+                        {image.label}
                       </div>
+                    </div>
 
-                      {/* Hover Effect */}
-                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-300 flex items-center justify-center">
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-sans">
-                          Click to view
-                        </div>
+                    {/* Hover Effect */}
+                    <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-300 flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-sans">
+                        Click to view
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {/* Scroll Navigation Arrows */}
-              <button
-                onClick={scrollLeft}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-primary p-3 rounded-full shadow-lg transition-all duration-300"
-              >
-                <ChevronLeftIcon className="text-2xl" />
-              </button>
-              
-              <button
-                onClick={scrollRight}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-primary p-3 rounded-full shadow-lg transition-all duration-300"
-              >
-                <ChevronRightIcon className="text-2xl" />
-              </button>
-            </div>
-          </section>
-
-          {/* Project Details */}
-          <section className="w-full max-w-6xl mx-auto py-8 sm:py-12 md:py-16 px-2 sm:px-4 md:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
-              <div>
-                <div className="text-xs sm:text-sm font-sans uppercase tracking-wider text-neutral">
-                  {project.number}
                 </div>
-                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-title text-primary leading-tight">
-                  {project.title}
-                </div>
-                {project.id === "mcknight" && (
-                  <p className="text-sm sm:text-base font-roboto text-neutral leading-relaxed mt-2">
-                    Designed by{" "}
-                    <a
-                      href="https://www.housesprucing.com/portfolio/mindy-mcknight-project"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent hover:text-primary transition-colors duration-300"
-                    >
-                      House Sprucing{" "}
-                      <OpenInNewIcon className="inline-block text-xs sm:text-sm" />
-                    </a>
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <h2 className="text-lg sm:text-xl md:text-2xl font-tiempos font-title text-primary mb-2">
-                  About
-                </h2>
-                <p className="text-sm sm:text-base md:text-lg font-roboto text-neutral leading-relaxed">
-                  {project.description}
-                </p>
-                <p className="text-sm sm:text-base md:text-lg font-roboto text-neutral leading-relaxed mt-4">
-                  <span className="font-semibold text-primary">
-                    At Renova, customization is limitless.
-                  </span>
-                  <br />
-                  From materials and finishes to lighting and layout, we tailor
-                  every detail to your vision—bringing your unique style to life
-                  with precision and realism.
-                </p>
-              </div>
+              ))}
             </div>
-          </section>
-        </div>
+
+            {/* Scroll Navigation Arrows */}
+
+
+            <button
+              onClick={scrollRight}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
+            >
+              <ChevronRightIcon className="text-2xl" />
+            </button>
+          </div>
+        </section>
+        <section className="container mx-auto p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+            <div>
+              <div className="text-xs sm:text-sm font-sans uppercase tracking-wider text-neutral">
+                {project.number}
+              </div>
+              <div className="text-4xl sm:text-5xl lg:text-7xl font-title text-primary leading-tight">
+                {project.title}
+              </div>
+              {project.id === "mcknight" && (
+                <p className="text-sm sm:text-base font-roboto text-neutral leading-relaxed mt-2">
+                  Designed by{" "}
+                  <a
+                    href="https://www.housesprucing.com/portfolio/mindy-mcknight-project"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent hover:text-primary transition-colors duration-300"
+                  >
+                    House Sprucing{" "}
+                    <OpenInNewIcon className="inline-block text-xs sm:text-sm" />
+                  </a>
+                </p>
+              )}
+            </div>
+
+            <div>
+              <h2 className="text-lg sm:text-xlfont-tiempos font-title text-primary mb-2">
+                About
+              </h2>
+              <p className="text-sm sm:text-base lg:text-lg font-roboto text-neutral leading-relaxed">
+                {project.description}
+              </p>
+              <p className="text-xs sm:text-sm lg:text-md font-roboto text-neutral leading-relaxed mt-4">
+                <span className="font-semibold text-primary">
+                  At Renova, customization is limitless.
+                </span>
+                <br />
+                From materials and finishes to lighting and layout, we tailor
+                every detail to your vision—bringing your unique style to life
+                with precision and realism.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
 
       {/* Image Preview Modal */}
       {isPreviewMode && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8"
           onClick={closePreview}
         >
-          <button 
+          <button
             className="absolute top-8 right-8 text-white text-4xl hover:text-gray-300 transition-colors duration-300"
             onClick={closePreview}
           >
@@ -431,7 +435,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
         </div>
       )}
 
-    
+
     </div>
   );
 };

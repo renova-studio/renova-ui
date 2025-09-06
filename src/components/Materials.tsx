@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg?react";
 import { useTransition } from "../context/TransitionContext";
 import { getImages } from "../utils/imageImports";
+import juniperHero from "../assets/projects/juniper-a (4).jpg";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 interface Material {
   name: string;
@@ -88,53 +90,58 @@ const Materials: React.FC = () => {
   return (
     <div ref={pageRef} className="bg-white min-h-screen">
       {/* Header */}
-      <header className="fixed top-8 left-8 right-8 z-50">
-        <div className="flex items-center justify-between">
-          <Logo fill="currentColor" className={`h-8 ${headerTextColor}`} />
-          <nav className="md:flex items-center gap-8">
-            <a
-              href="/"
+      <section className="relative overflow-hidden bg-primary">
+        {/* Background image pinned to this section, clipped by overflow-hidden */}
+        <img
+          src={juniperHero}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 z-9 h-full w-full object-cover"
+          style={{ filter: "brightness(0.5) contrast(1.1)" }}
+        />
+
+        {/* Content drives the section’s height; set your desired paddings */}
+        <div className="p-4 lg:p-8">
+          <div className="flex items-center justify-center text-white">
+            <nav className="absolute left-4 lg:left-8 z-10">
+              <div className="flex items-center text-2xl md:text-3xl text-white">
+                <ArrowBackIcon onClick={(e) => {
+                  e.preventDefault();
+                  startTransition("in", () => navigate("/"));
+                }} sx={{ fontSize: 'inherit' }} />
+              </div>
+            </nav>
+            <Logo fill="currentColor" className="h-8 text-white self-center z-10"
               onClick={(e) => {
                 e.preventDefault();
                 startTransition("in", () => navigate("/"));
-              }}
-              className={`text-sm font-sans uppercase tracking-wider ${headerTextColor}`}
-            >
-              Home
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      {/* Hero */}
-      <section className="relative flex items-center justify-center overflow-hidden bg-primary">
-        <div className="absolute inset-0">
-        </div>
-        <div className="relative text-white px-8 w-full max-w-7xl">
-          <div className="flex items-center p-16 pt-24">
-            <div>
-              <div className="text-3xl md:text-8xl font-title leading-tight">
-                Materials & Finishes
-              </div>
-              <p className="mt-6 font-sans text-white/85 max-w-3xl">
-                A curated collection of surfaces and textures for your spaces.
-              </p>
-            </div>
+              }} />
           </div>
+
+          <section className="relative z-10 flex flex-col p-8 items-center justify-center">
+            <div className="text-3xl md:text-4xl lg:text-6xl xl:text-8xl font-title leading-tight text-white">
+              Materials & Finishes
+            </div>
+            <p className="mt-6 font-sans text-white/85 max-w-3xl text-center">
+              A curated collection of surfaces and textures for your spaces.
+            </p>
+          </section>
         </div>
       </section>
 
+      {/* Hero */}
+
+
       {/* Category filter */}
-      <section className="py-12  px-6 md:px-12 lg:px-24 bg-base-200">
+      <section className="py-12 px-6 md:px-12 lg:px-24 bg-base-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center gap-3 md:gap-4">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${
-                activeCategory === "all"
-                  ? "bg-secondary text-white border-primary"
-                  : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
-              }`}
+              className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${activeCategory === "all"
+                ? "bg-secondary text-white border-primary"
+                : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
+                }`}
             >
               All
             </button>
@@ -142,11 +149,10 @@ const Materials: React.FC = () => {
               <button
                 key={c}
                 onClick={() => setActiveCategory(c)}
-                className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${
-                  activeCategory === c
-                    ? "bg-secondary text-white border-primary"
-                    : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
-                }`}
+                className={`uppercase text-xs md:text-sm font-sans tracking-wider px-3 py-1 border rounded-full ${activeCategory === c
+                  ? "bg-secondary text-white border-primary"
+                  : "bg-white text-primary border-primary hover:bg-secondary hover:text-white"
+                  }`}
               >
                 {c}
               </button>

@@ -291,7 +291,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
           <Logo
             className="header-logo"
             style={{ filter: isInProject() ? "invert(1)" : "invert(0)" }}
-          />
+            onClick={(e) => {
+              e.preventDefault();
+              startTransition("in", () => navigate("/"));
+            }} />
           <Divider
             sx={{
               padding: "0 0.25rem",
@@ -372,9 +375,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                     <img
                       src={project.image}
                       alt={project.title}
-                      className={`thumbnail-image ${
-                        loadedImages.has(project.id) ? "loaded" : ""
-                      }`}
+                      className={`thumbnail-image ${loadedImages.has(project.id) ? "loaded" : ""
+                        }`}
                       loading="lazy"
                       onLoad={() => handleImageLoad(project.id)}
                     />
@@ -409,9 +411,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
                   <img
                     src={project.image}
                     alt=""
-                    className={`section-background-image parallax-element ${
-                      loadedImages.has(`hero-${project.id}`) ? "loaded" : ""
-                    }`}
+                    className={`section-background-image parallax-element ${loadedImages.has(`hero-${project.id}`) ? "loaded" : ""
+                      }`}
                     style={getParallaxStyle(-0.1, true)}
                     loading="lazy"
                     onLoad={() => handleImageLoad(`hero-${project.id}`)}

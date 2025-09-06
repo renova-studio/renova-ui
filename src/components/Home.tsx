@@ -33,19 +33,67 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
   const navigate = useNavigate();
   const { startTransition } = useTransition();
 
+  // Set these to your actual section IDs and desired colors
+  const SECTION_IDS = ["hero", "about", "portfolio", "process", "contact"] as const;
+  const COLOR_BY_ID: Record<(typeof SECTION_IDS)[number], string> = {
+    hero: "text-white",
+    about: "text-primary",
+    portfolio: "text-white",
+    process: "text-primary",
+    contact: "text-white",
+  };
+
+  const HEADER_OFFSET_PX = 40; // e.g., 72 if you have a fixed header
+
   useEffect(() => {
+    let sections: Array<{ id: string; top: number }> = [];
+    let resizeTimer: number | undefined;
+
+    const computeSectionTops = () => {
+      sections = SECTION_IDS.map((id) => {
+        const el = document.getElementById(id);
+        const top =
+          el?.getBoundingClientRect().top != null
+            ? Math.round(el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET_PX)
+            : Number.POSITIVE_INFINITY;
+        return { id, top };
+      }).sort((a, b) => a.top - b.top);
+    };
+
+    const onResize = () => {
+      // Debounce recompute to avoid thrashing during resize
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        computeSectionTops();
+        onScroll(); // update color immediately after recompute
+      }, 120);
+    };
+
     const onScroll = () => {
       const y = window.scrollY;
-      const h = window.innerHeight;
-      if (y < h - 20) setHeaderTextColor("text-white");
-      else if (y < h * 2 - 20) setHeaderTextColor("text-primary");
-      else if (y < h * 3 - 20) setHeaderTextColor("text-white");
-      else if (y < h * 4 - 20) setHeaderTextColor("text-primary");
-      else setHeaderTextColor("text-white");
+      // find the last section whose top is <= y
+      let currentId = SECTION_IDS[0];
+      for (let i = 0; i < sections.length; i++) {
+        if (y >= sections[i].top) currentId = sections[i].id as typeof currentId;
+        else break;
+      }
+      setHeaderTextColor(COLOR_BY_ID[currentId] ?? "text-white");
     };
+
+    // initial compute + initial paint
+    computeSectionTops();
     onScroll();
+
+    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("orientationchange", onResize);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    return () => {
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   const handleViewProject = (projectId: string, e: React.MouseEvent) => {
@@ -108,7 +156,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50">
         <div
-          className={`mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between ${headerTextColor}`}
+          className={`mx-auto p-2 md:p-4 lg:p-8 flex items-center justify-between ${headerTextColor}`}
         >
           <Logo fill="currentColor" className="h-8 w-auto shrink-0" />
           {/* Desktop Nav */}
@@ -162,26 +210,24 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
           >
             {mobileOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
-         {/* Mobile Menu (smooth slide + fade, always mounted for exit animation) */}
+          {/* Mobile Menu (smooth slide + fade, always mounted for exit animation) */}
           <div
             aria-hidden={!mobileOpen}
-            className={`sm:hidden fixed inset-0 z-40 transition-[opacity,backdrop-filter] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              mobileOpen
-                ? "opacity-100 backdrop-blur-[2px]"
-                : "opacity-0 pointer-events-none backdrop-blur-0"
-            }`}
+            className={`sm:hidden fixed inset-0 z-40 transition-[opacity,backdrop-filter] duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${mobileOpen
+              ? "opacity-100 backdrop-blur-[2px]"
+              : "opacity-0 pointer-events-none backdrop-blur-0"
+              }`}
           >
             <div
               className="absolute inset-0 bg-black/40"
               onClick={() => setMobileOpen(false)}
             />
             <div
-              className={`absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-xl p-6 flex flex-col gap-4 will-change-transform transform transition-transform duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                mobileOpen ? "translate-x-0" : "translate-x-full"
-              }`}
+              className={`absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-xl p-6 flex flex-col gap-4 will-change-transform transform transition-transform duration-[360ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${mobileOpen ? "translate-x-0" : "translate-x-full"
+                }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-title text-xl">Menu</span>
+              <div className="flex items-center justify-between mb-2 text-primary">
+                <span className="font-title text-2xl">Renova</span>
                 <button
                   aria-label="Close menu"
                   onClick={() => setMobileOpen(false)}
@@ -234,7 +280,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       </header>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section id={`${SECTION_IDS[0]}`} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <div
             className="w-full h-full bg-cover bg-center bg-no-repeat"
@@ -260,11 +306,11 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       </section>
 
       {/* ABOUT */}
-      <section className="relative bg-base-200 min-h-screen flex items-center">
-        <div className="mx-auto container px-10 sm:px-10 lg:px-16 xl:px-0 py-16 sm:py-20 md:py-24 w-full">
+      <section id={`${SECTION_IDS[1]}`} className="relative bg-base-200 min-h-screen flex items-center">
+        <div className="mx-auto container px-10 sm:px-20 lg:px-16 xl:px-0 py-16 sm:py-20 md:py-24 w-full">
           <div className="grid gap-10 md:grid-cols-12 md:gap-16 items-center">
             <div className="md:col-span-5">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-tiempos font-normal text-primary pb-6 md:pb-8 leading-tight">
+              <h2 className="text-4xl sm:text-2xl md:text-3xl font-tiempos font-normal text-primary pb-6 md:pb-8 leading-tight">
                 <span className="block font-title uppercase">
                   Building Spaces,
                 </span>
@@ -272,7 +318,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
                   Shaping Stories
                 </span>
               </h2>
-              <p className="text-base sm:text-lg font-sans text-neutral leading-relaxed max-w-prose pb-6 md:pb-8">
+              <p className="text-base font-sans text-neutral leading-relaxed max-w-prose pb-6 md:pb-8">
                 At Renova, we believe that architectural visualization is not
                 just about how a space looks — it's about how it makes you feel.
                 We approach each project as a layered composition of light,
@@ -322,30 +368,29 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       </section>
 
       {/* PORTFOLIO */}
-      <section
-        id="portfolio"
+      <section id={`${SECTION_IDS[2]}`}
         className="relative bg-base-200 min-h-screen flex items-center"
       >
-        <div className="absolute inset-0">
-          <div
-            className="w-full h-full bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `url("${mcKnightHero}")`,
-              filter: "brightness(0.5) contrast(1.1)",
-            }}
-          />
-        </div>
-        <div className="mx-auto px-10 sm:px-10 md:px-12 lg:px-48 xl:px-48 py-16 sm:py-10 md:py-12 lg:py-6 w-full">
-          <div className="absolute inset-0 -z-10">
+        <div className="mx-auto container px-10 sm:px-10 lg:px-16 xl:px-0 py-16 sm:py-20 md:py-24 w-full">
+          <div className="absolute inset-0">
             <div
               className="w-full h-full bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage: `url("${mcKnightHero}")`,
-                filter: "brightness(0.6) contrast(1.1)",
+                filter: "brightness(0.5) contrast(1.1)",
               }}
             />
           </div>
-          <div className="px-6 sm:px-8 py-20 sm:py-28 md:py-36 w-full">
+          <div className="w-full">
+            <div className="absolute inset-0 -z-10">
+              <div
+                className="w-full h-full bg-cover bg-center bg-no-repeat"
+                style={{
+                  backgroundImage: `url("${mcKnightHero}")`,
+                  filter: "brightness(0.6) contrast(1.1)",
+                }}
+              />
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
               <div className="text-white self-center z-10">
                 <div className="text-sm sm:text-md font-sans uppercase tracking-wider text-gray-300 mb-3 sm:mb-4">
@@ -395,8 +440,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       </section>
 
       {/* PROCESS */}
-      <section
-        id="process"
+      <section id={`${SECTION_IDS[3]}`}
         className="relative bg-white to-primary min-h-screen flex items-center"
       >
         <div className="mx-auto container px-6 sm:px-8 py-20 sm:py-24 md:py-28 w-full">
@@ -465,8 +509,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
       </section>
 
       {/* CONTACT */}
-      <section
-        id="contact"
+      <section id={`${SECTION_IDS[4]}`}
         className="bg-primary min-h-1/2 flex items-center"
       >
         <div className="mx-autocontainer px-6 sm:px-8 py-16 sm:py-20 md:py-24 text-center text-white w-full">
