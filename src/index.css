@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@plugin "tailwindcss-animate";
 
 /* Custom Fonts */
 @font-face {
@@ -9,8 +10,6 @@
   font-style: normal;
   font-display: swap;
 }
-
-@plugin "daisyui";
 
 @plugin "daisyui/theme" {
   name: "renova";

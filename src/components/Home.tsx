@@ -13,6 +13,7 @@ import juniperImage2 from "../assets/projects/juniper-b (3).jpg";
 import juniperImage3 from "../assets/projects/juniper-a (1).jpg";
 import juniperImage4 from "../assets/projects/juniper-b (4).jpg";
 import Logo from "../assets/logo.svg?react";
+import { ArchitectureOutlined, Launch, RedeemOutlined, WorkspacesOutlined } from "@mui/icons-material";
 
 interface Project {
   id: string;
@@ -32,7 +33,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const { startTransition } = useTransition();
-
+  const demoLink = "https://app.renovavisuals.com/demo";
   // Set these to your actual section IDs and desired colors
   const SECTION_IDS = ["hero", "about", "portfolio", "process", "contact"] as const;
   const COLOR_BY_ID: Record<(typeof SECTION_IDS)[number], string> = {
@@ -199,6 +200,15 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
             >
               Contact
             </button>
+            <a
+              href={demoLink}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={`btn ${headerTextColor == 'text-white' ? "" : "btn-primary"} btn-md opacity-95 `}>
+              Explore Demo
+              <Launch />
+            </a>
+
           </nav>
 
           {/* Mobile Hamburger */}
@@ -274,6 +284,9 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
               >
                 Contact
               </button>
+              <a target="_blank"
+                rel="noreferrer noopener"
+                className="btn-primary btn btn-sm sm:md:btn-lg lg:btn-lg xl:btn-xl text-sm p-6 uppercase">Explore the Demo</a>
             </div>
           </div>
         </div>
@@ -290,17 +303,24 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
             }}
           />
         </div>
-        <div className="relative text-white w-full">
-          <div className="mx-auto container px-6 sm:px-8 py-24 sm:py-32 md:py-40">
-            <h1 className="font-title leading-tight text-center select-none text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl">
-              RENOVA
-            </h1>
-            <p className="mt-6 text-base sm:text-lg md:text-xl font-sans text-center opacity-95">
-              We craft digital experiences that align with your vision —
+        <div className="relative container text-white w-full flex items-center">
+          <div className="mx-auto flex flex-col items-center justify-center px-6 sm:px-8 py-24 sm:py-16 md:py-40">
+            <div className="flex flex-row items-center justify-center font-title leading-tight text-6xl lg:text-7xl xl:text-8xl mb-12 gap-2">
+              <Logo fill="currentColor" className="h-[1em] w-[1em]" /> 
+              <div className="divider divder-primary divider-horizontal before:bg-white after:bg-white"></div>
+              Renova 
+            </div>
+            <p className="mb-10 text-white/80 text-base text-center md:text-start md:text-lg font-sans max-w-prose">
+              At Renova, we turn your renovation ideas into stunning visuals you can explore. We help homeowners and designers bring ideas to life with photorealistic 3D renders and 360° panoramic material configurators.
             </p>
-            <p className="mt-2 text-base sm:text-lg md:text-xl font-sans text-center opacity-95">
-              turning your imagination into immersive realities.
-            </p>
+            <a
+              href={demoLink}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={`btn btn-primary btn-md max-w-prose`}>
+              Explore Demo
+              <Launch />
+            </a>
           </div>
         </div>
       </section>
@@ -310,27 +330,31 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
         <div className="mx-auto container px-10 sm:px-20 lg:px-16 xl:px-0 py-16 sm:py-20 md:py-24 w-full">
           <div className="grid gap-10 md:grid-cols-12 md:gap-16 items-center">
             <div className="md:col-span-5">
-              <h2 className="text-4xl sm:text-2xl md:text-3xl font-tiempos font-normal text-primary pb-6 md:pb-8 leading-tight">
+              <div className="text-4xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-tiempos font-normal text-primary pb-6 md:pb-8 leading-tight">
                 <span className="block font-title uppercase">
-                  Building Spaces,
+                  Design
                 </span>
-                <span className="block text-right font-title uppercase">
-                  Shaping Stories
+                <span className="block font-title uppercase">
+                  With Confidence
                 </span>
-              </h2>
-              <p className="text-base font-sans text-neutral leading-relaxed max-w-prose pb-6 md:pb-8">
-                At Renova, we believe that architectural visualization is not
-                just about how a space looks — it's about how it makes you feel.
-                We approach each project as a layered composition of light,
-                form, and purpose, where clarity meets quiet beauty.
+              </div>
+              <p className="text-lg font-sans text-neutral leading-relaxed pb-2 md:pb-4">
+                At Renova, we believe your home should feel like you.
               </p>
-              <button className="group text-primary uppercase tracking-wider text-xs sm:text-sm font-sans hover:text-accent transition-all duration-300 inline-flex items-center gap-2 border-b border-primary pb-1">
-                LEARN MORE
-                <ArrowForwardIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
+              <p className="text-lg font-sans text-neutral leading-relaxed pb-6 md:pb-8">
+                With your exact measurements and material preferences, we help you picture every detail before any construction begins.
+              </p>
+              <a
+                href={demoLink}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="group text-primary uppercase tracking-wider text-xs sm:text-sm font-sans hover:scale-105 transition-all duration-300 inline-flex items-center gap-2 border-b border-primary pb-1">
+                Explore the Demo
+                <Launch className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </a>
             </div>
-            <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-              <div className="grid gap-4 md:gap-6">
+            <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-5 gap-2 md:gap-4 lg:gap-4">
+              <div className="grid gap-4 col-span-3 md:gap-4 ">
                 <div className="relative overflow-hidden shadow-sm">
                   <img
                     src={juniperImage1}
@@ -339,7 +363,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
                   />
                 </div>
               </div>
-              <div className="grid gap-4 md:gap-6">
+              <div className="grid gap-2 col-span-2 md:gap-4">
                 <div className="relative overflow-hidden shadow-sm">
                   <img
                     src={juniperImage2}
@@ -392,21 +416,20 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
               />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-              <div className="text-white self-center z-10">
+              <div className="text-white self-center pr-10 z-10">
                 <div className="text-sm sm:text-md font-sans uppercase tracking-wider text-gray-300 mb-3 sm:mb-4">
                   PORTFOLIO
                 </div>
-                <h2 className="font-tiempos font-normal leading-tight mb-6 sm:mb-8">
-                  <span className="block font-title text-4xl sm:text-5xl md:">
-                    Design that
+                <div className="flex flex-col text-4xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-tiempos font-normal text-white pb-6 md:pb-8 leading-tight">
+                  <span className="font-title uppercase">
+                    Made by Us,
                   </span>
-                  <span className="block font-title uppercase text-5xl sm:text-6xl md:text-7xl">
-                    Resonates
+                  <span className=" font-title uppercase">
+                    Inspired by You
                   </span>
-                </h2>
-                <p className="text-base sm:text-lg font-sans text-gray-200/90 leading-relaxed max-w-prose mb-8 sm:mb-12">
-                  Discover how we transform your designs into immersive,
-                  emotionally engaging experiences.
+                </div>
+                <p className="text-lg sm:text-xl font-sans text-gray-200/90 leading-relaxed mb-8 sm:mb-12">
+                  Explore remodel designs we've brought to life.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 self-center">
@@ -448,44 +471,41 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
             <div className="text-xs sm:text-sm font-sans uppercase tracking-wider text-primary/70">
               Our Process
             </div>
-            <h2 className="mt-2 text-4xl sm:text-5xl md:text-6xl font-title text-primary leading-tight">
-              Clarity. Craft. Consistency.
+            <h2 className="mt-2 text-5xl sm:text-6xl md:text-7xl font-title text-primary leading-tight">
+              Reveal. Reimagine. Results.
             </h2>
-            <p className="mt-4 text-base sm:text-lg font-sans text-neutral max-w-prose mx-auto">
+            <p className="mt-4 text-lg sm:text-xl font-sans text-neutral max-w-prose mx-auto">
               A simple, reliable path from concept to photoreal. Designed to
               keep momentum and reduce friction.
             </p>
           </div>
-          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 items-stretch">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-3 lg:grid-cols-3 items-stretch">
             {[
               {
                 n: "01",
-                t: "Discover",
-                d: "Share plans, dimensions, and references. We align on scope, schedule, and desired mood.",
-                s: "1–2 days",
+                t: "Reflect",
+                d: "We begin by understanding your goals, style, and vision. This phase sets the foundation, making sure every detail reflects what you want for your space.",
+                s: "1-2 days",
+                i: () => <WorkspacesOutlined sx={{ fontSize: 'inherit' }} />
               },
               {
                 n: "02",
-                t: "Design",
-                d: "Block out geometry and lighting; establish composition and materials with first looks.",
-                s: "3–5 days",
+                t: "Reimagine",
+                d: "Next, we turn ideas into visuals. With high-quality renderings and 360° views, you can select different materials and finishes before making decisions.",
+                s: "3-5 days",
+                i: () => <ArchitectureOutlined sx={{ fontSize: 'inherit' }} />
               },
               {
                 n: "03",
-                t: "Refine",
-                d: "Iterate on angles, materials, and styling; subtle lighting passes and detail polish.",
-                s: "1–3 days",
-              },
-              {
-                n: "04",
-                t: "Deliver",
-                d: "Final exports (stills + 360s); optional configurator variants packaged and ready to share.",
-                s: "Same day",
+                t: "Results",
+                d: "Once you're confident in the design, we deliver a finalized version you can share with contractors - your roadmap to a remodel done right.",
+                s: "1-2 days",
+                i: () => <RedeemOutlined sx={{ fontSize: 'inherit' }} />
               },
             ].map((step) => (
               <article
                 key={step.n}
-                className="group border border-neutral/15 bg-white shadow-sm p-5 sm:p-6 transition-transform duration-300 hover:-translate-y-0.5 flex flex-col"
+                className="card border border-neutral/15 bg-white shadow-sm p-5 sm:p-6 transition-transform duration-300 hover:-translate-y-0.5 flex flex-col"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-primary font-title text-xl sm:text-2xl">
@@ -495,10 +515,10 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
                     {step.s}
                   </span>
                 </div>
-                <h3 className="mt-3 sm:mt-4 text-xl sm:text-2xl font-title text-primary uppercase">
-                  {step.t}
-                </h3>
-                <p className="mt-2 sm:mt-3 text-sm font-sans text-neutral">
+                <div className="flex items-center mt-3 sm:mt-4 text-2xl sm:text-4xl md:text-2xl lg:text-4xl font-title text-primary uppercase gap-2 py-3">
+                  {step.i()} {step.t}
+                </div>
+                <p className="mt-2 sm:mt-3 text-base font-sans text-neutral">
                   {step.d}
                 </p>
               </article>

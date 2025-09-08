@@ -198,35 +198,46 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     animIdRef.current = requestAnimationFrame(step);
   };
 
-  const leftOf = (el: HTMLElement, sc: HTMLElement) => {
+  const centerOf = (el: HTMLElement, sc: HTMLElement) => {
     const er = el.getBoundingClientRect();
     const sr = sc.getBoundingClientRect();
-    return er.left - sr.left + sc.scrollLeft;
+    return er.left - sr.left + sc.scrollLeft + er.width / 2;
   };
+
+  // NEW: viewport center
+  const viewportCenter = (sc: HTMLElement) => sc.scrollLeft + sc.clientWidth / 2;
+
+  // NEW: clamp a target scrollLeft into valid range
+  const clampScroll = (sc: HTMLElement, x: number) =>
+    Math.max(0, Math.min(x, sc.scrollWidth - sc.clientWidth));
+
+  // NEW: the scrollLeft value that centers a given item
+  const targetFor = (el: HTMLElement, sc: HTMLElement) =>
+    clampScroll(sc, centerOf(el, sc) - sc.clientWidth / 2);
 
   const getItems = () =>
     Array.from(scrollContainerRef.current?.children ?? []) as HTMLElement[];
 
   // First item whose left edge is strictly to the right of current viewport left
   const nextIndex = (sc: HTMLElement, items: HTMLElement[]) => {
-    const x = sc.scrollLeft + 1; // small epsilon
+    const vc = viewportCenter(sc) + 1; // epsilon
     for (let i = 0; i < items.length; i++) {
-      if (leftOf(items[i], sc) > x) return i;
+      if (centerOf(items[i], sc) > vc) return i;
     }
     return items.length - 1;
   };
 
+
   // Last item whose left edge is strictly to the left of current viewport left
   const prevIndex = (sc: HTMLElement, items: HTMLElement[]) => {
-    const x = sc.scrollLeft - 1;
+    const vc = viewportCenter(sc) - 1;
     let idx = 0;
     for (let i = 0; i < items.length; i++) {
-      if (leftOf(items[i], sc) < x) idx = i;
+      if (centerOf(items[i], sc) < vc) idx = i;
       else break;
     }
     return idx;
   };
-
   /**
    * Scroll to index with an option to allow a no-op if already at that item.
    * This prevents the "first item + click left jumps forward" bug.
@@ -238,13 +249,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     if (!items.length) return;
 
     const clamped = Math.max(0, Math.min(idx, items.length - 1));
-    const target = leftOf(items[clamped], sc);
+    const target = targetFor(items[clamped], sc);
     const diff = Math.abs(target - sc.scrollLeft);
 
-    if (diff < 1 && allowNoop) {
-      // already aligned; do nothing
-      return;
-    }
+    if (diff < 1 && allowNoop) return;
     animateScrollTo(target, duration);
   };
 
@@ -255,8 +263,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     if (!items.length) return;
 
     const idx = nextIndex(sc, items);
-    // when moving right, if we're already perfectly on that idx, advance one more (if possible)
-    const alignedTarget = leftOf(items[idx], sc);
+    const alignedTarget = targetFor(items[idx], sc);
     const alreadyAligned = Math.abs(alignedTarget - sc.scrollLeft) < 1;
     const finalIdx = alreadyAligned ? Math.min(idx + 1, items.length - 1) : idx;
 
@@ -270,9 +277,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     if (!items.length) return;
 
     const idx = prevIndex(sc, items);
-    // when moving left, if we're already at the first item, no-op
-    const isFirst = idx === 0 && Math.abs(leftOf(items[0], sc) - sc.scrollLeft) < 1;
-    if (isFirst) return;
+    const firstAligned = idx === 0 && Math.abs(targetFor(items[0], sc) - sc.scrollLeft) < 1;
+    if (firstAligned) return;
 
     scrollToIdx(idx, /*allowNoop*/ true, 600);
   };
@@ -321,13 +327,13 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
             </button>
             <div
               ref={scrollContainerRef}
-              className="flex gap-4 overflow-x-auto scrollbar-hide w-full h-full"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              className="carousel carousel-center gap-4 overflow-x-auto w-full h-full"
+              // style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {projectImages.map((image, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 cursor-pointer group h-full"
+                  className="carousel-item"
                   onClick={() => openPreview(image.src)}
                 >
                   <div className="relative overflow-hidden bg-white shadow-lg h-full">
