@@ -306,7 +306,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
         </div>
 
         <div className="relative z-10 container text-white w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 px-6 sm:px-8 py-24 sm:py-16 md:py-40">
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center lg:gap-8 px-6 sm:px-8 py-24 sm:py-16 md:py-40">
 
             {/* Left: Heading + Copy + CTA */}
             <div className="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-prose">
