@@ -13,6 +13,7 @@ import juniperImage2 from "../assets/projects/juniper-b (3).jpg";
 import juniperImage3 from "../assets/projects/juniper-a (1).jpg";
 import juniperImage4 from "../assets/projects/juniper-b (4).jpg";
 import Logo from "../assets/logo.svg?react";
+import juniperDemo from "../assets/juniper-demo-compressed.mp4"
 import { ArchitectureOutlined, Launch, RedeemOutlined, WorkspacesOutlined } from "@mui/icons-material";
 
 interface Project {
@@ -204,7 +205,7 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
               href={demoLink}
               target="_blank"
               rel="noreferrer noopener"
-              className={`btn ${headerTextColor == 'text-white' ? "" : "btn-primary"} btn-md opacity-95 `}>
+              className={`btn ${headerTextColor == 'text-white' ? "btn-accent" : "btn-accent"} btn-md opacity-95 `}>
               Explore Demo
               <Launch />
             </a>
@@ -303,24 +304,48 @@ const Home: React.FC<HomeProps> = ({ projects }) => {
             }}
           />
         </div>
-        <div className="relative container text-white w-full flex items-center">
-          <div className="mx-auto flex flex-col items-center justify-center px-6 sm:px-8 py-24 sm:py-16 md:py-40">
-            <div className="flex flex-row items-center justify-center font-title leading-tight text-6xl lg:text-7xl xl:text-8xl mb-12 gap-2">
-              <Logo fill="currentColor" className="h-[1em] w-[1em]" /> 
-              <div className="divider divder-primary divider-horizontal before:bg-white after:bg-white"></div>
-              Renova 
+
+        <div className="relative z-10 container text-white w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 px-6 sm:px-8 py-24 sm:py-16 md:py-40">
+
+            {/* Left: Heading + Copy + CTA */}
+            <div className="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-prose">
+              <div className="flex flex-row items-center justify-center lg:justify-start font-title leading-tight text-6xl lg:text-7xl xl:text-8xl mb-12 gap-2">
+                <Logo fill="currentColor" className="h-[1em] w-[1em]" />
+                <div className="divider divider-primary divider-horizontal before:bg-white after:bg-white"></div>
+                Renova
+              </div>
+
+              <p className="mb-10 text-white/80 text-base md:text-lg font-sans">
+                At Renova, we turn your renovation ideas into stunning visuals you can explore. <br/> <br/>
+                We help homeowners and designers bring ideas to life with photorealistic 3D renders and 360° panoramic material configurators.
+              </p>
+
+             
             </div>
-            <p className="mb-10 text-white/80 text-base text-center md:text-start md:text-lg font-sans max-w-prose">
-              At Renova, we turn your renovation ideas into stunning visuals you can explore. We help homeowners and designers bring ideas to life with photorealistic 3D renders and 360° panoramic material configurators.
-            </p>
-            <a
-              href={demoLink}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={`btn btn-primary btn-md max-w-prose`}>
-              Explore Demo
-              <Launch />
-            </a>
+
+            {/* Right: Video */}
+            <div className="w-full flex flex-col gap-4 justify-center lg:justify-end">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full max-w-3xl rounded-2xl shadow-xl ring-1 ring-white/10"
+              >
+                <source src={juniperDemo} type="video/mp4" />
+              </video>
+               <a
+                href={demoLink}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="btn btn-accent btn-md"
+              >
+                Explore Demo
+                <Launch />
+              </a>
+            </div>
+
           </div>
         </div>
       </section>
