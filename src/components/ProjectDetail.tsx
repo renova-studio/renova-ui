@@ -321,14 +321,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
           <div className="relative flex items-center h-full">
             <button
               onClick={scrollLeft}
-              className="absolute top-1/2 transform -translate-y-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
+              className="absolute top-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
             >
               <ChevronLeftIcon className="text-2xl" />
             </button>
             <div
               ref={scrollContainerRef}
               className="carousel carousel-center gap-4 overflow-x-auto w-full h-full"
-              // style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {projectImages.map((image, index) => (
                 <div
@@ -336,11 +336,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
                   className="carousel-item"
                   onClick={() => openPreview(image.src)}
                 >
-                  <div className="relative overflow-hidden bg-white shadow-lg h-full">
+                  <div className="relative overflow-hidden bg-white shadow-lg h-full w-auto">
                     <img
                       src={image.src}
                       alt={image.label}
-                      className="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-auto object-contain "
                       loading="lazy"
                     />
 
@@ -367,7 +367,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
 
             <button
               onClick={scrollRight}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
+              className="absolute right-0 top-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
             >
               <ChevronRightIcon className="text-2xl" />
             </button>
