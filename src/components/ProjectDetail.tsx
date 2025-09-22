@@ -73,7 +73,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const { startTransition } = useTransition();
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [previewImage, setPreviewImage] = useState<string>("");
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -136,13 +135,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     return images[project.id] || [];
   }, [project.id]);
 
-  const handleGoBack = (event: React.MouseEvent) => {
-    event.preventDefault();
-    startTransition("out", () => {
-      // send an instruction for Home to scroll to "portfolio"
-      navigate("/", { state: { scrollTo: "portfolio" } });
-    });
-  };
   const openPreview = (imageSrc: string) => {
     setPreviewImage(imageSrc);
     setIsPreviewMode(true);
@@ -153,135 +145,42 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     setPreviewImage("");
   };
 
-  const animIdRef = useRef<number | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const cancelAnim = () => {
-    if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
-    animIdRef.current = null;
+  const scrollToIndex = (idx: number) => {
+    if (!trackRef.current) return;
+    const len = projectImages.length;
+    const next = (idx + len) % len;
+    const el = slidesRef.current[next];
+    if (!el) return;
+    trackRef.current.scrollTo({ left: el.offsetLeft, behavior: "smooth" });
+    setActiveIndex(next);
   };
 
-  // Temporarily disable scroll-snap during animation so the browser doesn't "grab" the scroll
-  const animateScrollTo = (target: number, duration = 600) => {
-    const sc = scrollContainerRef.current;
-    if (!sc) return;
+  const onPrev = () => scrollToIndex(activeIndex - 1);
+  const onNext = () => scrollToIndex(activeIndex + 1);
 
-    cancelAnim();
-
-    const start = sc.scrollLeft;
-    const delta = target - start;
-    if (Math.abs(delta) < 0.5) {
-      sc.scrollLeft = target;
-      return;
-    }
-
-    // Save & disable snap just for the tween
-    const originalSnap = sc.style.scrollSnapType;
-    sc.style.scrollSnapType = 'none';
-
-    const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
-    const t0 = performance.now();
-
-    const step = (now: number) => {
-      const p = Math.min((now - t0) / duration, 1);
-      const eased = easeInOutQuad(p);
-      sc.scrollLeft = start + delta * eased;
-
-      if (p < 1) {
-        animIdRef.current = requestAnimationFrame(step);
-      } else {
-        // restore snap after animation ends (use proximity/mandatory in your CSS)
-        sc.style.scrollSnapType = originalSnap;
-        animIdRef.current = null;
-      }
-    };
-
-    animIdRef.current = requestAnimationFrame(step);
-  };
-
-  const centerOf = (el: HTMLElement, sc: HTMLElement) => {
-    const er = el.getBoundingClientRect();
-    const sr = sc.getBoundingClientRect();
-    return er.left - sr.left + sc.scrollLeft + er.width / 2;
-  };
-
-  // NEW: viewport center
-  const viewportCenter = (sc: HTMLElement) => sc.scrollLeft + sc.clientWidth / 2;
-
-  // NEW: clamp a target scrollLeft into valid range
-  const clampScroll = (sc: HTMLElement, x: number) =>
-    Math.max(0, Math.min(x, sc.scrollWidth - sc.clientWidth));
-
-  // NEW: the scrollLeft value that centers a given item
-  const targetFor = (el: HTMLElement, sc: HTMLElement) =>
-    clampScroll(sc, centerOf(el, sc) - sc.clientWidth / 2);
-
-  const getItems = () =>
-    Array.from(scrollContainerRef.current?.children ?? []) as HTMLElement[];
-
-  // First item whose left edge is strictly to the right of current viewport left
-  const nextIndex = (sc: HTMLElement, items: HTMLElement[]) => {
-    const vc = viewportCenter(sc) + 1; // epsilon
-    for (let i = 0; i < items.length; i++) {
-      if (centerOf(items[i], sc) > vc) return i;
-    }
-    return items.length - 1;
-  };
+  // keep dots/arrow state in sync as user drags
+  useEffect(() => {
+    if (!trackRef.current) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            const idx = Number((e.target as HTMLElement).dataset.idx);
+            if (!Number.isNaN(idx)) setActiveIndex(idx);
+          }
+        }
+      },
+      { root: trackRef.current, threshold: 0.6 }
+    );
+    slidesRef.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, [projectImages.length]);
 
 
-  // Last item whose left edge is strictly to the left of current viewport left
-  const prevIndex = (sc: HTMLElement, items: HTMLElement[]) => {
-    const vc = viewportCenter(sc) - 1;
-    let idx = 0;
-    for (let i = 0; i < items.length; i++) {
-      if (centerOf(items[i], sc) < vc) idx = i;
-      else break;
-    }
-    return idx;
-  };
-  /**
-   * Scroll to index with an option to allow a no-op if already at that item.
-   * This prevents the "first item + click left jumps forward" bug.
-   */
-  const scrollToIdx = (idx: number, allowNoop = true, duration = 600) => {
-    const sc = scrollContainerRef.current;
-    if (!sc) return;
-    const items = getItems();
-    if (!items.length) return;
-
-    const clamped = Math.max(0, Math.min(idx, items.length - 1));
-    const target = targetFor(items[clamped], sc);
-    const diff = Math.abs(target - sc.scrollLeft);
-
-    if (diff < 1 && allowNoop) return;
-    animateScrollTo(target, duration);
-  };
-
-  const scrollRight = () => {
-    const sc = scrollContainerRef.current;
-    if (!sc) return;
-    const items = getItems();
-    if (!items.length) return;
-
-    const idx = nextIndex(sc, items);
-    const alignedTarget = targetFor(items[idx], sc);
-    const alreadyAligned = Math.abs(alignedTarget - sc.scrollLeft) < 1;
-    const finalIdx = alreadyAligned ? Math.min(idx + 1, items.length - 1) : idx;
-
-    scrollToIdx(finalIdx, /*allowNoop*/ false, 600);
-  };
-
-  const scrollLeft = () => {
-    const sc = scrollContainerRef.current;
-    if (!sc) return;
-    const items = getItems();
-    if (!items.length) return;
-
-    const idx = prevIndex(sc, items);
-    const firstAligned = idx === 0 && Math.abs(targetFor(items[0], sc) - sc.scrollLeft) < 1;
-    if (firstAligned) return;
-
-    scrollToIdx(idx, /*allowNoop*/ true, 600);
-  };
   // Escape key handler for preview mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -318,42 +217,49 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
       {/* Project Details */}
       <div className="mx-auto">
         <section className="h-[50vh] md:h-[75vh] lg:h-[65vh]">
-          <div className="relative flex items-center h-full">
-            <button
-              onClick={scrollLeft}
-              className="absolute top-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
-            >
-              <ChevronLeftIcon className="text-2xl" />
-            </button>
+          <div className="relative flex h-full items-center">
+            {/* Prev */}
+            {projectImages.length > 1 && (
+              <button
+                onClick={onPrev}
+                className="absolute left-0 top-1/2 z-10 mx-4 -translate-y-1/2 rounded-full bg-white/90 p-2 text-primary shadow-lg transition-all duration-300 hover:bg-white md:p-3"
+                aria-label="Previous"
+              >
+                <ChevronLeftIcon className="text-2xl" />
+              </button>
+            )}
+
+            {/* DaisyUI carousel (no anchors) */}
             <div
-              ref={scrollContainerRef}
-              className="carousel carousel-center gap-4 overflow-x-auto w-full h-full"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              ref={trackRef}
+              className="carousel carousel-center w-full h-full gap-4 overflow-x-auto snap-x snap-mandatory"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {projectImages.map((image, index) => (
                 <div
                   key={index}
-                  className="carousel-item"
+                  ref={(el: HTMLDivElement | null) => {
+                    // IMPORTANT: braces => no implicit return value
+                    slidesRef.current[index] = el;
+                  }}
+                  data-idx={index}
+                  className="carousel-item w-full snap-start justify-center"
                   onClick={() => openPreview(image.src)}
                 >
-                  <div className="relative overflow-hidden bg-white shadow-lg h-full w-auto">
+                  <div className="group relative h-full w-auto overflow-hidden bg-white">
                     <img
                       src={image.src}
                       alt={image.label}
-                      className="h-full w-auto object-contain "
-                      loading="lazy"
+                      className="block h-full w-auto min-w-0 object-contain"
+                      loading={index === 0 ? undefined : "eager"}
+                      decoding="async"
                     />
 
-                    {/* Image Label Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
-                      <div className="text-sm font-sans text-white">
-                        {image.label}
-                      </div>
-                    </div>
+   
 
-                    {/* Hover Effect */}
-                    <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-300 flex items-center justify-center">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-sans">
+                    {/* Hover affordance */}
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-primary/0 transition-all duration-300 group-hover:bg-primary/10">
+                      <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-white text-lg font-sans">
                         Click to view
                       </div>
                     </div>
@@ -362,16 +268,31 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
               ))}
             </div>
 
-            {/* Scroll Navigation Arrows */}
-
-
-            <button
-              onClick={scrollRight}
-              className="absolute right-0 top-1/2 z-10 mx-4 bg-white/90 hover:bg-white text-primary p-2 md:p-3 rounded-full shadow-lg transition-all duration-300"
-            >
-              <ChevronRightIcon className="text-2xl" />
-            </button>
+            {/* Next */}
+            {projectImages.length > 1 && (
+              <button
+                onClick={onNext}
+                className="absolute right-0 top-1/2 z-10 mx-4 -translate-y-1/2 rounded-full bg-white/90 p-2 text-primary shadow-lg transition-all duration-300 hover:bg-white md:p-3"
+                aria-label="Next"
+              >
+                <ChevronRightIcon className="text-2xl" />
+              </button>
+            )}
           </div>
+
+          {/* Optional dots */}
+          {projectImages.length > 1 && (
+            <div className="mt-3 flex justify-center gap-1.5">
+              {projectImages.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => scrollToIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-2 rounded-full transition ${i === activeIndex ? "w-6 bg-neutral-900" : "w-2 bg-neutral-300 hover:bg-neutral-400"}`}
+                />
+              ))}
+            </div>
+          )}
         </section>
         <section className="container mx-auto p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
