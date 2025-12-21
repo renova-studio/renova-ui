@@ -6,12 +6,14 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ComputerIcon from "@mui/icons-material/Computer";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 // Import all project images
 // Juniper project images
-import juniperS1 from "../assets/projects/juniper-still (1).jpg"
-import juniperS2 from "../assets/projects/juniper-still (2).jpg"
-import juniperS3 from "../assets/projects/juniper-still (3).jpg"
+import juniperS1 from "../assets/projects/juniper-still (1).jpg";
+import juniperS2 from "../assets/projects/juniper-still (2).jpg";
+import juniperS3 from "../assets/projects/juniper-still (3).jpg";
 import juniperA1 from "../assets/projects/juniper-a (1).jpg";
 import juniperA2 from "../assets/projects/juniper-a (2).jpg";
 import juniperA3 from "../assets/projects/juniper-a (3).jpg";
@@ -31,9 +33,9 @@ import luceroB2 from "../assets/projects/lucero-b (2).png";
 import luceroB3 from "../assets/projects/lucero-b (3).png";
 import luceroB4 from "../assets/projects/lucero-b (4).png";
 import luceroReal from "../assets/projects/lucero-real.png";
-import luceroS1 from "../assets/projects/lucero-still (1).png"
-import luceroS2 from "../assets/projects/lucero-still (2).png"
-import luceroS3 from "../assets/projects/lucero-still (3).png"
+import luceroS1 from "../assets/projects/lucero-still (1).png";
+import luceroS2 from "../assets/projects/lucero-still (2).png";
+import luceroS3 from "../assets/projects/lucero-still (3).png";
 
 // McKnight project images
 import mcknightA1 from "../assets/projects/mcknight-a (1).png";
@@ -44,7 +46,7 @@ import mcknightB1 from "../assets/projects/mcknight-b (1).png";
 import mcknightB2 from "../assets/projects/mcknight-b (2).png";
 import mcknightB3 from "../assets/projects/mcknight-b (3).png";
 import mcknightB4 from "../assets/projects/mcknight-b (4).png";
-import mcknightReal from "../assets/projects/mcknight-real-warped.png";
+import mcknightReal from "../assets/projects/mcknight-real.png";
 
 // Brunson project images
 import brunsonA1 from "../assets/projects/brunson-a (1).png";
@@ -73,6 +75,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const { startTransition } = useTransition();
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [previewImage, setPreviewImage] = useState<string>("");
+  const diffRef = useRef<HTMLDivElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const renderedImageRef = useRef<HTMLDivElement | null>(null);
+  const sliderHandleRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -135,6 +141,25 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     return images[project.id] || [];
   }, [project.id]);
 
+  // Get rendered vs real comparison data for projects that have real photos
+  const comparisonData = React.useMemo(() => {
+    const comparisons: Record<string, { rendered: string; real: string }> = {
+      lucero: {
+        rendered: luceroA1,
+        real: luceroReal,
+      },
+      mcknight: {
+        rendered: mcknightA1,
+        real: mcknightReal,
+      },
+      brunson: {
+        rendered: brunsonA1,
+        real: brunsonReal,
+      },
+    };
+    return comparisons[project.id] || null;
+  }, [project.id]);
+
   const openPreview = (imageSrc: string) => {
     setPreviewImage(imageSrc);
     setIsPreviewMode(true);
@@ -162,7 +187,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
   const onPrev = () => scrollToIndex(activeIndex - 1);
   const onNext = () => scrollToIndex(activeIndex + 1);
 
-  // keep dots/arrow state in sync as user drags
+  // Keep dots/arrow state in sync as user drags
   useEffect(() => {
     if (!trackRef.current) return;
     const io = new IntersectionObserver(
@@ -180,56 +205,205 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
     return () => io.disconnect();
   }, [projectImages.length]);
 
-
   // Escape key handler for preview mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isPreviewMode) {
+      if (e.key === "Escape" && isPreviewMode) {
         closePreview();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isPreviewMode]);
 
-  return (
-    <div className="min-h-screen">
-      <header className="z-50 p-2 lg:p-6">
-        <div className="flex items-center justify-center">
-          <nav className="absolute left-4 lg:left-8">
-            <div className="flex items-center text-2xl md:text-3xl text-primary cursor-pointer">
-              <ArrowBackIcon onClick={(e) => {
-                e.preventDefault();
-                startTransition("in", () => navigate("/"));
-              }} sx={{ fontSize: 'inherit' }} />
-            </div>
-          </nav>
-          <Logo fill="currentColor" className="h-8 text-primary self-center cursor-pointer" onClick={(e) => {
-            e.preventDefault();
-            startTransition("in", () => navigate("/"));
-          }} />
+  // Custom slider handlers for mouse and touch - optimized for performance
+  useEffect(() => {
+    if (
+      !comparisonData ||
+      !diffRef.current ||
+      !renderedImageRef.current ||
+      !sliderHandleRef.current
+    )
+      return;
 
+    const container = diffRef.current;
+    const renderedImage = renderedImageRef.current;
+    const sliderHandle = sliderHandleRef.current;
+
+    let startX = 0;
+    let startPosition = 50;
+    let dragging = false;
+    let rafId: number | null = null;
+    let currentPosition = 50;
+
+    // Direct DOM manipulation for smooth performance - no state updates during drag
+    const updateSliderPosition = (percentage: number) => {
+      currentPosition = Math.max(0, Math.min(100, percentage));
+      const clipValue = 100 - currentPosition;
+      renderedImage.style.clipPath = `inset(0 ${clipValue}% 0 0)`;
+      sliderHandle.style.left = `${currentPosition}%`;
+      // No state update - direct DOM manipulation only for performance
+    };
+
+    const handleMove = (clientX: number) => {
+      if (!dragging) return;
+
+      // Cancel any pending animation frame
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+
+      rafId = requestAnimationFrame(() => {
+        const rect = container.getBoundingClientRect();
+        const diffX = clientX - startX;
+        const diffPercentage = (diffX / rect.width) * 100;
+        const newPosition = startPosition + diffPercentage;
+        updateSliderPosition(newPosition);
+      });
+    };
+
+    const handleStart = (clientX: number) => {
+      dragging = true;
+      setIsDragging(true);
+      startX = clientX;
+      startPosition = currentPosition;
+    };
+
+    const handleEnd = () => {
+      dragging = false;
+      setIsDragging(false);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
+
+    // Mouse events
+    const handleMouseDown = (e: MouseEvent) => {
+      e.preventDefault();
+      handleStart(e.clientX);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (dragging) {
+        e.preventDefault();
+        handleMove(e.clientX);
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (dragging) {
+        handleEnd();
+      }
+    };
+
+    // Touch events
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        handleStart(e.touches[0].clientX);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (dragging && e.touches.length === 1) {
+        e.preventDefault();
+        handleMove(e.touches[0].clientX);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      if (dragging) {
+        handleEnd();
+      }
+    };
+
+    // Click/tap to jump to position
+    const handleClick = (e: MouseEvent) => {
+      if (!dragging) {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        updateSliderPosition(percentage);
+      }
+    };
+
+    container.addEventListener("mousedown", handleMouseDown);
+    container.addEventListener("click", handleClick);
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
+
+    // Always add global events for dragging
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+    document.addEventListener("touchend", handleTouchEnd);
+
+    // Initialize position
+    updateSliderPosition(50);
+
+    return () => {
+      container.removeEventListener("mousedown", handleMouseDown);
+      container.removeEventListener("click", handleClick);
+      container.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, [comparisonData]);
+
+  return (
+    <div className="min-h-screen bg-base-200">
+      {/* Header with DaisyUI navbar pattern */}
+      <header className="navbar bg-base-100 sticky top-0 z-50 shadow-sm min-h-0 py-2">
+        <div className="navbar-start">
+          <button
+            className="btn btn-ghost btn-xs btn-circle"
+            onClick={(e) => {
+              e.preventDefault();
+              startTransition("in", () => navigate("/"));
+            }}
+            aria-label="Back to home"
+          >
+            <ArrowBackIcon sx={{ fontSize: "1.25rem" }} />
+          </button>
         </div>
+        <div className="navbar-center">
+          <Logo
+            fill="currentColor"
+            className="h-6 text-primary cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              startTransition("in", () => navigate("/"));
+            }}
+          />
+        </div>
+        <div className="navbar-end">{/* Empty for symmetry */}</div>
       </header>
 
-
-      {/* Project Details */}
-      <div className="mx-auto">
-        <section className="h-[50vh] md:h-[75vh] lg:h-[65vh]">
+      {/* Main Content */}
+      <main className="container mx-auto">
+        {/* Image Carousel Section */}
+        <section className="h-[50vh] md:h-[75vh] lg:h-[65vh] mb-8">
           <div className="relative flex h-full items-center">
-            {/* Prev */}
+            {/* Previous Button */}
             {projectImages.length > 1 && (
               <button
                 onClick={onPrev}
-                className="absolute left-0 top-1/2 z-10 mx-4 -translate-y-1/2 rounded-full bg-white/90 p-2 text-primary shadow-lg transition-all duration-300 hover:bg-white md:p-3"
-                aria-label="Previous"
+                className="btn btn-circle btn-primary bg-primary/90 absolute left-4 z-10 shadow-lg"
+                aria-label="Previous image"
               >
-                <ChevronLeftIcon className="text-2xl" />
+                <ChevronLeftIcon />
               </button>
             )}
 
-            {/* DaisyUI carousel (no anchors) */}
+            {/* Carousel */}
             <div
               ref={trackRef}
               className="carousel carousel-center w-full h-full gap-4 overflow-x-auto snap-x snap-mandatory"
@@ -239,130 +413,240 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ project }) => {
                 <div
                   key={index}
                   ref={(el: HTMLDivElement | null) => {
-                    // IMPORTANT: braces => no implicit return value
                     slidesRef.current[index] = el;
                   }}
                   data-idx={index}
                   className="carousel-item w-full snap-start justify-center"
                   onClick={() => openPreview(image.src)}
                 >
-                  <div className="group relative h-full w-auto overflow-hidden bg-white">
-                    <img
-                      src={image.src}
-                      alt={image.label}
-                      className="block h-full w-auto min-w-0 object-contain"
-                      loading={index === 0 ? undefined : "eager"}
-                      decoding="async"
-                    />
-
-   
-
-                    {/* Hover affordance */}
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-primary/0 transition-all duration-300 group-hover:bg-primary/10">
-                      <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-white text-lg font-sans">
-                        Click to view
+                  <div className="card card-compact bg-base-200 rounded-none h-full w-auto group cursor-pointer">
+                    <figure className="relative h-full w-auto overflow-hidden">
+                      <img
+                        src={image.src}
+                        alt={
+                          image.label || `${project.title} - Image ${index + 1}`
+                        }
+                        className="h-full w-auto object-contain "
+                        loading={index === 0 ? "eager" : "lazy"}
+                        decoding="async"
+                      />
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-all duration-300 flex items-center justify-center">
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-sans">
+                          Click to view
+                        </span>
                       </div>
-                    </div>
+                    </figure>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Next */}
+            {/* Next Button */}
             {projectImages.length > 1 && (
               <button
                 onClick={onNext}
-                className="absolute right-0 top-1/2 z-10 mx-4 -translate-y-1/2 rounded-full bg-white/90 p-2 text-primary shadow-lg transition-all duration-300 hover:bg-white md:p-3"
-                aria-label="Next"
+                className="btn btn-circle btn-primary bg-primary/80 absolute right-4 z-10 shadow-lg"
+                aria-label="Next image"
               >
-                <ChevronRightIcon className="text-2xl" />
+                <ChevronRightIcon />
               </button>
             )}
           </div>
 
-          {/* Optional dots */}
+          {/* Carousel Indicators */}
           {projectImages.length > 1 && (
-            <div className="mt-3 flex justify-center gap-1.5">
+            <div className="flex justify-center gap-2 mt-6">
               {projectImages.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => scrollToIndex(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`h-2 rounded-full transition ${i === activeIndex ? "w-6 bg-neutral-900" : "w-2 bg-neutral-300 hover:bg-neutral-400"}`}
+                  className={`transition-all duration-300 rounded-full ${
+                    i === activeIndex
+                      ? "w-8 h-2 bg-primary"
+                      : "w-2 h-2 bg-base-300 hover:bg-base-content/30"
+                  }`}
                 />
               ))}
             </div>
           )}
         </section>
-        <section className="container mx-auto p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
-            <div>
-              <div className="text-xs sm:text-sm font-sans uppercase tracking-wider text-neutral">
-                {project.number}
-              </div>
-              <div className="text-4xl sm:text-5xl lg:text-7xl font-title text-primary leading-tight">
-                {project.title}
-              </div>
-              {project.id === "mcknight" && (
-                <p className="text-sm sm:text-base font-roboto text-neutral leading-relaxed mt-2">
-                  Designed by{" "}
-                  <a
-                    href="https://www.housesprucing.com/portfolio/mindy-mcknight-project"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent hover:text-primary transition-colors duration-300"
-                  >
-                    House Sprucing{" "}
-                    <OpenInNewIcon className="inline-block text-xs sm:text-sm" />
-                  </a>
-                </p>
-              )}
-            </div>
 
-            <div>
-              <h2 className="text-lg sm:text-xlfont-tiempos font-title text-primary mb-2">
+        {/* Project Info Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          {/* Project Title */}
+          <div className="mb-8 lg:mb-12">
+            <div className="badge badge-outline badge-lg mb-4">
+              {project.number}
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-title text-primary leading-tight mb-4">
+              {project.title}
+            </h1>
+            {project.id === "mcknight" && (
+              <p className="text-sm sm:text-base text-base-content">
+                Designed by{" "}
+                <a
+                  href="https://www.housesprucing.com/portfolio/mindy-mcknight-project"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link link-accent"
+                >
+                  House Sprucing{" "}
+                  <OpenInNewIcon className="inline-block text-xs" />
+                </a>
+              </p>
+            )}
+          </div>
+
+          {/* About Card */}
+          <div className="card bg-base-100 shadow-lg">
+            <div className="card-body p-6 sm:p-8 lg:p-10">
+              <h2 className="text-2xl sm:text-3xl font-title text-primary mb-6">
                 About
               </h2>
-              <p className="text-sm sm:text-base lg:text-lg font-roboto text-neutral leading-relaxed">
+              <p className="text-base sm:text-lg text-base-content leading-relaxed mb-6">
                 {project.description}
               </p>
-              <p className="text-xs sm:text-sm lg:text-md font-roboto text-neutral leading-relaxed mt-4">
-                <span className="font-semibold text-primary">
+              <div className="divider my-6"></div>
+              <div className="space-y-4">
+                <p className="text-base sm:text-lg font-semibold text-primary">
                   At Renova, customization is limitless.
-                </span>
-                <br />
-                From materials and finishes to lighting and layout, we tailor
-                every detail to your vision—bringing your unique style to life
-                with precision and realism.
-              </p>
+                </p>
+                <p className="text-base sm:text-lg text-base-content leading-relaxed">
+                  From materials and finishes to lighting and layout, we tailor
+                  every detail to your vision, bringing your unique style to
+                  life with precision and realism.
+                </p>
+              </div>
             </div>
           </div>
         </section>
-      </div>
 
+        {/* Rendered vs Real Comparison Section */}
+        {comparisonData && (
+          <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 ">
+            <div className="text-center mb-8 lg:mb-12">
+              <div className="badge badge-outline badge-lg mb-4">
+                COMPARISON
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-title text-primary mb-4">
+                Vision to Reality
+              </h2>
+              <p className="text-base sm:text-lg text-base-content leading-relaxed max-w-2xl mx-auto">
+                Experience the precision of our photorealistic visualizations
+                alongside the completed project. Explore how our renderings
+                translate seamlessly into reality.
+              </p>
+            </div>
 
-      {/* Image Preview Modal */}
+            <div className="card bg-base-100 shadow-2xl h-fit">
+              <div className="card-body p-0">
+                <div
+                  className="relative w-full bg-base-200 rounded-xl overflow-hidden cursor-col-resize select-none"
+                  ref={diffRef}
+                  style={{ aspectRatio: "16/9", touchAction: "none" }}
+                >
+                  {/* Real Life Image (Background) */}
+                  <div className="absolute inset-0 w-full h-full">
+                    <img
+                      alt="Real life photo"
+                      src={comparisonData.real}
+                      className="w-full h-full object-cover"
+                      draggable="false"
+                      style={{ userSelect: "none", pointerEvents: "none" }}
+                    />
+                  </div>
+
+                  {/* Rendered Image (Clipped) */}
+                  <div
+                    ref={renderedImageRef}
+                    className="absolute inset-0 w-full h-full overflow-hidden"
+                    style={{ clipPath: "inset(0 50% 0 0)" }}
+                  >
+                    <img
+                      alt="Rendered visualization"
+                      src={comparisonData.rendered}
+                      className="w-full h-full object-cover"
+                      draggable="false"
+                      style={{ userSelect: "none", pointerEvents: "none" }}
+                    />
+                  </div>
+
+                  {/* Slider Handle */}
+                  <div
+                    ref={sliderHandleRef}
+                    className="absolute top-0 bottom-0 w-1 bg-white z-20 transition-opacity"
+                    style={{
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    {/* Slider Handle Circle */}
+                    <div
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border-2 border-base-100"
+                      style={{ touchAction: "none" }}
+                    >
+                      <div className="border-primary/50 border-2 rounded-full w-5 h-9"></div>
+                    </div>
+                  </div>
+
+                  {/* Labels with icons */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <div className="badge badge-lg badge-primary gap-2 shadow-lg lg:text-base text-xs">
+                      <ComputerIcon className="w-1 h-1 md:w-4 md:h-4 " />
+                      Rendered
+                    </div>
+                  </div>
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className="badge badge-lg badge-secondary gap-2 shadow-lg lg:text-base text-xs">
+                      <CameraAltIcon className="w-1 h-1 md:w-4 md:h-4" />
+                      Real
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-body bg-base-200/50 px-3 py-2 sm:px-4 sm:py-3">
+                <p className="text-xs sm:text-sm text-base-content/70 text-center">
+                  <kbd className="kbd kbd-xs sm:kbd-sm">Drag</kbd> the slider to
+                  compare the images
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+
+      {/* Image Preview Modal - Using DaisyUI Modal */}
       {isPreviewMode && (
-        <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8"
-          onClick={closePreview}
-        >
-          <button
-            className="absolute top-8 right-8 text-white text-4xl hover:text-gray-300 transition-colors duration-300"
+        <dialog className="modal modal-open" open={isPreviewMode}>
+          <div className="modal-box max-w-7xl p-0 bg-transparent shadow-none relative">
+            <form method="dialog">
+              <button
+                className="btn btn-sm btn-circle btn-ghost absolute left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto bottom-1 md:top-0 md:right-4 text-white bg-white/20 z-10"
+                onClick={closePreview}
+                aria-label="Close preview"
+              >
+                ✕
+              </button>
+            </form>
+            <div className="flex items-center justify-center min-h-[90vh]">
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                onClick={closePreview}
+              />
+            </div>
+          </div>
+          <form
+            method="dialog"
+            className="modal-backdrop bg-black/80"
             onClick={closePreview}
           >
-            ×
-          </button>
-          <img
-            src={previewImage}
-            alt="Preview"
-            className="max-w-full max-h-full object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+            <button>close</button>
+          </form>
+        </dialog>
       )}
-
-
     </div>
   );
 };

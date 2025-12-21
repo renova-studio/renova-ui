@@ -3,8 +3,8 @@
 
 /* Custom Fonts */
 @font-face {
-  font-family: 'Tiempos Headline';
-  src: url('./assets/fonts/TiemposHeadline-Regular.otf') format('opentype');
+  font-family: "Tiempos Headline";
+  src: url("./assets/fonts/TiemposHeadline-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -16,18 +16,18 @@
   prefersdark: false;
   color-scheme: "light";
   --color-base-100: oklch(100% 0 0);
-  --color-base-200: #F7F5F1;
-  --color-base-300: #C9B5AA;
+  --color-base-200: #f7f5f1;
+  --color-base-300: #c9b5aa;
   --color-base-content: oklch(0% 0 0);
-  --color-primary: #5C4439;
+  --color-primary: #5c4439;
   --color-primary-content: oklch(100% 0 0);
-  --color-secondary: #A67763;
+  --color-secondary: #a67763;
   --color-secondary-content: oklch(98% 0.003 247.858);
   --color-accent: #436374;
   --color-accent-content: oklch(100% 0 0);
-  --color-neutral: #6A5650;
+  --color-neutral: #6a5650;
   --color-neutral-content: oklch(100% 0 0);
-  --color-info: #869AA3;
+  --color-info: #869aa3;
   --color-info-content: oklch(100% 0 0);
   --color-success: #40704a;
   --color-success-content: oklch(100% 0 0);
